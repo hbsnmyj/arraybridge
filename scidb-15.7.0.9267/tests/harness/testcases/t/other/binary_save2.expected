@@ -1,0 +1,645 @@
+Query was executed successfully
+
+Query was executed successfully
+
+---- Test case: tc_int8 (int64,skip(1),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int8_null (int64,skip(1) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int16 (int64,skip(2),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int16_null (int64,skip(2) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int32 (int64,skip(4),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int32_null (int64,skip(4) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int64 (int64,skip(8),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_int64_null (int64,skip(8) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint8 (int64,skip(1),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint8_null (int64,skip(1) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint16 (int64,skip(2),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint16_null (int64,skip(2) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint32 (int64,skip(4),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint32_null (int64,skip(4) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint64 (int64,skip(8),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_uint64_null (int64,skip(8) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_float (int64,skip(4),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_float_null (int64,skip(4) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_double (int64,skip(8),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_double_null (int64,skip(8) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_char (int64,skip(1),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_char_null (int64,skip(1) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_bool (int64,skip(1),string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_bool_null (int64,skip(1) null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_string (int64,skip,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_string_null (int64,skip null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_binary (int64,skip,string)
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+---- Test case: tc_binary_null (int64,skip null,string)
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{i} left,right
+
+{i} count
+{0} 16
+
+

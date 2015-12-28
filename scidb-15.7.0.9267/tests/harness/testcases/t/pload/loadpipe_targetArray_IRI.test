@@ -1,0 +1,23 @@
+# This used to test the "-z IRI" mode of the OBSOLETE loadcsv.py script.
+# But IRI (insert/redimension/input) is what loadpipe.py does, so...
+
+--setup
+--start-query-logging
+
+--test
+
+--start-igdata
+
+# OBSOLETE:
+#--shell --command "cat ${TEST_DATA_DIR}/test.csv | loadcsv.py -a 'loadArr' -s '<i:int64,j:int64,k:int64,val1:double,val2:double>[n=0:*,10,0]' -x  -A 'targetArr2' -S '<val1:double,val2:double>[i=0:*,10,0,j=0:*,10,0,k=0:*,10,0]' -X -z IRI  -v -c 10 -n 1 -l -L -b -d 'localhost' -p $IQUERY_PORT "
+
+create array targetArr2 <val1:double,val2:double>[i=0:*,10,0,j=0:*,10,0,k=0:*,10,0]
+--shell --command "sed 1d ${TEST_DATA_DIR}/test.csv | loadpipe.py -f csv --host=${IQUERY_HOST} --port=${IQUERY_PORT} -s '<i:int64,j:int64,k:int64,val1:double,val2:double>[n=0:*,10,0]' -A targetArr2"
+
+--stop-igdata
+sort(targetArr2,val1 )
+--cleanup
+#remove(loadArr)
+remove(targetArr2)
+
+--stop-query-logging

@@ -1,0 +1,22 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=-3:9,3,1,y=0:4,2,1]
+--set-format dense
+store(build(A,x*10+y),A)
+store(cross_join(A as A1,A as A2,A1.x,A2.x,A1.y,A2.y),AjA)
+store(cross_join(A as A1,AjA as A2,A1.x,A2.x,A1.y,A2.y),AjAjA)
+store(cross_join(AjAjA as A1,A as A2,A1.x,A2.x,A1.y,A2.y),B)
+
+--test
+--reset-format
+cross_between( A, cross_join( cross_join( cross_join(A as A1, A as A2, A1.x, A2.x, A1.y, A2.y) as AjA, A as A3, AjA.x, A3.x, AjA.y, A3.y) as AjAjA, A as A4, AjAjA.x, A4.x, AjAjA.y, A4.y))
+cross_between(A,B)
+
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(AjA)
+remove(AjAjA)
+remove(B)

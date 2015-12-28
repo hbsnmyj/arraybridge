@@ -1,0 +1,52 @@
+--setup
+--test
+--start-query-logging
+
+
+load_library('misc')
+
+# test simple 1-d, 2-d, and 3-d cases
+create array cim1 <a:int32> [x=0:10000,100,0]
+--igdata "store(build(cim1,random()%1000),cim1)"
+test_chunk_id_map(cim1)
+create array cim2 <a:int32> [x=0:1000,100,0,y=0:5000,100,0]
+--igdata "store(build(cim2,random()%1000),cim2)"
+test_chunk_id_map(cim2)
+create array cim3 <a:int32> [x=0:100,10,0,y=0:500,100,0,z=0:222,50,0]
+--igdata "store(build(cim3,random()%1000),cim3)"
+test_chunk_id_map(cim3)
+
+# test cases with starting value > 1 and overlap
+create array cim4 <a:int32> [x=14:460,30,28]
+--igdata "store(build(cim4,random()%1000),cim4)"
+test_chunk_id_map(cim4)
+
+# test cases on the border between direct and indirect
+create array cim7flat <a:int32, b:int32> [x=0:10000,1000,0]
+create array cim7a <a:int32> [x=0:10000,1000,0]
+create array cim7b <b:int32> [x=0:10000,1000,0]
+--igdata "store(build(cim7a,random()%1000),cim7a)"
+--igdata "store(build(cim7b,random()%1000),cim7b)"
+--igdata "store(join(cim7a,cim7b), cim7flat)"
+create array cim7 <x:int64> [a=0:429496729699,100,0,b=0:429496729499,100,0]
+--igdata "redimension(cim7flat, cim7, false)"
+test_chunk_id_map(cim7)
+
+# test indirect mapping case
+create array cim3n <a:int32> [x=0:100,10,0,y=0:*,100,0,z=0:222,50,0]
+--igdata "store(cim3, cim3n)"
+test_chunk_id_map(cim3n)
+
+--cleanup
+
+remove(cim1)
+remove(cim2)
+remove(cim3)
+remove(cim4)
+remove(cim3n)
+remove(cim7)
+remove(cim7flat)
+remove(cim7a)
+remove(cim7b)
+
+--stop-query-logging

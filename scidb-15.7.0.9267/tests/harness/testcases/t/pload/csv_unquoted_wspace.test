@@ -1,0 +1,28 @@
+# Ticket 4353.  When loading unquoted string attributes from CSV
+# files, make sure leading and trailing whitespace is preserved.
+
+--setup
+create array tkt4353 <one:string,two:string,three:string>[i=0:*,10,0]
+
+--test
+
+--echo Leading and trailing spaces...
+--shell --command "echo 'one, two , three' > /tmp/t4353.csv"
+load(tkt4353, '/tmp/t4353.csv', -2, 'csv')
+
+--echo Leading and trailing tabs...
+--shell --command "echo 'doh,	ray	  ,	me	' > /tmp/dohrayme.csv"
+remove(tkt4353)
+create array tkt4353 <one:string,two:string,three:string>[i=0:*,10,0]
+load(tkt4353, '/tmp/dohrayme.csv', -2, 'csv')
+
+# Ticket 4338: Make sure datetime attributes load.  Here, leading or trailing whitespace is an error.
+--echo DateTime attributes...
+--shell --command "echo '1989-11-09 12:34:56,1999-12-31 23:59:59,2525-01-01 00:00:01' > /tmp/dtimes1.csv"
+create array dtimes1 <t0:datetime,t1:datetime,t2:datetime>[i=0:*,10,0]
+load(dtimes1, '/tmp/dtimes1.csv', -2, 'csv')
+
+--cleanup
+--shell --command "rm -f /tmp/t4353.csv /tmp/dohrayme.csv /tmp/dtimes1.csv"
+remove(tkt4353)
+remove(dtimes1)

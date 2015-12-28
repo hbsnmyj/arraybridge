@@ -1,0 +1,50 @@
+--setup
+--shell --command "rm -f /dev/shm/SciDB* 2>/dev/null"
+load_library('dense_linear_algebra')
+
+--test
+
+
+
+# start 2 independent, concurrent _mpirank() queries, to show that they will both complete
+#
+# this test assumes  _mpirank(64x64) takes less than 10 seconds, so this is not a particulary significant test
+# as it does not distinguish well whether they ran serially or concurrently in any way
+#
+# [ cleanup note: if interrupted, this shell command will kill the current process group (typically scidbtestharness+children).
+#   this way the background iquery started here does not stay behind - best effort cleanup attempt. ]
+
+--shell --store --command "trap 'kill 0' SIGINT SIGTERM SIGHUP SIGQUIT ; ( iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -naq '_mpirank(build(<v:double>[i=0:64-1,32,0, j=0:64-1,32,0],0))' 1> /tmp/${HPID}_1.stdout 2> /tmp/${HPID}_1.stderr ) & export pid=$! ; export rc=0 ; iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -naq '_mpirank(build(<v:double>[i=0:64-1,32,0, j=0:64-1,32,0],0))' 1> /tmp/${HPID}_2.stdout 2> /tmp/${HPID}_2.stderr || export rc=${rc}2 ; wait $pid || export rc=${rc}1 ; echo $rc && [ $rc == 0 ]; "
+
+# log the outputs regardless of status
+--shell --store --command "cat /tmp/${HPID}_1.stderr"
+--shell --store --command "cat /tmp/${HPID}_1.stdout"
+--shell --store --command "cat /tmp/${HPID}_2.stderr"
+--shell --store --command "cat /tmp/${HPID}_2.stdout"
+
+# start 2 concurrent _mpi_test-based queries, which are expected to take more than 10 sec each.
+#
+# one could manually check to see whether the total time took less than the time for one of them, which
+# would demonstrate they were concurrent, but this test does not go that far
+#
+# [ cleanup note: if interrupted, this shell command will kill the current process group (typically scidbtestharness+children).
+#   this way the background iquery started here does not stay behind - best effort cleanup attempt. ]
+#
+--shell --store --command "trap 'kill 0' SIGINT SIGTERM SIGHUP SIGQUIT ; ( iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_1.stdout 2> /tmp/${HPID}_1.stderr ) & export pid=$! ; export rc=0 ; iquery -p ${IQUERY_PORT:=1239} -c ${IQUERY_HOST:=localhost} -odcsv -aq '_mpi_test()' 1> /tmp/${HPID}_1.stdout 2> /tmp/${HPID}_2.stderr || export rc=${rc}2 ; wait $pid || export rc=${rc}1 ; echo $rc && [ $rc == 0 ];"
+
+# log the output regardless of status
+--shell --command "cat /tmp/${HPID}_1.stderr"
+--shell --command "cat /tmp/${HPID}_1.stdout"
+--shell --command "cat /tmp/${HPID}_2.stderr"
+--shell --command "cat /tmp/${HPID}_2.stdout"
+
+# check that no files from this test were left behind in /dev/shm 
+--shell --store --command "ls /dev/shm/SciDB* 2>/dev/null || true"
+
+--cleanup
+
+--shell --command "rm -f /dev/shm/SciDB* 2>/dev/null"
+--shell --command "rm -f /tmp/${HPID}_1.stdout 2>/dev/null"
+--shell --command "rm -f /tmp/${HPID}_1.stderr 2>/dev/null"
+--shell --command "rm -f /tmp/${HPID}_2.stdout 2>/dev/null"
+--shell --command "rm -f /tmp/${HPID}_2.stderr 2>/dev/null"

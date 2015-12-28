@@ -1,0 +1,21 @@
+--setup
+
+CREATE array Raw_Test_Data < I : int64, J : int64, V : double NULL  > [ Line=0:*,100,0 ]
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -aq "load ( Raw_Test_Data, '${TEST_DATA_DIR}/redim_data2.txt')""
+
+--test
+--start-query-logging
+
+CREATE ARRAY Data < V : double NULL > [ I=0:999,10,0, J=0:999,10,0 ]
+
+store(redimension(Raw_Test_Data, Data), Data)
+
+scan (Raw_Test_Data)
+scan (Data)
+
+--stop-query-logging
+--cleanup
+
+remove(Raw_Test_Data)
+remove(Data)
+

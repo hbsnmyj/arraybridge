@@ -1,0 +1,2 @@
+# ticket no. 3719
+--shell --command "${TESTDIR}/remove_versions_01.sh"

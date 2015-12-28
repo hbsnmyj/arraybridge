@@ -1,0 +1,13 @@
+--setup
+create array fdafdarfewqfveqfeq<v:int64>[i]
+create array fdafdarfewqfveqfeq2<v:int64>[i]
+
+--test
+--start-query-logging
+project(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'), name)
+--shell --command "${SCIDB_INSTALL_PATH}/bin/remove_arrays.py -f fdafdarfewqfveqfeq.*"
+project(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'), name)
+--stop-query-logging
+
+--cleanup
+

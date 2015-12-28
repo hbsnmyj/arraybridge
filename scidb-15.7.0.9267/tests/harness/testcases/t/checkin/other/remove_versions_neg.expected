@@ -1,0 +1,26 @@
+[An error expected at this place for the query "remove_versions(<b:int32> [x=0:2,3,0], 0)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+Query was executed successfully
+
+[An error expected at this place for the query "remove_versions(RMV_NEG, X)". And it failed with error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2. Expected error code = scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2.]
+
+[An error expected at this place for the query "remove_versions(RMV_NEG, 0)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[An error expected at this place for the query "remove_versions(RMV_NEG, 0)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST.]
+
+Query was executed successfully
+
+{i} count
+{0} 3
+
+[An error expected at this place for the query "remove_versions(RMV_NEG, 2)". And it failed with error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_ARRAY_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_SYSCAT::SCIDB_LE_ARRAY_DOESNT_EXIST.]
+
+[An error expected at this place for the query "remove_versions(RMV_NEG, -2)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST.]
+
+{i} count
+{0} 3
+
+Query was executed successfully
+

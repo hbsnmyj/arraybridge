@@ -1,0 +1,62 @@
+# Ticket 2016.  Doing insert(unbounded, bounded) ought to work, so long
+# as unbounded really does fit inside bounded.
+
+--setup
+
+create array bounded_1 <value:int64 null>[row=1:500,100,0,col=1:50,10,0]
+create array bounded_2 <value:int64 null>[row=1:500,100,0,col=1:50,10,0]
+create array bounded_3 <value:int64 null>[row=1:500,100,0,col=1:50,10,0]
+
+create array unbounded_1 <value:int64 null>[row=1:*,100,0,col=1:50,10,0]
+create array unbounded_2 <value:int64 null>[row=1:*,100,0,col=1:50,10,0]
+create array unbounded_3 <value:int64 null>[row=1:*,100,0,col=1:50,10,0]
+
+--start-igdata
+create array small <value:int64 null>[row=1:100,100,0,col=1:50,10,0]
+store(build(small, row+col), small)
+
+create array same  <value:int64 null>[row=1:500,100,0,col=1:50,10,0]
+store(build(same, row - col), same)
+
+create array large <value:int64 null>[row=1:600,100,0,col=1:50,10,0]
+store(build(large, 2*row), large)
+--stop-igdata
+
+--test
+
+# For each of the small, same, and large arrays, merge them into the
+# unbounded array (so that there's still plenty of empty cells in
+# there).  Then try insert(unbounded, bounded)... it should work for
+# all except the large array.
+
+--start-query-logging
+
+--start-igdata
+store(merge(small, unbounded_1), unbounded_1)
+insert(unbounded_1, bounded_1)
+--stop-igdata
+aggregate(bounded_1, count(*))
+
+--start-igdata
+store(merge(same, unbounded_2), unbounded_2)
+insert(unbounded_2, bounded_2)
+--stop-igdata
+aggregate(bounded_2, count(*))
+
+--start-igdata
+store(merge(large, unbounded_3), unbounded_3)
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES "insert(unbounded_3, bounded_3)"
+--stop-igdata
+
+--stop-query-logging
+
+--cleanup
+remove(bounded_1)
+remove(bounded_2)
+remove(bounded_3)
+remove(unbounded_1)
+remove(unbounded_2)
+remove(unbounded_3)
+remove(small)
+remove(same)
+remove(large)

@@ -1,0 +1,14 @@
+# Ticket #4273.  We want to disallow octal input for int64 fields (as
+# is the case for uint64).  We do still allow 0x95 to be parsed as 149
+# decimal though, the thought being that it's less of a surprise.
+
+--setup
+create array zipcodes <city:string,state_code:string,zip:int64>[i=0:*,10,0]
+
+--test
+--shell --command "cp ${TEST_DATA_DIR}/zipcodes.csv /tmp"
+load(zipcodes, '/tmp/zipcodes.csv', -2, 'csv')
+
+--cleanup
+remove(zipcodes)
+--shell --command "rm -f /tmp/zipcodes.csv"

@@ -1,0 +1,16 @@
+Creating array:
+Query was executed successfully
+Loading data into array:
+Query was executed successfully
+Count non-empty d_0 attributes in loaded array:
+d_0_count
+129600
+Count non-empty d_1 attributes in loaded array:
+d_1_count
+129600
+Count non-empty a_1 attributes in array after redimension:
+PASS: count(a_1) = expected!
+Done.
+Cleaning up on exit...
+Done with cleanup.
+

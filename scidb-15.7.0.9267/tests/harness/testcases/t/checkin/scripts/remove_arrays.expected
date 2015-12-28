@@ -1,0 +1,12 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <project(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'), name)>
+{No} name
+{0} 'fdafdarfewqfveqfeq'
+{1} 'fdafdarfewqfveqfeq2'
+
+SCIDB QUERY : <project(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'), name)>
+{No} name
+

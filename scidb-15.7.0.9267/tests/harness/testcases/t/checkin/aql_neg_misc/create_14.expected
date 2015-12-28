@@ -1,0 +1,46 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,schema,availability,temporary
+{0} 'A1','A1<x:bool> [step=1:1,1,0]',true,false
+{1} 'A2','A2<x:bool> [step=1:1,1,0]',true,false
+{2} 'B1','B1<x:bool> [STEP=1:1,1,0]',true,false
+{3} 'B2','B2<x:bool> [STEP=1:1,1,0]',true,false
+
+Query was executed successfully
+
+Query was executed successfully
+
+{No} name,schema,availability,temporary
+{0} 'A1','A1<x:bool> [step=1:1,1,0]',true,false
+{1} 'A2','A2<x:bool> [step=1:1,1,0]',true,false
+{2} 'A3','A3<x:bool> [step=1:1,1,0,STEP=1:1,1,0]',true,false
+{3} 'B1','B1<x:bool> [STEP=1:1,1,0]',true,false
+{4} 'B2','B2<x:bool> [STEP=1:1,1,0]',true,false
+{5} 'B3','B3<x:bool> [STEP=1:1,1,0,step=1:1,1,0]',true,false
+
+[An error expected at this place for the query "create array A4<x:bool>[step=1:1,1,0,STEP=1:1,1,0,step=1:1,1,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+[An error expected at this place for the query "create array A4<x:bool>[STEP=1:1,1,0,step=1:1,1,0,STEP=1:1,1,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+[An error expected at this place for the query "create array A4<x:bool>[step=1:1,1,0,STEP=1:1,1,0,step=1:1,1,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+[An error expected at this place for the query "create array A4<x:bool>[STEP=1:1,1,0,step=1:1,1,0,STEP=1:1,1,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,34 @@
+
+--test
+--start-query-logging
+
+--shell --store --command="cat $DOC_DATA/raw.csv "
+--set-format dcsv
+--start-igdata
+--aql CREATE ARRAY raw <pos: int64, device: int64, val: float> [offset=0:*,5,0]  
+--shell  --command="sed 1d $DOC_DATA/raw.csv > /tmp/raw.load "
+--stop-igdata
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -q "LOAD raw FROM '/tmp/raw.load' as 'csv'""
+--start-igdata
+--aql create array A <val: float> [device=1:5,5,0, pos=1:5,5,0]  
+--stop-igdata
+redimension(raw, A)  
+--start-igdata
+store(redimension(raw, A),A)  
+--stop-igdata
+show(A)  
+scan(A)  
+--start-igdata
+--aql create array Position <minVal:float null, avgVal:double null, maxVal:float null> [pos=1:5,5,0]  
+--stop-igdata
+redimension(A,Position, min(val) as minVal, avg(val) as avgVal, max(val) as maxVal)  
+
+--stop-query-logging
+
+
+--cleanup
+
+--shell --command " rm -f /tmp/raw.load "
+remove(raw)
+remove(A)
+remove(Position)

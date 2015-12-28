@@ -1,0 +1,24 @@
+#!/bin/sh
+
+dt="$1"
+cores=`ls core*`
+
+if [ -x /opt/rh/devtoolset-3/root/usr/bin/gdb ]; then
+    MY_GDB=/opt/rh/devtoolset-3/root/usr/bin/gdb
+else
+    MY_GDB=gdb
+fi
+
+# There is no reliable way to guarantee a particular core naming convention,
+# so we will just try all cores against scidb & mpi_slave_scidb
+
+for i in $cores; do
+    echo "Processing SciDB corefile: $i"
+    $MY_GDB @CMAKE_INSTALL_PREFIX@/bin/scidb --core=$i --eval-command="thread apply all bt full" --eval-command="info sharedlib" --eval-command="info target" --eval-command="info threads" --batch > "$dt/stack-$dt.SciDB.$i" 2>&1
+done
+
+for i in $cores; do
+    echo "Processing mpi core: $i"
+    $MY_GDB  @CMAKE_INSTALL_PREFIX@/lib/scidb/plugins/mpi_slave_scidb --core=$i --eval-command="thread apply all bt full" --eval-command="info sharedlib" --eval-command="info target" --eval-command="info threads" --batch > "$dt/stack-$dt.scidb_mpi_slave.$i" 2>&1
+done
+

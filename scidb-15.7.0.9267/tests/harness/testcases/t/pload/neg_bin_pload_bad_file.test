@@ -1,0 +1,9 @@
+--setup
+--test
+# This test covers the system behavior (error) when the data to be loaded contains errors.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_bad_data_file.sh.
+# which accepts parameters.  The script tests a 360x360 matrix.
+#
+--shell --store-all --command "PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_bad_data_file.sh --format binary --size 360 --upper-bound '*'"
+--cleanup

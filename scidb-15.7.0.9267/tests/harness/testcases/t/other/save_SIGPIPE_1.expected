@@ -1,0 +1,16 @@
+x
+0
+0.841471
+0.909297
+0.14112
+-0.756802
+-0.958924
+-0.279415
+0.656987
+0.989358
+---- Query result: ----
+Error id: scidb::SCIDB_SE_ARRAY_WRITER::SCIDB_LE_FILE_WRITE_ERROR
+Error description: Error while saving array. Failed to write file: Broken pipe (32).
+----------------------
+save_SIGPIPE_1.py test: PASS
+

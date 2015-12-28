@@ -1,0 +1,16 @@
+--setup
+--start-query-logging
+
+--shell --store --command " sed 1d $DOC_DATA/olympic_data.csv > /tmp/olympic_data.csv"
+
+--test
+--aql CREATE ARRAY winnersFlat < event:string,year:int64,person:string,time:double > [i=0:*,1000000,0]
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -q "load winnersFlat FROM '/tmp/olympic_data.csv' AS 'csv'""
+
+--cleanup
+--aql drop array winnersFlat
+--shell --command "rm -f /tmp/olympic_data.csv"
+
+--stop-query-logging
+
+

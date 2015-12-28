@@ -1,0 +1,26 @@
+#Ticket 2041 - loadcsv.py -- add ssh option
+
+# The loadcsv.py script is now OBSOLETE.  Unclear exactly how the old
+# -b "bypass strict host key checking" option was being tested here,
+# but let's load the file anyway just to prove we still can.
+
+--setup
+--start-query-logging
+--test
+--start-igdata
+
+# Old test:
+#--shell --command  " cat ${TEST_DATA_DIR}/sm10.csv | loadcsv.py -a 'array_sm10' -s  '<a:int64,b:int64,c:int64>[i=0:*,3,0]'  -v -c 3 -l -L -x -b -d 'localhost' -p ${IQUERY_PORT}" 
+#--shell --command  " cat ${TEST_DATA_DIR}/sm10.csv | loadcsv.py -a 'array_sm10' -s  '<a:int64,b:int64,c:int64>[i=0:*,3,0]'  -v -c 3 -l -L -x -b -d 'localhost' -p ${IQUERY_PORT}" 
+
+# Need cp command so TEST_DATA_DIR won't be logged along w/ query.
+--shell --command "cp ${TEST_DATA_DIR}/sm10.csv /tmp"
+create array array_sm10 <a:int64,b:int64,c:int64>[i=0:*,3,0]
+load(array_sm10, '/tmp/sm10.csv', -2, 'csv')
+
+--stop-igdata
+sort(array_sm10,a)
+--cleanup
+remove(array_sm10)
+--shell --command "rm -f /tmp/sm10.csv"
+--stop-query-logging

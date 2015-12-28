@@ -1,0 +1,37 @@
+# Test automatic repartitioning of join() inputs.
+
+# Force bad reparts of second args, watch the errors.
+# See that explicit repart of first arg doesn't matter.
+
+--setup
+
+create array aa     <v:int64 null default null> [x=0:39,10,5, y=0:9,10,0]
+create array aa_bad <v:int64 null default null> [x=0:39, 5,5, y=0:9,10,0]
+
+create array bb     <s:string NULL DEFAULT null> [z=0:19,100,0,w=0:9,10,4]
+create array bb_bad <s:string NULL DEFAULT null> [z=0:19,100,2,w=0:9,10,2]
+
+
+--start-igdata
+store(build(aa, x+y), aa)
+store(between(build(bb, iif((z % 2) = 0, 'even', 'odd')), 5,2, 15,7 ), bb)
+--stop-igdata
+
+--test
+
+--start-query-logging
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(aa, repart(bb, bb_bad))"
+join(repart(aa, aa_bad), bb)
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(bb, repart(aa, aa_bad))"
+join(repart(bb, bb_bad), aa)
+
+--stop-query-logging
+
+--cleanup
+
+remove(aa)
+remove(bb)
+remove(aa_bad)
+remove(bb_bad)

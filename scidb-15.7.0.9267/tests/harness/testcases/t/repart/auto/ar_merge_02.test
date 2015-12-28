@@ -1,0 +1,56 @@
+# Test automatic repartitioning of merge() inputs.
+
+# Force bad reparts of second/third args, watch the errors.
+# See that explicit repart of first arg doesn't matter.
+
+--setup
+
+create array aa    <v1:int64 null default null> [x=0:14,10,5,y=0:9,10,0]
+create array aa_ci <v1:int64 null default null> [x=0:14, 5,5,y=0:9, 5,0]
+
+create array bb       <v2:int64 null default null> [z=0:14,100,0,w=0:9,10,4]
+create array bb_co    <v2:int64 null default null> [z=0:14,100,2,w=0:9,10,2]
+create array bb_as_cc <v2:int64 NULL DEFAULT null> [z=0:14,60,8,w=0:9,5,0]
+
+create array cc      <v3:int64 NULL DEFAULT null> [z=0:14,60,8,w=0:9,5,0]
+create array cc_cico <v3:int64 NULL DEFAULT null> [z=0:14, 5,4,w=0:9,10,4]
+
+--start-igdata
+store(between(build(aa, x+y), 0,0, 4,9), aa)
+store(between(build(bb, z + 100), 5,0, 10,9 ), bb)
+store(between(build(cc, w + 200), 10,0, 14,9), cc)
+--stop-igdata
+
+--test
+
+--start-query-logging
+
+# Hard-coded bad repart of third arg fails.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa, bb, repart(cc, cc_cico))"
+
+# Hard-coded bad repart of second arg also fails.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa, repart(bb, bb_co), cc)"
+
+--echo Hard-coded repart of first arg works fine.
+merge(repart(aa, aa_ci), bb, cc)
+
+# Hard-coded repart of second arg fails.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(cc, repart(bb, bb_co))"
+
+--echo Hard-coded repart of first arg is again fine.
+merge(repart(cc, cc_cico), bb)
+
+--echo Hard-coded repart of second arg is fine IFF it matches first arg in interval and overlap.
+merge(cc, repart(bb,bb_as_cc))
+
+--stop-query-logging
+
+--cleanup
+
+remove(aa)
+remove(bb)
+remove(cc)
+remove(aa_ci)
+remove(bb_co)
+remove(bb_as_cc)
+remove(cc_cico)

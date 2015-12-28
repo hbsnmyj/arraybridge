@@ -1,0 +1,11 @@
+--setup
+create array A0 <a0:float DEFAULT 0.299568883401,a1:string DEFAULT 'e',a2:uint16 DEFAULT 62633,a3:char DEFAULT char('d')>[d0=-1:21,7,0,d1=-10:5,13,0]
+
+--test
+--start-igdata
+store(redimension(apply(build(<a0:float DEFAULT 0.299568883401>[d0=-1:21,11,0,d1=-10:5,13,0],0.630017964581),a1,'i',a2,uint16(random()%10),a3,char('w'),d2,iif(random()%10 > 4,-1 + random()%23,null),d3,iif(random()%10 > 4,-10 + random()%16,null)),<a0:float DEFAULT 0.299568883401,a1:string DEFAULT 'e',a2:uint16 DEFAULT 62633,a3:char DEFAULT char('d')>[d2=-1:21,7,0,d3=-10:5,13,0],false),A0)
+reshape(rank(cumulate(A0,min(a1) as a3),a3,d0),<a3:string NULL DEFAULT null,a3_rank:double NULL DEFAULT null>[d4=-10:-7,6,0,d5=25:116,4,0])
+--stop-igdata
+
+--cleanup
+remove(A0)

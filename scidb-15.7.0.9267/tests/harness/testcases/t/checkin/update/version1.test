@@ -1,0 +1,52 @@
+--setup
+
+CREATE ARRAY updarr <a: double > [x=0:5,3,0, y=0:5,3,0]
+store(input(updarr, '${TEST_DATA_DIR}/dense.txt'), updarr)
+
+--test
+
+## ../../tests/basic/update/first.version.aql
+store(merge(input(updarr, '${TEST_DATA_DIR}/dense2.txt'), updarr), updarr)
+
+## ../../tests/basic/update/version2.aql
+store(merge(input(updarr, '${TEST_DATA_DIR}/dense3.txt'), updarr), updarr)
+
+## ../../tests/basic/update/version3.aql
+scan(updarr)
+
+## ../../tests/basic/update/version4.aql
+# scan(updarr, '02/20/2020')
+scan(updarr@datetime('02/20/2020'))
+
+## ../../tests/basic/update/version5.aql
+scan(updarr@1)
+
+## ../../tests/basic/update/version6.aql
+scan(updarr@2)
+
+## ../../tests/basic/update/version7.aql
+scan(updarr@3)
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_REF_NOT_FOUND                "scan(updarr@xx)"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_NESTED_ARRAYS_NOT_SUPPORTED "scan(updarr@'xx')"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST  "scan(updarr@1.1)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST   "scan(updarr@0)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST   "scan(updarr@-1)"
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST   "scan(updarr@-2)"
+
+## ../../tests/basic/update/version8.aql
+project(versions(updarr), version_id)
+
+## ../../tests/basic/update/version9.aql
+filter(updarr@datetime('02/20/2020'), a > 100)
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST "filter(updarr@now()-1000, a > 100)"
+--sleep 2
+## ../../tests/basic/update/versionA.aql
+filter(updarr@now()-2, a > 100)
+
+
+
+--cleanup
+
+remove(updarr)

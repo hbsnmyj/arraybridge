@@ -1,0 +1,14 @@
+--setup
+--test
+# This test covers the system behavior when one of the instances loads a slightly larger
+# file (+-10% of the flat array chunk size) during the parallel load.  This tests loads the
+# data into a bounded array.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_add_remove.sh.
+# which accepts parameters.  The script tests a 360x360 matrix with data that could be +-10% of
+# the chunk size.  The test deliberately creates a bounded lat array that is twice the size:
+# this avoids the possibility of load errors due to the chunking algorithm.
+#
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_add_remove.sh --format binary --size 360 --upper-bound 259199"
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_add_remove.sh --format binary --size 360 --pipe --upper-bound 259199"
+--cleanup

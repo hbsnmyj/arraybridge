@@ -1,0 +1,2 @@
+# *Not* a typo: use the store_01.py script, but give it the --use-temp-array option.
+--shell --store --command "${TESTDIR}/store_01.py --use-temp-array -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID}"

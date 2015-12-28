@@ -1,0 +1,31 @@
+--setup
+create array vec <a:int32, b:int32> [i=1:10,10,0]
+load(vec,'${TEST_DATA_DIR}/vec.txt')
+
+create temp array tempVecA <a:int32> [i=1:10,10,0]
+create temp array tempVecB <b:int32> [i=1:10,10,0]
+create temp array tempVec <a:int32, b:int32> [i=1:10,10,0]
+create array newVec <a:int32, b:int32> [i=1:10,10,0]
+
+--test
+filter(join(vec as V1, vec as V2), V1.a > V2.b)
+
+filter( store( join(build(tempVecA, 0) as T1,  build(tempVecB, 1) as T2), tempVec ) as TEMP, TEMP.a=TEMP.a)
+--error "scan(TEMP)"
+
+filter(store(tempVec, vec) as newVec, newVec.a=0 or newVec.a<>0)
+scan(newVec)
+aggregate(filter(join(vec as V1, tempVec as V2), V1.a <> V2.a or V1.b <> V2.b), count(*))
+
+filter(insert(tempVec, vec) as newVec, newVec.a=0 or newVec.a<>0)
+scan(newVec)
+aggregate(filter(join(vec as V1, tempVec as V2), V1.a <> V2.a or V1.b <> V2.b), count(*))
+
+--cleanup
+remove (vec)
+remove (tempVecA)
+remove (tempVecB)
+remove (tempVec)
+remove (newVec)
+
+

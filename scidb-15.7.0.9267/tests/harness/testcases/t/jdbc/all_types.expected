@@ -1,0 +1,451 @@
+========== Testing missing(2) for all types ==========
+build(<v:bool null>      [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:char null>      [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:datetime null>  [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:datetimetz null>[i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:double null>    [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:float null>     [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:int8 null>      [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:int16 null>     [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:int32 null>     [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:int64 null>     [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:string null>    [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:uint8 null>     [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:uint16 null>    [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:uint32 null>    [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+build(<v:uint64 null>    [i=0:0,1,0], missing(2))
+{i} v
+{0} ?2
+
+========== Testing missing(0) for all types ==========
+build(<v:bool null>      [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:char null>      [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:datetime null>  [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:datetimetz null>[i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:double null>    [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:float null>     [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:int8 null>      [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:int16 null>     [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:int32 null>     [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:int64 null>     [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:string null>    [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:uint8 null>     [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:uint16 null>    [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:uint32 null>    [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+build(<v:uint64 null>    [i=0:0,1,0], missing(0))
+{i} v
+{0} null
+
+========== Testing 'bool' type ==========
+build(<v:bool null>[i=0:0,1,0], true)
+{i} v
+{0} true
+
+build(<v:bool null>[i=0:0,1,0], false)
+{i} v
+{0} false
+
+build(<v:bool null>[i=0:0,1,0], '1847')
+Expecting error SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_CONVERTER, and the query failed with that error. Good!
+
+========== Testing 'char' type ==========
+build(<v:char null>[i=0:0,1,0], 'a')
+{i} v
+{0} 'a'
+
+build(<v:char null>[i=0:0,1,0], true)
+Expecting error SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_CONVERTER, and the query failed with that error. Good!
+
+========== Testing 'datetime' type ==========
+build(<v:datetime null>[i=0:0,1,0], '2015-04-27 14:50:13')
+{i} v
+{0} '2015-04-27 14:50:13'
+
+build(<v:datetime null>[i=0:0,1,0], 'abc')
+Expecting error SCIDB_SE_TYPE_CONVERSION::SCIDB_LE_FAILED_PARSE_STRING, and the query failed with that error. Good!
+
+========== Testing 'datetimetz' type ==========
+build(<v:datetimetz null>[i=0:0,1,0], '2015-04-27 10:51:19 -04:00')
+{i} v
+{0} '2015-04-27 10:51:19 -04:00'
+
+build(<v:datetimetz null>[i=0:0,1,0], now())
+Expecting error SCIDB_SE_TYPE::SCIDB_LE_CANT_FIND_CONVERTER, and the query failed with that error. Good!
+
+========== Testing 'float' type ==========
+build(<v:float null>[i=0:0,1,0], -1.0/0)
+{i} v
+{0} -inf
+
+build(<v:float null>[i=0:0,1,0], 1.0/0)
+{i} v
+{0} inf
+
+build(<v:float null>[i=0:0,1,0], 1.0/-0.0)
+{i} v
+{0} -inf
+
+build(<v:float null>[i=0:0,1,0], -1.0/-0.0)
+{i} v
+{0} inf
+
+build(<v:float null>[i=0:0,1,0], 0.0/0)
+{i} v
+{0} nan
+
+build(<v:float null>[i=0:0,1,0], 32.0)
+{i} v
+{0} 32
+
+build(<v:float null>[i=0:0,1,0], 12.345)
+{i} v
+{0} 12.345
+
+build(<v:float null>[i=0:0,1,0], 12.34567)
+{i} v
+{0} 12.3457
+
+build(<v:float null>[i=0:0,1,0], 12.00000085)
+{i} v
+{0} 12
+
+build(<v:float null>[i=0:0,1,0], 0.000)
+{i} v
+{0} 0
+
+build(<v:float null>[i=0:0,1,0], -0)
+{i} v
+{0} 0
+
+build(<v:float null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:float null>[i=0:0,1,0], 0/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'double' type ==========
+build(<v:double null>[i=0:0,1,0], -1.0/0)
+{i} v
+{0} -inf
+
+build(<v:double null>[i=0:0,1,0], 1.0/0)
+{i} v
+{0} inf
+
+build(<v:double null>[i=0:0,1,0], 1.0/-0.0)
+{i} v
+{0} -inf
+
+build(<v:double null>[i=0:0,1,0], -1.0/-0.0)
+{i} v
+{0} inf
+
+build(<v:double null>[i=0:0,1,0], 0.0/0)
+{i} v
+{0} nan
+
+build(<v:double null>[i=0:0,1,0], 32.0)
+{i} v
+{0} 32
+
+build(<v:double null>[i=0:0,1,0], 12.345)
+{i} v
+{0} 12.345
+
+build(<v:double null>[i=0:0,1,0], 12.34567)
+{i} v
+{0} 12.3457
+
+build(<v:double null>[i=0:0,1,0], 12.00000085)
+{i} v
+{0} 12
+
+build(<v:double null>[i=0:0,1,0], 0.000)
+{i} v
+{0} 0
+
+build(<v:double null>[i=0:0,1,0], -0)
+{i} v
+{0} 0
+
+build(<v:double null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:double null>[i=0:0,1,0], 0/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'string' type ==========
+build(<v:string null>[i=0:0,1,0], -1.0/0)
+{i} v
+{0} '-inf'
+
+build(<v:string null>[i=0:0,1,0], 0.0/0)
+{i} v
+{0} '-nan'
+
+build(<v:string null>[i=0:0,1,0], -10)
+{i} v
+{0} '-10'
+
+build(<v:string null>[i=0:0,1,0], 'a')
+{i} v
+{0} 'a'
+
+build(<v:string null>[i=0:0,1,0], 'abcd')
+{i} v
+{0} 'abcd'
+
+build(<v:string null>[i=0:0,1,0], '')
+{i} v
+{0} ''
+
+build(<v:string null>[i=0:0,1,0], abcd)
+Expecting error SCIDB_SE_SYNTAX::SCIDB_LE_UNKNOWN_ATTRIBUTE_OR_DIMENSION, and the query failed with that error. Good!
+
+========== Testing 'int8' type ==========
+build(<v:int8 null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:int8 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:int8 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:int8 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:int8 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'int16' type ==========
+build(<v:int16 null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:int16 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:int16 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:int16 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:int16 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'int32' type ==========
+build(<v:int32 null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:int32 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:int32 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:int32 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} -2147483648
+
+build(<v:int32 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'int64' type ==========
+build(<v:int64 null>[i=0:0,1,0], -10)
+{i} v
+{0} -10
+
+build(<v:int64 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:int64 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:int64 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} -9223372036854775808
+
+build(<v:int64 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'uint8' type ==========
+build(<v:uint8 null>[i=0:0,1,0], -10)
+{i} v
+{0} 246
+
+build(<v:uint8 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:uint8 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:uint8 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:uint8 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'uint16' type ==========
+build(<v:uint16 null>[i=0:0,1,0], -10)
+{i} v
+{0} 65526
+
+build(<v:uint16 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:uint16 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:uint16 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:uint16 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'uint32' type ==========
+build(<v:uint32 null>[i=0:0,1,0], -10)
+{i} v
+{0} 4294967286
+
+build(<v:uint32 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:uint32 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:uint32 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:uint32 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+========== Testing 'uint64' type ==========
+build(<v:uint64 null>[i=0:0,1,0], -10)
+{i} v
+{0} 18446744073709551606
+
+build(<v:uint64 null>[i=0:0,1,0], 0)
+{i} v
+{0} 0
+
+build(<v:uint64 null>[i=0:0,1,0], 10)
+{i} v
+{0} 10
+
+build(<v:uint64 null>[i=0:0,1,0], 2.5/0)
+{i} v
+{0} 0
+
+build(<v:uint64 null>[i=0:0,1,0], 1/0)
+Expecting error SCIDB_SE_EXECUTION::SCIDB_LE_DIVISION_BY_ZERO, and the query failed with that error. Good!
+
+

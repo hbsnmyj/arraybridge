@@ -1,0 +1,95 @@
+Query was executed successfully
+
+Query was executed successfully
+
+{i} s1,n
+{0} 'Double \'quotes\' w/ , & (") inside',1
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   D   o   u   b   l   e       '   q   u   o   t   e   s   '    
+0000020   w   /       ,       &       (   "   )       i   n   s   i   d
+0000040   e  \t   1  \n
+0000044
+
+Same but w/o the :d option, auto-quoting should handle it OK.
+{i} s1,n
+{0} 'Double \'quotes\' w/ , & (") inside',1
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   D   o   u   b   l   e       '   q   u   o   t   e   s   '    
+0000020   w   /       ,       &       (   "   )       i   n   s   i   d
+0000040   e  \t   1  \n
+0000044
+
+{i} s1,n
+{0} 'Double \'quotes\' w/ , & (") inside',1
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   D   o   u   b   l   e       '   q   u   o   t   e   s   '    
+0000020   w   /       ,       &       (   "   )       i   n   s   i   d
+0000040   e  \t   1  \n
+0000044
+
+Same but w/o the :d option, auto-quoting should handle it OK.
+{i} s1,n
+{0} 'Double \'quotes\' w/ , & (") inside',1
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   D   o   u   b   l   e       '   q   u   o   t   e   s   '    
+0000020   w   /       ,       &       (   "   )       i   n   s   i   d
+0000040   e  \t   1  \n
+0000044
+
+{i} s1,n
+{0} 'Single "quotes" w/ , & (\') inside',3
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   S   i   n   g   l   e       "   q   u   o   t   e   s   "    
+0000020   w   /       ,       &       (   '   )       i   n   s   i   d
+0000040   e  \t   3  \n
+0000044
+
+{i} s1,n
+{0} 'Single "quotes" w/ , & (\') inside',4
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   S   i   n   g   l   e       "   q   u   o   t   e   s   "    
+0000020   w   /       ,       &       (   '   )       i   n   s   i   d
+0000040   e  \t   4  \n
+0000044
+
+This input used to crash in the CsvParser, but now it should just make a shadow entry.
+{i} s1,n
+{0} 'Single "quotes" w/ , MISSING_END_QUOTE,5
+',null
+
+[Query was executed successfully, ignoring data output by this query.]
+
+0000000   S   i   n   g   l   e       "   q   u   o   t   e   s   "    
+0000020   w   /       ,       M   I   S   S   I   N   G   _   E   N   D
+0000040   _   Q   U   O   T   E   ,   5   \   n  \t   \   N  \n
+0000056
+
+{i} s1,n,row_offset
+{0} null,'Too few input record fields at position 42, line 1, column 1',42
+
+This used to cause a CsvParser assertion failure.
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} s1,n,row_offset
+{0} 'Unbalanced quote in CSV input at or near record 0','Too few input record fields at position 42, line 1, column 1',0
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

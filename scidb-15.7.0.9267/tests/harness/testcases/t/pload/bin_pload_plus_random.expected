@@ -1,0 +1,20 @@
+Creating array:
+Query was executed successfully
+Loading data into array:
+Query was executed successfully
+Count non-empty a_1 attributes in the array after redimension:
+PASS: count(a_1) = expected!
+Done.
+Cleaning up on exit...
+Done with cleanup.
+
+Creating array:
+Query was executed successfully
+Loading data into array:
+Query was executed successfully
+Count non-empty a_1 attributes in the array after redimension:
+PASS: count(a_1) = expected!
+Done.
+Cleaning up on exit...
+Done with cleanup.
+

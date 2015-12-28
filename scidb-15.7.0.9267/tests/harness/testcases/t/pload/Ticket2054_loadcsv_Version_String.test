@@ -1,0 +1,20 @@
+#Ticket 2054 - version string for loadcsv.py
+
+# Loadcsv.py is OBOSOLETE.  Not sure what this test had to do with
+# checking the version string, but prove we can still load the array.
+
+--setup
+--start-query-logging
+--test
+--start-igdata
+
+#--shell --command  " cat ${TEST_DATA_DIR}/sm10.csv | loadcsv.py -A 'array_sm10' -s  '<a:int64,b:int64,c:int64>[i=0:*,3,0]'  -v -c 3 -l -L -x -V  -d 'localhost' -p ${IQUERY_PORT}" 
+
+create array array_sm10 <a:int64,b:int64,c:int64>[i=0:*,3,0]
+--shell --command  " cat ${TEST_DATA_DIR}/sm10.csv | loadpipe.py -f csv -c ${IQUERY_HOST} -p ${IQUERY_PORT} -s array_sm10"
+
+--stop-igdata
+sort(array_sm10,a)
+--cleanup
+remove(array_sm10)
+--stop-query-logging

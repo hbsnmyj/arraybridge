@@ -1,0 +1,27 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=-3:9,3,1,y=0:4,2,1,z=2:5,3,2]
+--set-format dense
+store(build(A,x*100+y*10+z),A)
+store(cross_join(A as A1,A as A2,A1.x,A2.x,A1.y,A2.y,A1.z,A2.z),Aj1)
+store(cross_join(Aj1 as A1,A as A2,A1.x,A2.x,A1.y,A2.y,A1.z,A2.z),Aj2)
+store(cross_join(Aj2 as A1,A as A2,A1.x,A2.x,A1.y,A2.y,A1.z,A2.z),Aj3)
+store(cross_join(Aj3 as A1,A as A2,A1.x,A2.x,A1.y,A2.y,A1.z,A2.z),Aj4)
+store(cross_join(Aj4 as A1,A as A2,A1.x,A2.x,A1.y,A2.y,A1.z,A2.z),B)
+
+
+--test
+--reset-format
+cross_between( A, cross_join( cross_join( cross_join( cross_join( cross_join(A as A1, A as A2, A1.x, A2.x, A1.y, A2.y, A1.z, A2.z) as Aj1, A as A3, Aj1.x, A3.x, Aj1.y, A3.y, Aj1.z, A3.z) as Aj2, A as A4, Aj2.x, A4.x, Aj2.y, A4.y, Aj2.z, A4.z) as Aj3, A as A5, Aj3.x, A5.x, Aj3.y, A5.y, Aj3.z, A5.z) as Aj4, A as A6, Aj4.x, A6.x, Aj4.y, A6.y, Aj4.z, A6.z))
+cross_between(A,B)
+
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(Aj1)
+remove(Aj2)
+remove(Aj3)
+remove(Aj4)
+remove(B)

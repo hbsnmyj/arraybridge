@@ -1,0 +1,133 @@
+--setup
+load_library('linear_algebra')
+
+--start-query-logging
+create array spShape  <a:double>[x=0:0,1,0, y=0:0,1,0]
+
+--test
+
+# something that's a non-identity, non-annihilator for all system tested:
+# or "ordinary element" E
+store( filter(build(spShape, 3), true), spE)
+
+# round 1, normal arithmetic:
+# identities (additive is both explict and implicit, which I call 'none')
+store( filter(build(spShape, -1), false), spNone )
+store( filter(build(spShape, 0), true), spAdd)
+store( filter(build(spShape, 1), true), spMul)
+
+# check additive identity causes annihilation when multiplied
+# A,A->N, A,N->N, N,A->N, N,N->N
+--echo "annihilation"
+spgemm(spAdd, spAdd, 'rightReplicate=true')
+spgemm(spAdd, spAdd, 'rightReplicate=false')
+
+spgemm(spAdd, spNone, 'rightReplicate=true')
+spgemm(spAdd, spNone, 'rightReplicate=false')
+
+spgemm(spNone, spAdd, 'rightReplicate=true')
+spgemm(spNone, spAdd, 'rightReplicate=false')
+
+spgemm(spNone, spNone, 'rightReplicate=true')
+spgemm(spNone, spNone, 'rightReplicate=false')
+
+# check that mult. identity preserves E
+# ME->E, EM->E, MM->M
+--echo "next 6 results should be: 3,3, 3,3, 1,1
+spgemm(spMul, spE, 'rightReplicate=true')
+spgemm(spMul, spE, 'rightReplicate=false')
+
+spgemm(spE, spMul, 'rightReplicate=true')
+spgemm(spE, spMul, 'rightReplicate=false')
+
+spgemm(spMul, spMul, 'rightReplicate=true')
+spgemm(spMul, spMul, 'rightReplicate=false')
+
+#check ordinary
+--echo "should be 9,9"
+spgemm(spE, spE, 'rightReplicate=true')
+spgemm(spE, spE, 'rightReplicate=false')
+
+
+# round 2 for the (min, +, inf, 0) semigroup
+# change the (Add,Mul) identities to (inf,0)
+store( filter(build(spShape, inf), true), spAdd)
+store( filter(build(spShape, 0), true), spMul)
+
+# check additive identity causes annihilation when multiplied
+# A,A->N, A,N->N, N,A->N, N,N->N
+--echo "annihilation"
+spgemm(spAdd, spAdd, 'min.+', 'rightReplicate=true')
+spgemm(spAdd, spAdd, 'min.+', 'rightReplicate=false')
+
+spgemm(spAdd, spNone, 'min.+', 'rightReplicate=true')
+spgemm(spAdd, spNone, 'min.+', 'rightReplicate=false')
+
+spgemm(spNone, spAdd, 'min.+', 'rightReplicate=true')
+spgemm(spNone, spAdd, 'min.+', 'rightReplicate=false')
+
+spgemm(spNone, spNone, 'min.+', 'rightReplicate=true')
+spgemm(spNone, spNone, 'min.+', 'rightReplicate=false')
+
+# check that mult. identity preserves E
+# ME->E, EM->E, MM->M
+--echo "should be: 3,3, 3,3, 0,0(annihilation)
+spgemm(spMul, spE, 'min.+', 'rightReplicate=true')
+spgemm(spMul, spE, 'min.+', 'rightReplicate=false')
+
+spgemm(spE, spMul, 'min.+', 'rightReplicate=true')
+spgemm(spE, spMul, 'min.+', 'rightReplicate=false')
+
+spgemm(spMul, spMul, 'min.+', 'rightReplicate=true')
+spgemm(spMul, spMul, 'min.+', 'rightReplicate=false')
+
+#check ordinary
+--echo "should be 6,6"
+spgemm(spE, spE, 'min.+', 'rightReplicate=true')
+spgemm(spE, spE, 'min.+', 'rightReplicate=false')
+
+# round 3 for the (max, +, -inf, 0) semigroup
+# change the (Add,Mul) identities to (-inf,0)
+store( filter(build(spShape, -inf), true), spAdd)
+store( filter(build(spShape, 0), true), spMul)
+
+# check additive identity causes annihilation when multiplied
+# A,A->N, A,N->N, N,A->N, N,N->N
+--echo "annihilation"
+spgemm(spAdd, spAdd, 'max.+', 'rightReplicate=true')
+spgemm(spAdd, spAdd, 'max.+', 'rightReplicate=false')
+
+spgemm(spAdd, spNone, 'max.+', 'rightReplicate=true')
+spgemm(spAdd, spNone, 'max.+', 'rightReplicate=false')
+
+spgemm(spNone, spAdd, 'max.+', 'rightReplicate=true')
+spgemm(spNone, spAdd, 'max.+', 'rightReplicate=false')
+
+spgemm(spNone, spNone, 'max.+', 'rightReplicate=true')
+spgemm(spNone, spNone, 'max.+', 'rightReplicate=false')
+
+# check that mult. identity preserves E
+# ME->E, EM->E, MM->M
+--echo "should be: 3,3, 3,3, 0,0(annihilation)
+spgemm(spMul, spE, 'max.+', 'rightReplicate=true')
+spgemm(spMul, spE, 'max.+', 'rightReplicate=false')
+
+spgemm(spE, spMul, 'max.+', 'rightReplicate=true')
+spgemm(spE, spMul, 'max.+', 'rightReplicate=false')
+
+spgemm(spMul, spMul, 'max.+', 'rightReplicate=true')
+spgemm(spMul, spMul, 'max.+', 'rightReplicate=false')
+
+#check ordinary
+--echo "should be 6,6"
+spgemm(spE, spE, 'max.+', 'rightReplicate=true')
+spgemm(spE, spE, 'max.+', 'rightReplicate=false')
+
+--cleanup
+remove(spE)
+remove(spShape)
+remove(spNone)
+remove(spAdd)
+remove(spMul)
+
+--stop-query-logging

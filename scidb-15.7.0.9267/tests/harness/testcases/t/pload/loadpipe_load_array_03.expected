@@ -1,0 +1,11 @@
+Creating array:
+Query was executed successfully
+Loading data into array:
+Ok.
+name,start,length,chunk_interval,chunk_overlap,low,high,type
+'d_10',-25,4611686018427387929,317,1,-25,974,'int64'
+'d_11',11,4611686018427387893,419,1,11,1010,'int64'
+Done.
+Cleaning up on exit...
+Done with cleanup.
+

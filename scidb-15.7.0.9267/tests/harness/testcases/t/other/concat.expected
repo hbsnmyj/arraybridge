@@ -1,0 +1,42 @@
+SCIDB QUERY : <create array A <val:double> [x=0:*,1000,0, y=0:*,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <insert(redimension(apply(build(<val:double> [i=0:9,10,0], i+2), x, 3, y, 10+i), A), A)>
+{x,y} val
+{3,10} 2
+{3,11} 3
+{3,12} 4
+{3,13} 5
+{3,14} 6
+{3,15} 7
+{3,16} 8
+{3,17} 9
+{3,18} 10
+{3,19} 11
+
+SCIDB QUERY : <insert(redimension(apply(build(<val:double> [i=0:9,10,0], i+12), x, 3, y, 20+i), A), A)>
+{x,y} val
+{3,10} 2
+{3,11} 3
+{3,12} 4
+{3,13} 5
+{3,14} 6
+{3,15} 7
+{3,16} 8
+{3,17} 9
+{3,18} 10
+{3,19} 11
+{3,20} 12
+{3,21} 13
+{3,22} 14
+{3,23} 15
+{3,24} 16
+{3,25} 17
+{3,26} 18
+{3,27} 19
+{3,28} 20
+{3,29} 21
+
+SCIDB QUERY : <remove(A)>
+Query was executed successfully
+

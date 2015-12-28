@@ -1,0 +1,50 @@
+# Ticket reference(s):  4237
+
+--setup
+create array A <val:double> [x= 0:4611686018427387903,1000,0]
+create array B <val:double> [x= -4611686018427387903 : 0,1000,0]
+create array C <val:double> [x= -4611686018427387903 : 4611686018427387903,1000,0]
+create array D <val:double> [x= 0:*,1000,0]
+create array E <val:int64> [i=-4611686018427387903:-4611686018427387903,1,0]
+create array F <val:int64> [i=4611686018427387903:4611686018427387903,1,0]
+
+--test
+
+--start-query-logging
+
+show(A)
+dimensions(A)
+
+show(B)
+dimensions(B)
+
+show(C)
+dimensions(C)
+
+show(D)
+dimensions(D)
+
+show(E)
+dimensions(E)
+
+show(F)
+dimensions(F)
+
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY "create array BAD1 <val:double> [x= 0:4611686018427387904,1000,0]"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY "create array BAD2 <val:double> [x= -4611686018427387904 : 0,1000,0]"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY "create array BAD3 <val:double> [x= -4611686018427387904 : 4611686018427387904,1000,0]"
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR          "create array BAD4 <val:double> [x= * : 10,2,0]"
+
+
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(C)
+remove(D)
+remove(E)
+remove(F)
+
+
+

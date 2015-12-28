@@ -1,0 +1,22 @@
+# For some reason it was thought interesting to load this CSV file via csv2scidb and text mode.
+# Now that csv2scidb is gone, just load it directly to prove we can.  The test should no longer
+# care how many instances are involved.
+
+--setup
+
+--start-query-logging
+CREATE array Raw_CSVLoad_1 < symbl : string, time : string, price : double, qty : int64 > [ Offset=0:*,10,0 ]
+
+--test
+
+--start-igdata
+--shell --command " sed 1d ${TEST_DATA_DIR}/csv2scidb_1.csv > /tmp/csv2scidb_1.csv "
+load ( Raw_CSVLoad_1, '/tmp/csv2scidb_1.csv', 0, 'csv')
+--stop-igdata
+sort( Raw_CSVLoad_1,symbl )
+
+--cleanup
+
+remove ( Raw_CSVLoad_1 )
+--shell --store --command "rm -rf /tmp/csv2scidb_1.csv"
+--stop-query-logging

@@ -1,0 +1,20 @@
+--setup
+--start-query-logging
+create array raw <pos:int64, device:int64, val: float> [offset=1:*,5,0]
+create array A<val:float>[device=1:5,5,0, pos=1:5,5,0]
+
+--shell --command "sed 1d $DOC_DATA/raw_2.txt > /tmp/raw_2.csv"
+--aql load raw from '/tmp/raw_2.csv' as 'csv'
+
+--test
+redimension(raw,A)
+redimension(raw,A,sum(val) as val)
+
+--aql select * from redimension(raw, A, sum(val) as val)
+
+--cleanup
+--aql drop array raw
+--aql drop array A
+--shell --command "rm -f /tmp/raw_2.csv"
+--stop-query-logging
+

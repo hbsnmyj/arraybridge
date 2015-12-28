@@ -1,0 +1,24 @@
+#on a cluster with 4 instances. Once the data is loaded, analysis can be performed to make sure the right number of rows are present in the 1-D load array and that, perhaps, a sum of the values matches an expected value.
+
+--setup
+--start-query-logging
+create array array_sm11 <a:int64,b:int64,c:int64>[i=0:*,3,0]
+
+--test
+--start-igdata
+ 
+--shell --command " cp ${TEST_DATA_DIR}/sm10.csv /tmp/sm10.csv "
+load(array_sm11, '/tmp/sm10.csv', -2, 'csv')
+
+--stop-igdata
+
+#scan( array_sm11 )
+sort(array_sm11,a)
+
+--cleanup
+
+--shell --command " rm /tmp/sm10.csv "
+remove(array_sm11)
+
+--stop-query-logging
+

@@ -1,0 +1,2 @@
+# Ticket 4703.
+--shell --store --command "${TESTDIR}/binary_save2.py -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID}"

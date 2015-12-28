@@ -1,0 +1,48 @@
+Single characters...
+{i} v
+{0} '\n'
+
+{i} v
+{0} '\\'
+
+{i} v
+{0} '\''
+
+{i} v
+{0} '\t'
+
+{i} v
+{0} '\r'
+
+{i} v
+{0} '\f'
+
+{i} v
+{0} ''
+
+These won't work though:
+{i} v
+{0} '\\'
+
+{i} v
+{0} '\\'
+
+{i} v
+{0} '\\'
+
+Longer strings...
+{i} s
+{0} 'begin
+	stmt1;
+	stmt2;
+end
+'
+
+{i} s
+{0} '"I\'m ed,"\\
+he said.
+'
+
+{i} s
+{0} 'I think ertical 	abs are silly, don\'t \\y\\o\\u agree?'
+

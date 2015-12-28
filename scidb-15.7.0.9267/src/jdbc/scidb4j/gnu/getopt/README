@@ -1,0 +1,10 @@
+Note from Paradigm4, Inc.
+
+The project java-getopt was acquired from https://github.com/arenn/java-getopt on 4/16/2015.
+
+The original license file is preserved in the same directory storing this README file.
+
+The functionality of processing command-line options is implemented in Getopt.java and LongOpt.java. They use MessageBundle.properties.
+
+All other files are removed. 
+

@@ -1,0 +1,9 @@
+--setup
+--test
+# This covers the system behavior for loading data with all nulls.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_all_nulls.sh.
+# which accepts parameters.  The script tests a 360x360 matrix loaded into an unbounded array.
+#
+--shell --store-all --command "PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_all_nulls.sh --format binary --size 360 --upper-bound '*'"
+--cleanup

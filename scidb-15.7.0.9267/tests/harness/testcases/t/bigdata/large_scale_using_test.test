@@ -1,0 +1,24 @@
+# See: #4606
+# 
+#  This is a (large) test of our per-dimension chunk length 
+#  calculation code. The point of the test is to ensure that 
+#  it works at number of cells > 2^3. 
+--setup
+--start-query-logging
+--start-igdata
+#
+#  Generate an input data set with 2^32 + 2^28 cells ... 
+store ( apply ( build ( < dim_one : int64 > [ R=0:4563402751,1048576, 0 ], (R/4194304)%2048), dim_two,   (R/2048)%2048, dim_three, R%2048),  large1DLoadArray )
+--test
+#
+#  Use the data in the large array to calculate the sizes of each 
+#  per-dimension chunk length. 
+CREATE ARRAY testThreeDim < COUNT : uint64 > [ dim_one=0:*,?,0, dim_two=0:*,?,0, dim_three=0:*,?,0 ] USING large1DLoadArray
+--stop-igdata
+#
+#  Check the lengths are consistent. 
+show ( testThreeDim )
+
+--cleanup 
+remove ( testThreeDim )
+remove ( large1DLoadArray )

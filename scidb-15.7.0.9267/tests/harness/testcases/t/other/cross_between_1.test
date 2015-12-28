@@ -1,0 +1,27 @@
+--setup
+--start-query-logging
+create array A <a:int64> [x=-3:9,3,1]
+create array B <a:string> [x=-3:9,3,2]
+store(build(A,x),A)
+store(build(B,string(x)),B)
+
+--test
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CROSSBETWEEN_NUM_ATTRIBUTES_MISMATCH "cross_between(A,A)"
+store(cross_join(A as A1,A as A2,A1.x,A2.x),AjA)
+cross_between(A,AjA)
+cross_between(A,filter(AjA,x%2=0))
+cross_between(filter(AjA,x%2<>0),filter(AjA,x%2=0))
+cross_between(filter(AjA,x%2=0),filter(AjA,x%3=0))
+cross_between(A,filter(apply(A,b,a+1),x%3=0))
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_CROSSBETWEEN_RANGES_ARRAY_ATTRIBUTE_NOT_INT64 "cross_between(A,cross_join(B as B1,B as B2,B1.x,B2.x))"
+cross_between(B,AjA)
+cross_between(B,filter(AjA,x%2<>0))
+cross_between(filter(cross_join(B as B1,B as B2,B1.x,B2.x),x%2<>0),filter(AjA,x%2>0))
+--stop-query-logging
+
+--cleanup
+remove(A)
+remove(B)
+remove(AjA)
+

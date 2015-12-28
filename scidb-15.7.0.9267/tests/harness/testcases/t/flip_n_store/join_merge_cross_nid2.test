@@ -1,0 +1,39 @@
+--setup
+--start-query-logging
+#Ticket number : 1602
+#Testcases for non-integer dimension arrays.
+
+create  array NID  <a:string NULL ,b:string NULL> [x=0:*,2,0,y=0:*,2,0]
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -aq "load ( NID, '${TEST_DATA_DIR}/join_nid.txt')""
+--igdata "store(redimension(uniq(sort(project(NID, a))),<a:string>[i=0:*,1000,0]), a_indices)"
+--igdata "store(redimension(uniq(sort(project(NID, b))),<b:string>[i=0:*,1000,0]), b_indices)"
+create  array A <a:string NULL> [b_dim=0:*,6,0]
+create  array A1 <a:string NULL> [b_dim=0:5,6,0]
+create  array B <b:string NULL> [a_dim=0:5,6,0]
+
+
+--test
+cross_join(NID as A1,NID as A2,A1.x,A2.x,A1.y,A2.y)
+store(subarray(NID,0,0,1,1),AAA)
+
+store(redimension(project(index_lookup(NID,b_indices,NID.b,b_dim),b_dim,a),A),A)
+store(redimension(project(index_lookup(NID,a_indices,NID.a,a_dim),a_dim,b),B),B)
+store(redimension(project(index_lookup(NID,b_indices,NID.b,b_dim),b_dim,a),A1),A1)
+
+cross_join(A,A1,A.b_dim,A1.b_dim)
+cross_Join(NID,A)
+cross_Join(NID,B)
+merge(A,B)
+
+merge(cast(A,<a:string NULL> [b=0:*,6,0]), cast(B,<a:string NULL> [b=0:5,6,0]))
+
+--cleanup
+remove(NID)
+remove(A)
+remove(A1)
+remove(B)
+remove(AAA)
+remove(a_indices)
+remove(b_indices)
+
+--stop-query-logging

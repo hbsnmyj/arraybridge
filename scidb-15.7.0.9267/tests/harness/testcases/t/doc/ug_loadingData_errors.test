@@ -1,0 +1,22 @@
+--setup
+--start-query-logging
+
+# (A win for getting rid of csv2scidb: now shadow array row_offset values are accurate!)
+--shell --store --command " sed 1d $DOC_DATA/int4error.csv > /tmp/int4error.csv "
+
+--test
+--aql CREATE ARRAY intensityFlat < exposure:string,elapsedTime:int64,measuredIntensity:int64 null > [i=0:6,1000000,0]
+#--aql LOAD intensityFlat FROM '/tmp/int4error.csv' AS 'csv' ERRORS 99 SHADOW ARRAY intensityFlatShadow
+--shell --store --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -q "LOAD intensityFlat FROM '/tmp/int4error.csv' AS 'csv' ERRORS 99 SHADOW ARRAY intensityFlatShadow""
+--aql SELECT * FROM show(intensityFlatShadow)
+--aql SELECT * FROM intensityFlatShadow
+--aql SELECT * FROM intensityFlat
+--aql SELECT intensityFlat.exposure AS exposureDATUM, intensityFlatShadow.exposure AS exposureMSG, intensityFlat.elapsedTime AS elapsedTimeDATUM, intensityFlatShadow.elapsedTime AS elapsedTimeMSG, intensityFlat.measuredIntensity AS measuredIntensityDATUM, intensityFlatShadow.measuredIntensity AS measuredIntensityMSG, row_offset INTO intensityFlatBadCells FROM intensityFlat, intensityFlatShadow
+--aql SELECT * FROM intensityFlatBadCells
+
+--cleanup
+--aql drop array intensityFlat
+--aql drop array intensityFlatShadow
+--aql drop array intensityFlatBadCells
+--shell --command "rm -f /tmp/int4error.csv"
+--stop-query-logging

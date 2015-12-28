@@ -1,0 +1,147 @@
+SCIDB QUERY : <CREATE ARRAY RawDataForDorfs < name : string, item : string, detail : string, qty : double > [ Offset=0:27,28,0 ]>
+Query was executed successfully
+
+SCIDB QUERY : <iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -aq "load ( RawDataForDorfs, '${TEST_DATA_DIR}/RemoveBugDataExamples.dat' )">
+{Offset} name,item,detail,qty
+{0} 'Bashful','Beard','long',7
+{1} 'Bashful','Shirt','brown',5
+{2} 'Bashful','Hat','green',7
+{3} 'Bashful','Body','normal',5
+{4} 'Doc','Beard','short',2
+{5} 'Doc','Shirt','red',8
+{6} 'Doc','Hat','brown',5
+{7} 'Doc','Body','large',7
+{8} 'Dopey','Beard','none',0
+{9} 'Dopey','Shirt','red',8
+{10} 'Dopey','Hat','purple',6
+{11} 'Dopey','Body','small',3
+{12} 'Grumpy','Beard','long',7
+{13} 'Grumpy','Shirt','red',8
+{14} 'Grumpy','Hat','brown',5
+{15} 'Grumpy','Body','small',3
+{16} 'Happy','Beard','short',3
+{17} 'Happy','Shirt','brown',5
+{18} 'Happy','Hat','orange',6
+{19} 'Happy','Body','large',7
+{20} 'Sleepy','Beard','long',7
+{21} 'Sleepy','Shirt','green',3
+{22} 'Sleepy','Hat','blue',6
+{23} 'Sleepy','Body','small',2
+{24} 'Sneezy','Beard','short',2
+{25} 'Sneezy','Shirt','brown',5
+{26} 'Sneezy','Hat','orange',6
+{27} 'Sneezy','Body','normal',5
+
+SCIDB QUERY : <store(redimension(uniq(sort(project(RawDataForDorfs, name))),<name:string>[i=0:*,1000,0]), name_indices)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(redimension(uniq(sort(project(RawDataForDorfs, item))),<item:string>[i=0:*,1000,0]), item_indices)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <CREATE array Dorfs < detail : string, qty : double > [ name_dim=0:6,7,0, item_dim=0:3,4,0 ]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(project(cross_join(index_lookup(RawDataForDorfs,name_indices,RawDataForDorfs.name,name_dim) as A1, project(index_lookup(RawDataForDorfs,item_indices,RawDataForDorfs.item,item_dim),item_dim) as A2, A1.Offset, A2.Offset),name_dim,item_dim,detail,qty),Dorfs),Dorfs)>
+{name_dim,item_dim} detail,qty
+{0,0} 'long',7
+{0,1} 'normal',5
+{0,2} 'green',7
+{0,3} 'brown',5
+{1,0} 'short',2
+{1,1} 'large',7
+{1,2} 'brown',5
+{1,3} 'red',8
+{2,0} 'none',0
+{2,1} 'small',3
+{2,2} 'purple',6
+{2,3} 'red',8
+{3,0} 'long',7
+{3,1} 'small',3
+{3,2} 'brown',5
+{3,3} 'red',8
+{4,0} 'short',3
+{4,1} 'large',7
+{4,2} 'orange',6
+{4,3} 'brown',5
+{5,0} 'long',7
+{5,1} 'small',2
+{5,2} 'blue',6
+{5,3} 'green',3
+{6,0} 'short',2
+{6,1} 'normal',5
+{6,2} 'orange',6
+{6,3} 'brown',5
+
+SCIDB QUERY : <store ( Dorfs, Dorf_Copy )>
+{name_dim,item_dim} detail,qty
+{0,0} 'long',7
+{0,1} 'normal',5
+{0,2} 'green',7
+{0,3} 'brown',5
+{1,0} 'short',2
+{1,1} 'large',7
+{1,2} 'brown',5
+{1,3} 'red',8
+{2,0} 'none',0
+{2,1} 'small',3
+{2,2} 'purple',6
+{2,3} 'red',8
+{3,0} 'long',7
+{3,1} 'small',3
+{3,2} 'brown',5
+{3,3} 'red',8
+{4,0} 'short',3
+{4,1} 'large',7
+{4,2} 'orange',6
+{4,3} 'brown',5
+{5,0} 'long',7
+{5,1} 'small',2
+{5,2} 'blue',6
+{5,3} 'green',3
+{6,0} 'short',2
+{6,1} 'normal',5
+{6,2} 'orange',6
+{6,3} 'brown',5
+
+SCIDB QUERY : <filter ( cross_join(Dorfs,item_indices,item_dim,i), item = 'Beard')>
+{name_dim,item_dim} detail,qty,item
+{0,0} 'long',7,'Beard'
+{1,0} 'short',2,'Beard'
+{2,0} 'none',0,'Beard'
+{3,0} 'long',7,'Beard'
+{4,0} 'short',3,'Beard'
+{5,0} 'long',7,'Beard'
+{6,0} 'short',2,'Beard'
+
+SCIDB QUERY : <filter ( cross_join(Dorf_Copy,item_indices,item_dim,i), item = 'Beard')>
+{name_dim,item_dim} detail,qty,item
+{0,0} 'long',7,'Beard'
+{1,0} 'short',2,'Beard'
+{2,0} 'none',0,'Beard'
+{3,0} 'long',7,'Beard'
+{4,0} 'short',3,'Beard'
+{5,0} 'long',7,'Beard'
+{6,0} 'short',2,'Beard'
+
+SCIDB QUERY : <remove ( RawDataForDorfs )>
+Query was executed successfully
+
+SCIDB QUERY : <remove ( Dorfs )>
+Query was executed successfully
+
+SCIDB QUERY : <filter ( cross_join(Dorf_Copy,item_indices,item_dim,i), item = 'Beard')>
+{name_dim,item_dim} detail,qty,item
+{0,0} 'long',7,'Beard'
+{1,0} 'short',2,'Beard'
+{2,0} 'none',0,'Beard'
+{3,0} 'long',7,'Beard'
+{4,0} 'short',3,'Beard'
+{5,0} 'long',7,'Beard'
+{6,0} 'short',2,'Beard'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

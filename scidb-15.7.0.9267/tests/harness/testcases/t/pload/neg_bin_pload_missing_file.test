@@ -1,0 +1,10 @@
+--setup
+--test
+# This test covers the system behavior (error) when one instance's data file is missing
+# during the parallel load.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_missing_file.sh.
+# which accepts parameters.  The script tests a 360x360 matrix.
+#
+--shell --store-all --command "PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_missing_file.sh --format binary --size 360 --upper-bound '*'"
+--cleanup

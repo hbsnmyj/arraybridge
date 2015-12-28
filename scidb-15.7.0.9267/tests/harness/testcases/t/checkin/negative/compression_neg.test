@@ -1,0 +1,6 @@
+--setup
+--test
+
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_COMPRESSOR_DOESNT_EXIST "CREATE ARRAY test < attr_one : float compression 'does_not_exist' > [ I=0:9,10,0 ]"
+
+--cleanup

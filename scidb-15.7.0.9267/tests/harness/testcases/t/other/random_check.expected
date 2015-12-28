@@ -1,0 +1,12 @@
+SCIDB QUERY : <create array A <a:int32> [x=0:8,1,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(A,random()),A)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <filter( op_distinct_count (A,a), count < 6)>
+{i} count
+
+SCIDB QUERY : <remove(A)>
+Query was executed successfully
+

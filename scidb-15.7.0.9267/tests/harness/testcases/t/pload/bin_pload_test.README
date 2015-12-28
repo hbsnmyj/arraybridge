@@ -1,0 +1,16 @@
+README file for bin_pload*.test, neg_pload*.test, and tsv_pload*.test files.
+
+The test files have been designed to cover parallel loading scenarios outlined
+in ticket #4628.  The files wrap the real test code located in sh_pload.sh
+scripts.
+
+These tests are designed to create data for a NxN matrix such that its size
+divides evenly into the number of SciDB instances in the test cluster.  Since
+currently the test harness runs a 2-host test system with 2, 4, 6, and 8
+instances in total, the matrix size was chosen accordingly: 360x360 cells.
+This particular size allows for even division of each matrix dimension by
+2, 4, 6, and 8 which is needed to make the tests' math calculations easier.
+
+If the test system starts out with a number of instances that does not divide
+360x360=129600 evenly, these tests can fail due to uneven splitting of the
+input files and/or chunking algorithm rules in SciDB.

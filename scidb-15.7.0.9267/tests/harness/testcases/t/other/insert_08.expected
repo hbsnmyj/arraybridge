@@ -1,0 +1,68 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(merge(small, unbounded_1), unbounded_1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <insert(unbounded_1, bounded_1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(bounded_1, count(*))>
+{i} count
+{0} 5000
+
+SCIDB QUERY : <store(merge(same, unbounded_2), unbounded_2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <insert(unbounded_2, bounded_2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(bounded_2, count(*))>
+{i} count
+{0} 25000
+
+SCIDB QUERY : <store(merge(large, unbounded_3), unbounded_3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <insert(unbounded_3, bounded_3)>
+[An error expected at this place for the query "insert(unbounded_3, bounded_3)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_MISMATCHED_COORDINATES_IN_PHYSICAL_BOUNDARIES.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

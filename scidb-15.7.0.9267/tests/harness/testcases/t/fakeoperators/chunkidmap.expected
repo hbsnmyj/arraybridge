@@ -1,0 +1,102 @@
+SCIDB QUERY : <load_library('misc')>
+Query was executed successfully
+
+SCIDB QUERY : <create array cim1 <a:int32> [x=0:10000,100,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(cim1,random()%1000),cim1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim1)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <create array cim2 <a:int32> [x=0:1000,100,0,y=0:5000,100,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(cim2,random()%1000),cim2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim2)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <create array cim3 <a:int32> [x=0:100,10,0,y=0:500,100,0,z=0:222,50,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(cim3,random()%1000),cim3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim3)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <create array cim4 <a:int32> [x=14:460,30,28]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(cim4,random()%1000),cim4)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim4)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <create array cim7flat <a:int32, b:int32> [x=0:10000,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array cim7a <a:int32> [x=0:10000,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array cim7b <b:int32> [x=0:10000,1000,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(cim7a,random()%1000),cim7a)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(cim7b,random()%1000),cim7b)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(join(cim7a,cim7b), cim7flat)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array cim7 <x:int64> [a=0:429496729699,100,0,b=0:429496729499,100,0]>
+Query was executed successfully
+
+SCIDB QUERY : <redimension(cim7flat, cim7, false)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim7)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <create array cim3n <a:int32> [x=0:100,10,0,y=0:*,100,0,z=0:222,50,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(cim3, cim3n)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <test_chunk_id_map(cim3n)>
+{dummy_dimension} dummy_attribute
+
+SCIDB QUERY : <remove(cim1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim4)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim3n)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim7)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim7flat)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim7a)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(cim7b)>
+Query was executed successfully
+

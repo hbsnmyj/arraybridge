@@ -1,0 +1,151 @@
+/*
+**
+* BEGIN_COPYRIGHT
+*
+* Copyright (C) 2008-2015 SciDB, Inc.
+* All Rights Reserved.
+*
+* SciDB is free software: you can redistribute it and/or modify
+* it under the terms of the AFFERO GNU General Public License as published by
+* the Free Software Foundation.
+*
+* SciDB is distributed "AS-IS" AND WITHOUT ANY WARRANTY OF ANY KIND,
+* INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY,
+* NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE. See
+* the AFFERO GNU General Public License for the complete license terms.
+*
+* You should have received a copy of the AFFERO GNU General Public License
+* along with SciDB.  If not, see <http://www.gnu.org/licenses/agpl-3.0.html>
+*
+* END_COPYRIGHT
+*/
+
+/*
+ * SecurityCommunicator.cpp
+ *
+ *  Created on: May 19, 2015
+ *      Author: mcorbett@paradigm4.com
+ */
+
+#include <usr_namespace/SecurityCommunicator.h>
+
+
+#include "log4cxx/logger.h"
+#include <string>
+#include "util/PluginManager.h"
+#include <memory>
+#include <boost/assign.hpp>
+#include <query/FunctionDescription.h>
+#include <query/FunctionLibrary.h>
+#include <usr_namespace/ClientCommunicator.h>
+#include <usr_namespace/UserDesc.h>
+#include <util/session/Session.h>
+
+namespace scidb
+{
+
+    namespace security
+    {
+        static log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("scidb.services.network"));
+
+        // -------------------------------------------------------------
+        Communicator::Communicator()
+            : _currentState(STATE_LOGIN_REQUEST)
+        {
+
+        }
+
+        // -------------------------------------------------------------
+        Communicator::~Communicator()
+        {
+            _currentState = STATE_LOGIN_REQUEST;
+        }
+
+        // -------------------------------------------------------------
+        bool Communicator::isAuthenticated() const
+        {
+            return (_currentState == STATE_AUTHENTICATE_SUCCEEDED)
+                ? true : false;
+        }
+
+
+        // -------------------------------------------------------------
+        void Communicator::getAuthorization(
+            std::shared_ptr<Session> &session,
+            int maxTries /* = 1 */)
+        {
+            int retval;
+
+            ASSERT_EXCEPTION(session.get()!=nullptr, "NULL session");
+
+            if(isAuthenticated())
+            {
+                return;
+            }
+
+            std::vector<FunctionPointer> convs;
+            FunctionDescription func;
+
+            FunctionLibrary::getInstance()->findFunction(
+                "getAuthorization",     // const std::string& name
+                boost::assign::list_of  // const std::vector<TypeId>& inputArgTypes
+                    (TID_UINT32)        //   maxTries
+                    (TID_BINARY),       //   *session
+                func,                   // FunctionDescription& funcDescription
+                convs,                  // std::vector<FunctionPointer>& converters
+                false);                 // bool tile );
+            if(!func.getFuncPtr()) {
+                throw SYSTEM_EXCEPTION(
+                    SCIDB_SE_NETWORK,
+                    SCIDB_LE_PLUGIN_FUNCTION_ACCESS)
+                    << "authpw";
+            }
+
+            Value inputParams[2] = {
+                Value(TypeLibrary::getType(TID_UINT32)),
+                Value(TypeLibrary::getType(TID_BINARY))};
+
+            ASSERT_EXCEPTION(
+                session.get()!=nullptr,
+                "NULL session");
+
+            LOG4CXX_DEBUG(logger,
+                "PluginCommunicator::getAuthorization"
+                << "  maxTries=" << maxTries
+                << "  session *=" << session.get() );
+
+            Session *pSession = session.get();
+            ASSERT_EXCEPTION(pSession, "NULL pSession");
+
+            inputParams[0].setUint32(maxTries);
+            inputParams[1].setData(
+                &pSession,
+                sizeof(Session *));
+
+            const Value* vInputParams[2] = {
+                &inputParams[0],
+                &inputParams[1]};
+
+            Value returnParams(TypeLibrary::getType(TID_INT32));
+            func.getFuncPtr()(vInputParams, &returnParams, NULL);
+
+            // If the return from libauthpw.getAuthorization is 0
+            // then it succeeded.  Otherwise, it failed.
+            retval = returnParams.getInt32();
+            if(0 == retval)
+            {
+                 _currentState = STATE_AUTHENTICATE_SUCCEEDED;
+            } else {
+                session->invalidateUser();
+
+                LOG4CXX_DEBUG(logger,
+                    "PluginCommunicator::getAuthorization failed"
+                        << " retval=" << retval);
+
+                throw SYSTEM_EXCEPTION(
+                    SCIDB_SE_NETWORK,
+                    SCIDB_LE_AUTHENTICATION_ERROR);
+            }
+        }
+    } // namespace security
+} // namespace scidb

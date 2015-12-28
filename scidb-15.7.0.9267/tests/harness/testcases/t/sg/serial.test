@@ -1,0 +1,62 @@
+--setup
+
+--start-query-logging
+
+load_library('misc')
+
+--start-igdata
+store (build (<i : int64> [I=0:1012,13,3], random()), SG_ARR_I)
+store (build (<d : double> [I=0:1012,13,3], random()), SG_ARR_D)
+store (build (<f : float> [I=0:1012,13,3], random()), SG_ARR_F)
+store (build (<b : bool> [I=0:1012,13,3], random()), SG_ARR_B)
+store (build (<s : string> [I=0:1012,13,3], string(random())+string(random())), SG_ARR_S)
+store(join( join( join(SG_ARR_I,SG_ARR_D), join(SG_ARR_F,SG_ARR_B)), SG_ARR_S), SG_ARR)
+--stop-igdata
+
+--test
+
+# The idea of this test is to make sure that different ways of redistributeXXX() work as expected.
+# One difficulty is that join() forces an _sg() on its inputs;
+# therefore, it is somewhat hard to confirm that distributions done by different methods
+# (but same partitioning schemas) are identical. In any case, the test exercises
+# different flavors of redistributeXXX() to cover what is not not covered by other tests.
+# If the optimizer gets smarter and does not force the _sg()'s on join() inputs, the test
+# will be better at verifying correctness.
+
+aggregate(SG_ARR, count(*))
+
+# psReplicate
+aggregate(test_sg(SG_ARR, 0, -1,'serial'), count(*))
+aggregate(_sg(SG_ARR, 0, -1), count(*))
+aggregate(filter(apply(join ( test_sg(SG_ARR, 0, -1,'serial') as L, test_sg(SG_ARR, 0, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )
+
+# psHashPartitioned
+aggregate(test_sg(SG_ARR, 1, -1,'serial'), count(*))
+aggregate(_sg(SG_ARR, 1, -1), count(*))
+aggregate(filter(apply(join ( test_sg(SG_ARR, 1, -1,'serial') as L, test_sg(SG_ARR, 1, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )
+
+# psLocalInstance
+aggregate(test_sg(SG_ARR, 2, -2,'serial'), count(*))
+aggregate(_sg(SG_ARR, 2, -2), count(*))
+aggregate(filter(apply(join ( test_sg(SG_ARR, 2, -2,'serial') as L, test_sg(SG_ARR, 2, -2) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )
+
+# psByRow
+aggregate(test_sg(SG_ARR, 3, -1,'serial'), count(*))
+aggregate(_sg(SG_ARR, 3, -1), count(*))
+aggregate(filter(apply(join ( test_sg(SG_ARR, 3, -1,'serial') as L, test_sg(SG_ARR, 3, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )
+
+# psByCol
+aggregate(test_sg(SG_ARR, 4, -1,'serial'), count(*))
+aggregate(_sg(SG_ARR, 4, -1), count(*))
+aggregate(filter(apply(join ( test_sg(SG_ARR, 4, -1,'serial') as L, test_sg(SG_ARR, 4, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )
+
+--cleanup
+
+remove(SG_ARR_I)
+remove(SG_ARR_D)
+remove(SG_ARR_F)
+remove(SG_ARR_B)
+remove(SG_ARR_S)
+remove(SG_ARR)
+
+--stop-query-logging

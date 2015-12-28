@@ -1,0 +1,4 @@
+--setup
+--test
+
+--shell --store-all --command "${TESTDIR}/all_types.py cppversion"

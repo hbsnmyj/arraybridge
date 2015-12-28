@@ -1,0 +1,111 @@
+{i} v
+{0} 1
+{1} 1
+{2} 6.02e+23
+
+{i} v
+{0} 1
+{1} 2
+{2} 6.02e+25
+
+{i} v
+{0} 1
+{1} 3
+{2} 6.02e+22
+
+{i} v
+{0} 1
+{1} 4
+{2} 6.02e+23
+
+{i} v
+{0} 1
+{1} 5
+{2} -6.02e+23
+
+{i} v
+{0} 1
+{1} 6
+{2} -6.02e-23
+
+{i} v
+{0} 1
+{1} 7
+{2} -6.02e+23
+
+{i} v
+{0} 1
+{1} 8
+{2} -6.02e+23
+
+{i} v
+{0} 2
+{1} 1
+{2} 6.02e+23
+
+{i} v
+{0} 2
+{1} 2
+{2} 6.02e+25
+
+{i} v
+{0} 2
+{1} 3
+{2} 6.02e+22
+
+{i} v
+{0} 2
+{1} 4
+{2} 6.02e+23
+
+{i} v
+{0} 2
+{1} 5
+{2} -6.02e+23
+
+{i} v
+{0} 2
+{1} 6
+{2} -6.02e-23
+
+{i} v
+{0} 2
+{1} 7
+{2} -6.02e+23
+
+{i} v
+{0} 2
+{1} 8
+{2} -6.02e+23
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(1),(e23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(2),(602e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(3),(.602e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(4),(+6.02e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(5),(E23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(3),(6),(-E-23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(1),(e23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(2),(602e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(3),(.602e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(4),(+6.02e)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(5),(E23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+[An error expected at this place for the query "build(<v:double>[i=0:2,3,0], '[(4),(6),(-E-23)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+
+{i} v
+{0} 5
+{1} 1
+{2} 3.14159e+100
+
+[An error expected at this place for the query "build(<v:float>[i=0:2,3,0], '[(5),(1),(3.1415926535897932384626433832795028841971693993751058209749445923e100)]', true)". And it failed with error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED. Expected error code = scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED.]
+

@@ -1,0 +1,16 @@
+# See #1849
+#
+# random() should generate "more random" values.
+
+--setup
+--start-query-logging
+create array A <a:int32> [x=0:8,1,0]
+--igdata "store(build(A,random()),A)"
+
+--test
+filter( op_distinct_count (A,a), count < 6)
+
+--cleanup
+remove(A)
+--stop-query-logging
+

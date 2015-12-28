@@ -1,0 +1,1 @@
+--shell --store --command "${TESTDIR}/save_SIGPIPE_1.py -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID}"

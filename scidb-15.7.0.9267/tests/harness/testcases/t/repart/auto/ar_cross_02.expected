@@ -1,0 +1,29 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <cross_join(left_array,right_array,j,k)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <cross_join(left_array, repart(right_array, right_bad), j, k)>
+[An error expected at this place for the query "cross_join(left_array, repart(right_array, right_bad), j, k)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <cross_join(left_array, repart(right_array, right_ok), j, k)>
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

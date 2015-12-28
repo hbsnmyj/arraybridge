@@ -1,0 +1,73 @@
+# Ticket #4644.
+# For each built-in numerical type, convert to char...
+#   (a) at the negative-to-zero boundary,
+#   (b) at the 7-bit to 8-bit boundary,
+#   (c) at the 8-bit to overflow boundary,
+#   (d) starting at 'a'
+
+--setup
+--test
+
+--echo Test float
+apply(build(<v:char>[i=0:7,8,0], float(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], float(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], float(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], float(i+97)), n, i+97)
+
+--echo Test double
+apply(build(<v:char>[i=0:7,8,0], double(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], double(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], double(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], double(i+97)), n, i+97)
+
+--echo Test int64
+apply(build(<v:char>[i=0:7,8,0], i-4), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], i+123), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], i+251), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], i+97), n, i+97)
+
+--echo Test int32
+apply(build(<v:char>[i=0:7,8,0], int32(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], int32(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], int32(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], int32(i+97)), n, i+97)
+
+--echo Test int16
+apply(build(<v:char>[i=0:7,8,0], int16(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], int16(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], int16(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], int16(i+97)), n, i+97)
+
+--echo Test int8
+apply(build(<v:char>[i=0:7,8,0], int8(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], int8(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], int8(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], int8(i+97)), n, i+97)
+
+--echo Test uint64
+apply(build(<v:char>[i=0:7,8,0], i-4), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], i+123), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], i+251), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], i+97), n, i+97)
+
+--echo Test uint32
+apply(build(<v:char>[i=0:7,8,0], uint32(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], uint32(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], uint32(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], uint32(i+97)), n, i+97)
+
+--echo Test uint16
+apply(build(<v:char>[i=0:7,8,0], uint16(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], uint16(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], uint16(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], uint16(i+97)), n, i+97)
+
+--echo Test uint8
+apply(build(<v:char>[i=0:7,8,0], uint8(i-4)), n, i-4)
+apply(build(<v:char>[i=0:7,8,0], uint8(i+123)), n, i+123)
+apply(build(<v:char>[i=0:7,8,0], uint8(i+251)), n, i+252)
+apply(build(<v:char>[i=0:7,8,0], uint8(i+97)), n, i+97)
+
+--echo 
+
+--cleanup

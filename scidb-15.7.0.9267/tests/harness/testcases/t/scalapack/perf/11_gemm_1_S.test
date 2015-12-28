@@ -1,0 +1,59 @@
+--setup
+--start-query-logging
+
+# NOTE: NNcNN notation means size Rows,Cols ; chunkSize Rows,Cols
+
+# identity: 11c11, 22c11, 22c22
+create array ident512<a: double >   [r=0:511,128,0, c=0:511,128,0]
+create array ident1024<a: double >   [r=0:1023,128,0, c=0:1023,128,0]
+create array ident2048<a: double >   [r=0:2047,128,0, c=0:2047,128,0]
+create array ident4096<a: double >   [r=0:4095,128,0, c=0:4095,128,0]
+create array ident8192<a: double >   [r=0:8191,128,0, c=0:8191,128,0]
+#create array ident16384<a: double >   [r=0:16383,128,0, c=0:16383,128,0]
+#create array ident32768<a: double >   [r=0:32767,128,0, c=0:32767,128,0]
+#create array ident65536<a: double >   [r=0:65535,128,0, c=0:65535,128,0]
+
+create temp array tmp512<a: double >   [r=0:511,128,0, c=0:511,128,0]
+create temp array tmp1024<a: double >   [r=0:1023,128,0, c=0:1023,128,0]
+create temp array tmp2048<a: double >   [r=0:2047,128,0, c=0:2047,128,0]
+create temp array tmp4096<a: double >   [r=0:4095,128,0, c=0:4095,128,0]
+create temp array tmp8192<a: double >   [r=0:8191,128,0, c=0:8191,128,0]
+#create temp array tmp16384<a: double >   [r=0:16383,128,0, c=0:16383,128,0]
+#create temp array tmp32768<a: double >   [r=0:32767,128,0, c=0:32767,128,0]
+#create temp array tmp65536<a: double >   [r=0:65535,128,0, c=0:65535,128,0]
+
+load_library('dense_linear_algebra')
+
+--test
+
+--shell --command "echo 512 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident512,1), build(ident512,1), ident512), tmp512)'"
+--shell --command "echo 1024 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident1024,1), build(ident1024,1), ident1024), tmp1024)'"
+--shell --command "echo 2048 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident2048,1), build(ident2048,1), ident2048), tmp2048)'"
+--shell --command "echo 4096 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident4096,1), build(ident4096,1), ident4096), tmp4096)'"
+--shell --command "echo 8192 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident8192,1), build(ident8192,1), ident8192), tmp8192)'"
+#--shell --command "echo 16384 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident16384,1), build(ident16384,1), ident16384), tmp16384)'"
+#--shell --command "echo 32768 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident32768,1), build(ident32768,1), ident32768), tmp32768)'"
+#--shell --command "echo 65536 >&2; /usr/bin/time -f%E iquery -naq 'store(gemm(build(ident65536,1), build(ident65536,1), ident65536), tmp65536)'"
+
+--stop-query-logging
+
+--cleanup
+
+remove(ident512)
+remove(ident1024)
+remove(ident2048)
+remove(ident4096)
+remove(ident8192)
+#remove(ident16384)
+#remove(ident32768)
+#remove(ident65536)
+
+remove(tmp512)
+remove(tmp1024)
+remove(tmp2048)
+remove(tmp4096)
+remove(tmp8192)
+#remove(tmp16384)
+#remove(tmp32768)
+#remove(tmp65536)
+

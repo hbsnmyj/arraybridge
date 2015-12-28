@@ -1,0 +1,10 @@
+# ./run.py tests --test-id checkin.scripts.merge_boundaries
+
+--setup
+
+--test
+#--start-query-logging
+--shell --command "PYTHONPATH=${PYTHONPATH}:${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/merge_boundaries.py"
+#--stop-query-logging
+
+--cleanup

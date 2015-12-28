@@ -1,0 +1,91 @@
+# ticket #935
+#
+#    To check if like there's a bug in remove(). 
+#
+#  1. Create a file for basic data to be used in these experiments. 
+#
+
+--setup
+--start-query-logging
+
+#
+# 2. Create the 1D Raw Load array. 
+#
+
+CREATE ARRAY RawDataForDorfs < name : string, item : string, detail : string, qty : double > [ Offset=0:27,28,0 ]
+
+#
+# 3. Load Raw Data into the Array. . . 
+#
+
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -aq "load ( RawDataForDorfs, '${TEST_DATA_DIR}/RemoveBugDataExamples.dat' )""
+
+#
+# 4. Create the array that is the target of the redimension_store().
+#
+#
+
+--igdata "store(redimension(uniq(sort(project(RawDataForDorfs, name))),<name:string>[i=0:*,1000,0]), name_indices)"
+--igdata "store(redimension(uniq(sort(project(RawDataForDorfs, item))),<item:string>[i=0:*,1000,0]), item_indices)"
+
+CREATE array Dorfs < detail : string, qty : double > [ name_dim=0:6,7,0, item_dim=0:3,4,0 ]
+
+#
+# 5. redimension_store() the 1D array into the target. 
+#
+
+store(redimension(project(cross_join(index_lookup(RawDataForDorfs,name_indices,RawDataForDorfs.name,name_dim) as A1, project(index_lookup(RawDataForDorfs,item_indices,RawDataForDorfs.item,item_dim),item_dim) as A2, A1.Offset, A2.Offset),name_dim,item_dim,detail,qty),Dorfs),Dorfs)
+
+
+#
+# 6. Create a copy of the array with the non-integer dimensions. This new 
+#    array should use the same data, and the same indices, as its source data. 
+#
+
+store ( Dorfs, Dorf_Copy )
+
+#
+#    There are two arrays; Dorfs, and Dorf_Copy. Each of these has a single 
+#    version number associated with it. NIDs have been removed: so slice operation
+#    (in its present form) is not possible.  Filter operation is equivalent to
+#    slice in this case. 
+#
+
+filter ( cross_join(Dorfs,item_indices,item_dim,i), item = 'Beard')
+filter ( cross_join(Dorf_Copy,item_indices,item_dim,i), item = 'Beard')
+
+
+#
+#    Let's start with the simple 1D array. In this case, there are no 
+#    associated non-integer dimension indices, so the remove() should just 
+#    remove the original array, and it's associated version number detail. 
+#
+
+remove ( RawDataForDorfs )
+
+#
+#    Next, remove the Dorfs array. In this case, the non-integer dimensions 
+#    associated with the Dofs array should *not* be removed, as they are 
+#    still used to refer to the Dorf_Copy array. But it appears that they are
+#    removed. 
+#
+
+remove ( Dorfs )
+
+#
+#    The remove() should not remove the non-integer dimension arrays
+#    associated with the Dorf_Copy array.
+#
+
+--test
+
+filter ( cross_join(Dorf_Copy,item_indices,item_dim,i), item = 'Beard')
+
+--stop-query-logging
+
+--cleanup
+
+remove(Dorf_Copy)
+remove(name_indices)
+remove(item_indices)
+

@@ -1,0 +1,14 @@
+# Ticket:3739 said unary operations over a missing value (?x) should return null (?0).
+#
+--setup
+
+--test
+build(<v:double null>[i=1:1,1,0], missing(8))
+build(<v:double null>[i=1:1,1,0], missing(8)+1)
+build(<v:double null>[i=1:1,1,0], sin(missing(8)))
+build(<v:double null>[i=1:1,1,0], -missing(8))
+build(<v:double null>[i=1:1,1,0], +missing(8))
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_BAD_MISSING_REASON "build(<v:double null>[i=1:1,1,0], missing(128))"
+--error --code=scidb::SCIDB_SE_EXECUTION::SCIDB_LE_BAD_MISSING_REASON "build(<v:double null>[i=1:1,1,0], missing(-1))"
+
+--cleanup

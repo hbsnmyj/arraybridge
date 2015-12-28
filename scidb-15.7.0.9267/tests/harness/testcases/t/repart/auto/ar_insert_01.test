@@ -1,0 +1,38 @@
+# Ticket #4665.  The insert(I, A) operator ought to repartition its
+# input I to match array A if their schemas only differ by chunk size
+# or overlap.
+
+--setup
+
+create array Numbers < num : int64 > [ I=0:9,10,0, J=0:9,10,0 ]
+create array A_chunks   < X_A : int64, Y_A : int64 > [ I_A=0:9,3,0,  J_A=0:9,3,0 ]
+create array A_overlaps < X_A : int64, Y_A : int64 > [ I_A=0:9,10,2, J_A=0:9,10,2 ]
+create array A_both     < X_A : int64, Y_A : int64 > [ I_A=0:9,3,2,  J_A=0:9,3,2 ]
+
+
+--test
+
+--echo Insert when chunk sizes differ.
+--start-igdata
+insert(join( build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_chunks)
+--stop-igdata
+aggregate(A_chunks, count(*))
+
+--echo Insert when overlaps differ.
+--start-igdata
+insert(join( build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_overlaps)
+--stop-igdata
+aggregate(A_overlaps, count(*))
+
+--echo Insert when both chunks and overlaps differ.
+--start-igdata
+insert(join( build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_both)
+--stop-igdata
+aggregate(A_both, count(*))
+
+
+--cleanup
+remove(Numbers)
+remove(A_chunks)
+remove(A_overlaps)
+remove(A_both)

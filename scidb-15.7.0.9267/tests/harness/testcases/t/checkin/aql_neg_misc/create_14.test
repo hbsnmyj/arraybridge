@@ -1,0 +1,29 @@
+# ticket no. 4503
+--setup
+
+--test
+# Test that the casing of dimension names is consistent between AFL and AQL.
+--aql create array A1<x:bool>[step=1:1,1,0]
+--aql create array B1<x:bool>[STEP=1:1,1,0]
+create array A2<x:bool>[step=1:1,1,0]
+create array B2<x:bool>[STEP=1:1,1,0]
+project ( list('arrays'), name, schema, availability,temporary )
+
+# Test that the rules also apply when the array has two dimensions.
+create array A3<x:bool>[step=1:1,1,0,STEP=1:1,1,0]
+create array B3<x:bool>[STEP=1:1,1,0,step=1:1,1,0]
+project ( list('arrays'), name, schema, availability,temporary )
+
+# Negative tests ... mix of cases in the dimension names ...
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME --aql="create array A4<x:bool>[step=1:1,1,0,STEP=1:1,1,0,step=1:1,1,0]"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME --aql="create array A4<x:bool>[STEP=1:1,1,0,step=1:1,1,0,STEP=1:1,1,0]"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME "create array A4<x:bool>[step=1:1,1,0,STEP=1:1,1,0,step=1:1,1,0]"
+--error --code=scidb::SCIDB_SE_SYNTAX::SCIDB_LE_DUPLICATE_DIMENSION_NAME "create array A4<x:bool>[STEP=1:1,1,0,step=1:1,1,0,STEP=1:1,1,0]"
+
+--cleanup 
+remove ( A1 )
+remove ( B1 )
+remove ( A2 )
+remove ( B2 )
+remove ( A3 )
+remove ( B3 )

@@ -1,0 +1,18 @@
+--setup
+
+--test
+
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 "remove_versions(<b:int32> [x=0:2,3,0], 0)"
+create array RMV_NEG <b:int32> [x=0:2,3,0]
+--error --code=scidb::SCIDB_SE_QPROC::SCIDB_LE_WRONG_OPERATOR_ARGUMENT2 "remove_versions(RMV_NEG, X)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST "remove_versions(RMV_NEG, 0)"
+--igdata "store(build(RMV_NEG, 0), RMV_NEG)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST "remove_versions(RMV_NEG, 0)"
+remove_versions(RMV_NEG, 1)
+aggregate(RMV_NEG, count(*))
+--error --code=scidb::SCIDB_SE_SYSCAT::SCIDB_LE_ARRAY_DOESNT_EXIST "remove_versions(RMV_NEG, 2)"
+--error --code=scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_ARRAY_VERSION_DOESNT_EXIST "remove_versions(RMV_NEG, -2)"
+aggregate(RMV_NEG, count(*))
+
+--cleanup
+remove(RMV_NEG)

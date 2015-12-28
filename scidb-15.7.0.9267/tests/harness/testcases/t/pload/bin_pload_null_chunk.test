@@ -1,0 +1,11 @@
+--setup
+--test
+# This test covers the system behavior when one of the instances loads a file with all
+# nulls.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_null_chunk.sh.
+# which accepts parameters.  The script tests a 360x360 matrix loaded into an unbounded array.  One
+# of the instances loads a file that contains only null values.
+#
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_null_chunk.sh --format binary --size 360 --upper-bound '*'"
+--cleanup

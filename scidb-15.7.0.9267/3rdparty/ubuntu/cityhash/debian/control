@@ -1,0 +1,13 @@
+Source: cityhash
+Maintainer: Google
+Homepage: http://code.google.com/p/cityhash
+Section: libs
+Priority: extra
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), gcc-4.9, g++-4.9, gfortran-4.9, libstdc++-dev
+
+Package: scidb-SCIDB_VERSION_MAJOR.SCIDB_VERSION_MINOR-cityhash
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: cityhash library
+ CityHash provides hash functions for strings. The functions mix the input bits thoroughly but are not suitable for cryptography.

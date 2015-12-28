@@ -1,0 +1,34 @@
+Create bounded array.
+Query was executed successfully
+
+
+Easy store...
+Query was executed successfully
+
+
+Right up against the row limit...
+Query was executed successfully
+
+
+One step over the line...
+SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES
+
+Way over the line...
+SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES
+
+Right up against the column limit...
+Query was executed successfully
+
+
+One step over the column limit...
+SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES
+
+Partially over both limits...
+SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES
+
+Way over both limits...
+SCIDB_LE_CHUNK_OUT_OF_BOUNDARIES
+
+Cleanup.
+All test cases passed.
+

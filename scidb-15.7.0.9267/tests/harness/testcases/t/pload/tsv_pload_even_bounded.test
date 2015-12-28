@@ -1,0 +1,12 @@
+--setup
+--test
+# This test covers the system behavior for parallel data load into a bounded array: every instance
+# loads a file that is equal to the flat array chunk size.
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_1cell_off.sh.
+# which accepts parameters.  The script tests a 360x360 matrix loaded into a bounded array that
+# has exact number of cells to fit all of the data.
+#
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_1cell_off.sh --format tsv:c --size 360 --adjust-size 0 --upper-bound 129599"
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_1cell_off.sh --format tsv:p --size 360 --pipe --adjust-size 0 --upper-bound 129599"
+--cleanup

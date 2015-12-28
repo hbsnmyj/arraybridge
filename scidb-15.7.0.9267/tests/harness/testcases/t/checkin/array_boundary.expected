@@ -1,0 +1,84 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <show(A)>
+{i} schema
+{0} 'A<val:double> [x=0:*,1000,0]'
+
+SCIDB QUERY : <dimensions(A)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'x',0,4611686018427387904,1000,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <show(B)>
+{i} schema
+{0} 'B<val:double> [x=-4611686018427387903:0,1000,0]'
+
+SCIDB QUERY : <dimensions(B)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'x',-4611686018427387903,4611686018427387904,1000,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <show(C)>
+{i} schema
+{0} 'C<val:double> [x=-4611686018427387903:*,1000,0]'
+
+SCIDB QUERY : <dimensions(C)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'x',-4611686018427387903,9223372036854775807,1000,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <show(D)>
+{i} schema
+{0} 'D<val:double> [x=0:*,1000,0]'
+
+SCIDB QUERY : <dimensions(D)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'x',0,4611686018427387904,1000,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <show(E)>
+{i} schema
+{0} 'E<val:int64> [i=-4611686018427387903:-4611686018427387903,1,0]'
+
+SCIDB QUERY : <dimensions(E)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'i',-4611686018427387903,1,1,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <show(F)>
+{i} schema
+{0} 'F<val:int64> [i=4611686018427387903:*,1,0]'
+
+SCIDB QUERY : <dimensions(F)>
+{No} name,start,length,chunk_interval,chunk_overlap,low,high,type
+{0} 'i',4611686018427387903,1,1,0,4611686018427387903,-4611686018427387903,'int64'
+
+SCIDB QUERY : <create array BAD1 <val:double> [x= 0:4611686018427387904,1000,0]>
+[An error expected at this place for the query "create array BAD1 <val:double> [x= 0:4611686018427387904,1000,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY.]
+
+SCIDB QUERY : <create array BAD2 <val:double> [x= -4611686018427387904 : 0,1000,0]>
+[An error expected at this place for the query "create array BAD2 <val:double> [x= -4611686018427387904 : 0,1000,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY.]
+
+SCIDB QUERY : <create array BAD3 <val:double> [x= -4611686018427387904 : 4611686018427387904,1000,0]>
+[An error expected at this place for the query "create array BAD3 <val:double> [x= -4611686018427387904 : 4611686018427387904,1000,0]". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_INCORRECT_DIMENSION_BOUNDARY.]
+
+SCIDB QUERY : <create array BAD4 <val:double> [x= * : 10,2,0]>
+[An error expected at this place for the query "create array BAD4 <val:double> [x= * : 10,2,0]". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_PARSING_ERROR.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

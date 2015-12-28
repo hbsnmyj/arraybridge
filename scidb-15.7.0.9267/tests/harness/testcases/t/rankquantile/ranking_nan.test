@@ -1,0 +1,35 @@
+# Ticket #1839, see especially comment 11.  The rank of NaN should
+# be "nan", and the rankings should be the same no matter whether
+# float or double is used for attribute types.
+
+--setup
+--start-query-logging
+
+--set-format dense
+create array load_dbl <a:double null, b:double> [x=1:5,5,0,y=1:5,5,0]
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -odense -aq "load ( load_dbl, '${TEST_DATA_DIR}/agg_load_special.txt' )""
+create array expr4_dbl <a:double null, b:double> [x=1:5,2,0,y=1:5,2,0]
+store(repart(load_dbl,expr4_dbl),expr4_dbl)
+
+create array load_flt <a:float null, b:float> [x=1:5,5,0,y=1:5,5,0]
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -odense -aq "load ( load_flt, '${TEST_DATA_DIR}/agg_load_special.txt' )""
+create array expr4_flt <a:float null, b:float> [x=1:5,2,0,y=1:5,2,0]
+store(repart(load_flt,expr4_flt),expr4_flt)
+
+--reset-format
+
+--test
+--set-format dense
+rank(expr4_dbl,a,x)
+rank(expr4_flt,a,x)
+
+--reset-format
+
+--cleanup
+remove(load_dbl)
+remove(load_flt)
+remove(expr4_dbl)
+remove(expr4_flt)
+
+--stop-query-logging
+

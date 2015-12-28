@@ -1,0 +1,15 @@
+# Ticket 4784: Make sure format 'store' == 'text' on input.
+
+--setup
+--test
+
+--shell --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq "input(<a:int32,b:string,c:double> [x=0:3,4,0,y=0:3,4,0], '${TEST_DATA_DIR}/abc.txt', -2, 'text')" > /tmp/input1_a_${HPID}.txt"
+
+--shell --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq "input(<a:int32,b:string,c:double> [x=0:3,4,0,y=0:3,4,0], '${TEST_DATA_DIR}/abc.txt', -2, 'store')" > /tmp/input1_b_${HPID}.txt"
+
+--echo Diff should be empty:
+--shell --store --command "diff /tmp/input1_a_${HPID}.txt /tmp/input1_b_${HPID}.txt || true"
+--echo End of diff
+
+--cleanup
+--shell --command "rm -f /tmp/input1_?_${HPID}.out"

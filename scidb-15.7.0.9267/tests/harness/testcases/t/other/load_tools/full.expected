@@ -1,0 +1,200 @@
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+{x} val
+{0} 127
+
+{x} val
+{0} null
+
+{x} val
+{0} -128
+
+{x} val
+{0} null
+
+{x} val
+{0} 255
+
+{x} val
+{0} null
+
+{x} val
+{0} 0
+
+{x} val
+{0} null
+
+{x} val
+{0} 32767
+
+{x} val
+{0} null
+
+{x} val
+{0} -32768
+
+{x} val
+{0} null
+
+{x} val
+{0} 65535
+
+{x} val
+{0} null
+
+{x} val
+{0} 0
+
+{x} val
+{0} null
+
+{x} val
+{0} 2.14748e+09
+
+{x} val
+{0} null
+
+{x} val
+{0} -2.14748e+09
+
+{x} val
+{0} null
+
+{x} val
+{0} 4.29497e+09
+
+{x} val
+{0} null
+
+{x} val
+{0} 0
+
+{x} val
+{0} null
+
+{x} val
+{0} 4.29497e+09
+
+{x} val
+{0} null
+
+{x} val
+{0} 0
+
+{x} val
+{0} null
+
+{x} val
+{0} 9.22337e+18
+
+{x} val
+{0} null
+
+{x} val
+{0} -9.22337e+18
+
+{x} val
+{0} null
+
+{x} val
+{0} 1.84467e+19
+
+{x} val
+{0} null
+
+{x} val
+{0} 0
+
+{x} val
+{0} null
+
+{i} v2_avg,v2_count,count
+{0} 127.489,536000,536000
+
+{i} v2_avg,v2_count,count
+{0} 63.5,268032,536000
+
+{i} v2_avg,v2_count,count
+{0} 63.4924,267968,536000
+
+{i} v2_avg,v2_count,count
+{0} -0.511463,536000,536000
+
+{i} v2_avg,v2_count,count
+{0} 32179.5,536000,536000
+
+{i} v2_avg,v2_count,count
+{0} 15933.2,273856,536000
+
+{i} v2_avg,v2_count,count
+{0} 16383.5,262144,536000
+
+{i} v2_avg,v2_count,count
+{0} -588.547,536000,536000
+
+{i} v2_avg,v2_count,count
+{0} 118.182,11,1000000
+
+{i} v2_avg,v2_count,count
+{0} 60,6,1000000
+
+{i} v2_avg,v2_count,count
+{0} 6401.71,2018,1000000
+
+{i} v2_avg,v2_count,count
+{0} 12378.5,2346,1000000
+
+{i} v2_avg,v2_count,count
+{0} 8.24969e+06,168357,1000000
+
+{i} v2_avg,v2_count,count
+{0} 8.24969e+06,168357,1000000
+
+{i} v2_avg,v2_count,count
+{0} 4.97477e+16,335024,1000000
+
+{i} v2_avg,v2_count,count
+{0} 4.97477e+16,335024,1000000
+
+{i} v2_avg,v2_count,count
+{0} 3.33333e+16,500001,1000000
+
+{i} v2_avg,v2_count,count
+{0} 3.33333e+16,500001,1000000
+
+{i} v3_sum,count
+{0} 83333,166667
+
+{source_instance_id,chunk_no,line_no} a0,a1,a2,a3,a4,a5,error
+{0,0,0} 'Squarepants','Spongebob','CS','101','0.5','Dolt.',null
+{0,0,1} 'Starfish','Patrick','CS','101','2.5','',null
+{0,1,0} 'Leela','Turanga','CS','101','3.8','Note empty field at EOL on prev line.',null
+{0,1,1} 'Wong','Amy','CS','101','\\N','Null GPA here.',null
+{0,2,0} 'Zoidberg','John','?42','101','2.75','Missing dept, code 42.',null
+{0,2,1} 'Brannigan','Zapp','CS','101','1.1','Near dolt.',null
+{0,3,0} 'Rodriguez','Bender','null','101','3','Null dept and integer GPA.',null
+{0,3,1} 'Fry','Philip','\'null\'','101','2.7','Quoted \'null\' dept.',null
+{0,4,0} 'Crumb','Robert \'Mr. Natural\'','CS','101','2.5','Single quotes in FName.',null
+{0,4,1} 'Farnsworth','Hubert','','412','4','Empty department string.',null
+{0,5,0} 'Kroker','Kif','CS','101','','Empty GPA here.',null
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

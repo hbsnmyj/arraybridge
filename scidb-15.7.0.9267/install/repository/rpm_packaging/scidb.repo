@@ -1,0 +1,6 @@
+[scidb]
+name=SciDB repository
+baseurl=http://downloads.paradigm4.com/centos6.3/VERSION/
+gpgkey=http://downloads.paradigm4.com/key
+gpgcheck=1
+enabled=1

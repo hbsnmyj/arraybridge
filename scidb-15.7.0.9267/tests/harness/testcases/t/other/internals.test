@@ -1,0 +1,9 @@
+--setup
+--start-query-logging
+--test
+
+--igdata "_diskinfo()"
+
+--cleanup
+--stop-query-logging
+

@@ -1,0 +1,22 @@
+#Ticket 3211 - Hang in loadcsv.py
+
+--setup
+--start-query-logging
+--test
+--start-igdata
+
+# The loadcsv.py is now OBSOLETE!
+#--shell --command  "timeout -s SIGINT 30 loadcsv.py -i ${TEST_DATA_DIR}/barrier.dat -a 'barrier' -s '<val:uint32>[i=0:*,1000000,0]' -x -d 'localhost' -p ${IQUERY_PORT}"
+
+# We're still perfectly capable of loading this file though.
+--shell --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -naq "create array barrier <val:uint32>[i=0:*,1000000,0]""
+--shell --command  "timeout -s SIGINT 30 iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -naq "load(barrier, '${TEST_DATA_DIR}/barrier.dat', -2, 'csv')""
+
+# HOWEVER!  This was basically a bug in parallel loading, which the above does not exercise.
+# TO DO: Rewrite this test to use GNU Parallel to do the split-into-fifos for parallel loading.
+
+--stop-igdata
+aggregate(barrier,count(*))
+--cleanup
+remove(barrier)
+--stop-query-logging

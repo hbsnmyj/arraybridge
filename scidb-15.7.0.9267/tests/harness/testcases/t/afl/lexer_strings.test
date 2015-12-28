@@ -1,0 +1,23 @@
+# Demonstrate that the lexer can understand various escape sequences
+# within string literals.
+
+--test
+
+--echo Single characters...
+build(<v:char>[i=0:0,1,0], '\n')
+build(<v:char>[i=0:0,1,0], '\\')
+build(<v:char>[i=0:0,1,0], '\'')
+build(<v:char>[i=0:0,1,0], '\t')
+build(<v:char>[i=0:0,1,0], '\r')
+build(<v:char>[i=0:0,1,0], '\f')
+build(<v:char>[i=0:0,1,0], '\v')
+
+--echo These won't work though:
+build(<v:char>[i=0:0,1,0], '\a')
+build(<v:char>[i=0:0,1,0], '\b')
+build(<v:char>[i=0:0,1,0], '\007')
+
+--echo Longer strings...
+build(<s:string>[i=0:0,1,0], 'begin\n\tstmt1;\n\tstmt2;\nend\n')
+build(<s:string>[i=0:0,1,0], '"I\'m \f\red,"\\\nhe said.\r\n')
+build(<s:string>[i=0:0,1,0], 'I think \vertical \tabs are silly, don\'t \y\o\u agree?')

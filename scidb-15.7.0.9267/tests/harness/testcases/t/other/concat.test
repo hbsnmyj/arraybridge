@@ -1,0 +1,12 @@
+# Workaround for concat() operator
+
+--setup 
+--start-query-logging
+create array A <val:double> [x=0:*,1000,0, y=0:*,1000,0]
+
+--test
+insert(redimension(apply(build(<val:double> [i=0:9,10,0], i+2), x, 3, y, 10+i), A), A)
+insert(redimension(apply(build(<val:double> [i=0:9,10,0], i+12), x, 3, y, 20+i), A), A)
+
+--cleanup
+remove(A)

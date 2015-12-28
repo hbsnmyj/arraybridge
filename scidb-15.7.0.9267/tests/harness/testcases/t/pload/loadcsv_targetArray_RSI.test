@@ -1,0 +1,18 @@
+ --setup
+--start-query-logging
+
+--test
+
+--start-igdata
+
+# The loadcsv.py script is OBSOLETE.  Just prove that we can still load the array.
+
+create array targetArr2 <val1:double,val2:double>[i=0:*,10,0,j=0:*,10,0,k=0:*,10,0]
+--shell --command "sed 1d ${TEST_DATA_DIR}/test.csv | loadpipe.py -f csv -c ${IQUERY_HOST} -p ${IQUERY_PORT} -s '<i:int64,j:int64,k:int64,val1:double,val2:double>[n=0:*,10,0]' -A targetArr2"
+
+--stop-igdata
+sort(targetArr2,val1 )
+--cleanup
+remove(targetArr2)
+--stop-query-logging
+

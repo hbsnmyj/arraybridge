@@ -1,0 +1,5 @@
+Package: scidb-VERSION-ant
+Version: 0
+Architecture: all
+Maintainer: SciDB support list <support@lists.scidb.org>
+Description: Apache Ant used for building JDBC

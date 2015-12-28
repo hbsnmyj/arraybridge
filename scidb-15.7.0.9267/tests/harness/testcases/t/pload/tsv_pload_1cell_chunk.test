@@ -1,0 +1,14 @@
+--setup
+--test
+# This test checks that loading "asymmetric" files does not adversely affect the loaded data.
+# The test loads an array in parallel:
+# 1) one instance loads a file that contains only 1 row of attribute data
+# 2) one instance loads a file whose size if 2N-1 where N is the chunk size
+# 3) the rest of the instances load files whose size is exactly equal to the chunk size
+#
+# Inner workings of the entire test are contained within the shell script sh_pload_1cell_chunk.sh
+# which accepts command line arguments.  The shell script tests a 360x360 matrix loaded into an
+# unbounded array.
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_1cell_chunk.sh --format tsv:p --size 360 --upper-bound '*'"
+--shell --store-all --command="PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/sh_pload_1cell_chunk.sh --format tsv:c --size 360 --pipe --upper-bound '*'"
+--cleanup

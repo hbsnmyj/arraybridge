@@ -1,0 +1,17 @@
+--setup
+
+--aql CREATE ARRAY T < d : float NULL>[ I=0:999,100,0, J=0:999,100,0 ]
+
+--start-igdata
+--aql SELECT min ( d_val ) AS d  INTO T  FROM ( SELECT float(Row)/float(100.0) AS d_val, Row%1000 AS I, Row/1000 AS J FROM build ( < dummy : bool > [ Row=0:999999, 10000,0 ], true ) ) REDIMENSION BY [ I=0:999,100,0, J=0:999,100,0 ]
+--stop-igdata
+
+--test
+
+--aql SELECT COUNT(*) FROM T
+
+join ( filter ( between ( T, 0, 0, 5, 5 ),d > 5.0 ),  filter ( transpose ( between ( T, 0, 0, 5, 5 ) ), d > 5.0 ))
+
+--cleanup
+
+--aql DROP ARRAY T

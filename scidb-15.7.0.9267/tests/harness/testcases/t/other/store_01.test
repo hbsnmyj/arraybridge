@@ -1,0 +1,1 @@
+--shell --store --command "${TESTDIR}/store_01.py -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID}"

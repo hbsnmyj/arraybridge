@@ -1,0 +1,15 @@
+--setup
+
+load_library('dense_linear_algebra')
+
+--test
+
+# cases 2x67, 2x80, 2x93, and 2x96 often fail on e.g. 3 or 8 instance clusters
+
+--start-igdata
+gesvd(build(<v:double>[r=0:1,32,0, c=0:66,32,0],abs(random()/2147483647.0)+1.0e-6), 'left')
+gesvd(build(<v:double>[r=0:1,32,0, c=0:79,32,0],abs(random()/2147483647.0)+1.0e-6), 'left')
+gesvd(build(<v:double>[r=0:1,32,0, c=0:92,32,0],abs(random()/2147483647.0)+1.0e-6), 'left')
+gesvd(build(<v:double>[r=0:1,32,0, c=0:95,32,0],abs(random()/2147483647.0)+1.0e-6), 'left')
+
+--cleanup

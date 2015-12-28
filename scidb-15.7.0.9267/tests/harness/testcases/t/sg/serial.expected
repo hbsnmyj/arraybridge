@@ -1,0 +1,103 @@
+SCIDB QUERY : <load_library('misc')>
+Query was executed successfully
+
+SCIDB QUERY : <store (build (<i : int64> [I=0:1012,13,3], random()), SG_ARR_I)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store (build (<d : double> [I=0:1012,13,3], random()), SG_ARR_D)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store (build (<f : float> [I=0:1012,13,3], random()), SG_ARR_F)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store (build (<b : bool> [I=0:1012,13,3], random()), SG_ARR_B)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store (build (<s : string> [I=0:1012,13,3], string(random())+string(random())), SG_ARR_S)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(join( join( join(SG_ARR_I,SG_ARR_D), join(SG_ARR_F,SG_ARR_B)), SG_ARR_S), SG_ARR)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(SG_ARR, count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(test_sg(SG_ARR, 0, -1,'serial'), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(_sg(SG_ARR, 0, -1), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(filter(apply(join ( test_sg(SG_ARR, 0, -1,'serial') as L, test_sg(SG_ARR, 0, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(test_sg(SG_ARR, 1, -1,'serial'), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(_sg(SG_ARR, 1, -1), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(filter(apply(join ( test_sg(SG_ARR, 1, -1,'serial') as L, test_sg(SG_ARR, 1, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(test_sg(SG_ARR, 2, -2,'serial'), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(_sg(SG_ARR, 2, -2), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(filter(apply(join ( test_sg(SG_ARR, 2, -2,'serial') as L, test_sg(SG_ARR, 2, -2) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(test_sg(SG_ARR, 3, -1,'serial'), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(_sg(SG_ARR, 3, -1), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(filter(apply(join ( test_sg(SG_ARR, 3, -1,'serial') as L, test_sg(SG_ARR, 3, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(test_sg(SG_ARR, 4, -1,'serial'), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(_sg(SG_ARR, 4, -1), count(*))>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <aggregate(filter(apply(join ( test_sg(SG_ARR, 4, -1,'serial') as L, test_sg(SG_ARR, 4, -1) as R), di, L.i-R.i, dd, L.d-R.d, df, L.f-R.f, db, (L.b or R.b) and ((not L.b) or (not R.b)) , ds, L.s<>R.s), di=0 and dd=0.0 and df=0.0 and db=false and ds=false), count(*) )>
+{i} count
+{0} 1013
+
+SCIDB QUERY : <remove(SG_ARR_I)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SG_ARR_D)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SG_ARR_F)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SG_ARR_B)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SG_ARR_S)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(SG_ARR)>
+Query was executed successfully
+

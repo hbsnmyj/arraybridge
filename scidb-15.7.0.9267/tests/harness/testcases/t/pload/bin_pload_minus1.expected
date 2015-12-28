@@ -1,0 +1,44 @@
+Creating array:
+Query was executed successfully
+Loading data into array:
+Query was executed successfully
+Count non-empty d_0 attributes in loaded array:
+d_0_count
+129599
+Count non-empty d_1 attributes in loaded array:
+d_1_count
+129599
+Query was executed successfully
+Query was executed successfully
+Count non-empty a_1 attributes in first row of array after redimension:
+a_1_count
+360
+Count non-empty a_1 attributes in last row of array after redimension:
+a_1_count
+359
+Done.
+Cleaning up on exit...
+Done with cleanup.
+
+Creating array:
+Query was executed successfully
+Loading data into array:
+Query was executed successfully
+Count non-empty d_0 attributes in loaded array:
+d_0_count
+129599
+Count non-empty d_1 attributes in loaded array:
+d_1_count
+129599
+Query was executed successfully
+Query was executed successfully
+Count non-empty a_1 attributes in first row of array after redimension:
+a_1_count
+360
+Count non-empty a_1 attributes in last row of array after redimension:
+a_1_count
+359
+Done.
+Cleaning up on exit...
+Done with cleanup.
+

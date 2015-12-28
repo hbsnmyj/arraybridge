@@ -1,0 +1,23 @@
+--setup
+--start-query-logging
+
+CREATE ARRAY RawDataForDorfs < name : string, item : string, detail : string, qty : double > [ Offset=0:27,28,0 ]
+
+load ( RawDataForDorfs, '${TEST_DATA_DIR}/iquery_2.txt')
+
+CREATE array Dorfs < detail : string, qty : double > [ name(string)=7,7,0, item(string)=4,4,0 ]
+
+store(redimension( RawDataForDorfs, Dorfs ), Dorfs )
+
+
+--test
+ 
+--shell --store --command " iquery  -o lcsv+ -aq 'scan ( Dorfs )' "
+
+--shell --store --command " iquery  -o lsparse -aq 'scan ( Dorfs )' "
+
+
+--cleanup
+remove(RawDataForDorfs)
+remove(Dorfs)
+--stop-query-logging
