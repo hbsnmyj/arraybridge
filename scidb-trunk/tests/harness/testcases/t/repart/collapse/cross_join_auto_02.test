@@ -1,0 +1,123 @@
+# Test collapse of automatic repartitioning with explicitly given
+# autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the cross_join operator (inserted
+# by requiresRedimensionOrRepartition() in the PhysicalCrossJoin
+# operator).
+#
+# The cross Join operator requires that "joining" dimensions have:
+#   * same startMin
+#   * same chunkInterval as the left-most non-autochunked dimension
+#   * chunkOverlap less than or equal to  left-most non-autochunked dimension
+#
+# A joining dimension is the one of the set of dimensions which are
+# equi-joined predicates.
+#
+# An explicit repart/redimension which has autochunking must have the
+# same shape (startMin, chunkOverlap, and chunkInterval) that the
+# cross_join operator expects (which is defined by the auto-inserted
+# repart/redimension) for the joining dimension "predicates".  The
+# collapsed repart/redimension will populate the chunkInterval based
+# upon the auto-inserted repart/redimension schema.
+#
+# Additionally tests to confirm failures when an explicitly given
+# repart/redimension that are mismatched (startMin, endMax,
+# chunkOverlap) with the "auto-inserted" (needed) repart/redimension
+# schema fail with the expected Error Codes are given.
+##
+## The cross_join operator uses the dimension of the left-most NON-AUTOCHUNKED
+## input for determining the shape.
+##
+## This set of tests defines an autochunked repart/redimension on the
+## LEFT schema so the joining dimensions in the RIGHT schema are used
+## as the bases of the auto-inserted redimension, and checks to see if
+## the auto-inserted repart can be collapsed into the explicitly defined
+## repart/redimension
+
+--setup
+create TEMP array left_array<val:double>[i=0:39,6,2, j=0:29,5,3]
+create TEMP array right_array<val:double>[k=0:19,10,4]
+--start-igdata
+--stop-igdata
+
+--test
+
+--start-query-logging
+
+# dimension left_array:j is being joined with dimension right_array:k
+# k is the dimension that needs to be matched:   k=0:xxx,10,4
+#   (note: endMax is not germane)
+# collapse left-hand autochunk
+#  auto-chunk joining dimension (j):     cross_join(redimension(left_array,<val:double>[i=0:39,10,4,j=0:29,*,4]), right_array, j, k)
+#  auto-chunk non-joining dimension (i): cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,10,4]), right_array, j, k)
+#  auto-chunk all dimensions (i, and j):  cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,*,4]), right_array, j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,10,4,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# Alter other aspects of dimensions (joining and non-joining)
+#
+# startMin
+#
+#
+# Change the start min
+#   TODO
+#
+# endMax
+#
+# Change the endMax on the joining dimension (j) to be less than original
+#  auto-chunk joining dimension (j):     cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:24,*,4]), right_array, j, k)
+#  auto-chunk non-joining dimension (i): cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,10,4]), right_array, j, k)
+#  auto-chunk all dimensions (i, and j):  cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,*,4]), right_array, j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:24,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# Change the endMax on the joining dimension (j) to be less than endMax of the joined-to dimension(k:19)
+#  auto-chunk joining dimension (j):     cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:14,*,4]), right_array, j, k)
+#  auto-chunk non-joining dimension (i): cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,10,4]), right_array, j, k)
+#  auto-chunk all dimensions (i, and j):  cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,*,4]), right_array, j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:14,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# #
+# # chunkInterval
+# #
+# # The chunkInterval value of the non-matched dimension can be any value:
+# # Change the chunkInterval on the non-joining dimension (i) to be any "sensible" value
+# #  auto-chunk joining dimension (j):     cross_join(redimension(left_array,<val:double>[i=0:29,30,4,j=0:29,*,4]), right_array, j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,8,4,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# #
+# # chunkOverlap
+# #
+# # the chunkOverlap value of the joining dimension(j) needs to <=  the overlap of the other
+# # the exemplar dimension schema is k=0:19,10,4) --> so j's overlap must be <= 4
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,0]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,3]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,5]), right_array, j, k)"
+
+# # the chunkOverlap value of the non-joining dimension(i) can be any sensible value
+# --shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,*,0,j=0:29,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# --shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,*,5,j=0:29,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# # in fact, the non-matched dimension is completely ignored as long as it's sensible
+# # (Note: the redimension of i could fail if there are values between 0 and 4 in this case
+# #     but that is a requirement of redimension, not a requirement of cross_join)
+# #     change the startMin, endMax, chunkInterval, and overlap of the non-joining dimension,
+# #     none of which, match k
+# --shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=5:104,15,7,j=0:29,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+
+# # this should not show plan
+# --echo  This Should Die A Horrible Death and prevent the test from ever succeeding
+# --shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,*,4,j=0:29,10,5]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+--stop-query-logging
+--cleanup
+remove(left_array)
+remove(right_array)
+

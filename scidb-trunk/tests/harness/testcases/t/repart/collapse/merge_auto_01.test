@@ -1,0 +1,251 @@
+# Test collapse of automatic repartitioning with explicitly given
+# autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the merge operator (inserted
+# by requiresRedimensionOrRepartition() in the PhysicalMerge
+# operator).
+#
+# An explicit repart/redimension which has autochunking must have the same
+# shape (startMin, chunkOverlap) that the merge operator expects
+# (which is defined by the auto-inserted repart/redimension).  The
+# collapsed repart/redimension will populate the chunkInterval based upon
+# the auto-inserted repart/redimension schema.
+#
+# Additionally tests to confirm failures when an explicitly given
+# repart/redimension that are mismatched (startMin, endMax,
+# chunkOverlap) with the "auto-inserted" (needed) repart/redimension
+# schema fail with the expected Error Codes are given.
+
+##
+## The merge operator uses the schema of the left-most NON-AUTOCHUNKED
+## input.
+##
+##  The following tests the case where the explicit AUTOCHUNKED
+##  repart/redimension is on the second input schema. In this case the
+##  "needed" schema for the merge is the left (aa) array:
+##  aa<v1:int64> [x=0:99,10,5 , y=0:9,10,1]
+
+--setup
+
+create TEMP array aa <v1:int64> [x=0:99,10,5 , y=0:9,10,1]
+create TEMP array bb <v2:int64> [z=0:99,100,0, w=0:9,10,4]
+create TEMP array cc <v3:int64> [z=0:9,60,8 , w=0:5,5,0]
+
+
+--start-igdata
+store(between(build(aa, x+y), 0,0, 4,9), aa)
+store(between(build(bb, z + 100), 5,0, 10,9 ), bb)
+store(between(build(cc, w + 200), 10,0, 99,9), cc)
+--stop-igdata
+
+--test
+
+--start-query-logging
+#
+# confirm that the auto-insert of repart/redimension still works
+--echo Physical Plan of auto-inserted repart/redimension: merge(aa,bb)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,bb)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+#
+# At least one of the inputs has to be non-autochunked
+#
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "merge(redimension(aa,<v1:int64>[x,y]),redimension(bb,<v2:int64>[z,w]),redimension(cc,<v3:int64>[z,w]))"
+
+# This repart matches all non-chunk interval portions of the schema, so the collapse occurs
+## physical plan of merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,1]))
+###      (first autochunked):  merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,1]))
+###      (second autochunked): merge(aa,repart(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,1]))
+###      (both autochunked):   merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,1]))
+--echo Physical Plan of collapsed repart/redimension
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# Confirm that the data in the arrays are the same
+--start-igdata
+store(merge(aa,bb),aa_bb)
+store(merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,1])), aa_repart_A_10)
+store(merge(aa,merge(aa,repart(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,1]))), aa_repart_10_A)
+store(merge(aa,repart(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,1])), aa_repart_A_A)
+store(merge(repart(aa,<v1:int64>[x=0:99,*,0,y=0:9,*,4]),bb), repart_A_A_bb)
+store(merge(repart(aa,<v1:int64>[x=0:99,*,0,y=0:9,10,4]),bb), repart_A_10_bb)
+store(merge(repart(aa,<v1:int64>[x=0:99,100,0,y=0:9,*,4]),bb), repart_100_A_bb)
+--stop-igdata
+
+--echo confirm that the results of output are the same
+scan(aa_bb)
+scan(aa_repart_A_10)
+scan(aa_repart_10_A)
+scan(aa_repart_A_A)
+scan(repart_A_A_bb)
+scan(repart_A_10_bb)
+scan(repart_100_A_bb)
+#
+# Vary the other aspects (startMin/endMax/chunkOverlap) of the dimensions in the explicit repart/redimension
+#
+##
+## alter startMin --> all cases should error
+##
+### alter first dimension's startMin
+###      (first autochunked):  merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=0:9,10,1]))
+###      (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=1:99,10,5 , w=0:9,*,1]))
+###      (both autochunked):   merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=1:9,*,1]))
+--echo Negative Test Cases: startMin
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=0:9,10,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,10,5 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=0:9,*,1]))"
+### alter second dimension's startMin
+###      (first autochunked):  merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=1:9,10,1]))
+###      (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=1:9,*,1]))
+###      (both autochunked):   merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=1:9,*,1]))
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=1:9,10,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=1:9,*,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=1:9,*,1]))"
+### alter both dimension's startMin
+###      (first autochunked):  merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=1:9,10,1]))
+###      (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=1:99,10,5 , w=1:9,*,1]))
+###      (both autochunked):   merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=1:9,*,1]))
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=1:9,10,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,10,5 , w=1:9,*,1]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "merge(aa,redimension(bb,<v2:int64>[z=1:99,*,5 , w=1:9,*,1]))"
+
+##
+## alter EndMax
+##
+### The endMax can be greater
+###
+### increase endMax for first dim
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:*,*,5 , w=0:9,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:*,10,5 , w=0:9,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:*,*,5 , w=0:9,*,1]))
+--echo Increasing endMax
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:*,*,5 , w=0:9,10,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:*,10,5 , w=0:9,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:*,*,5 , w=0:9,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+### increase endMax for second dim
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:*,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:*,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:*,*,1]))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:*,10,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:*,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:*,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+### increase endMax for both dims
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:199,*,5 , w=0:99,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:199,10,5 , w=0:99,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:199,*,5 , w=0:99,*,1]))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:199,*,5 , w=0:99,10,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:199,10,5 , w=0:99,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,redimension(bb,<v2:int64>[z=0:199,*,5 , w=0:99,*,1]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+###
+### Invalid EndMax (smaller than original array) ==> error
+###
+#### decrease the endMax of the first dimension (below the min)
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:9,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:89,10,5 , w=0:9,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:9,10,1]))
+--echo Negative test case: decrease endMax
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:9,10,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,10,5 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:9,10,1]))"
+#### decrease the endMax of the second dimension (below the min)
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:8,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:8,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:8,10,1]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:8,10,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:8,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:8,10,1]))"
+#### decrease the endMax of the both dimensions (below the min)
+####   (first autochunked) : merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:8,10,1]))
+####   (second autochunked): merge(aa,redimension(bb,<v2:int64>[z=0:89,10,5 , w=0:8,*,1]))
+####   (both autochunked)  : merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:8,10,1]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:8,10,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,10,5 , w=0:8,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:89,*,5 , w=0:8,10,1]))"
+
+## alter the chunkInterval (of the other non-autochunked dimension)
+### first dimension is autochunked, second has wrong Interval
+--echo Negative test case: invalid chunkInterval for non-autochunked input
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,8,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,12,1]))"
+### first dimension has wrong interval, second is autochunked
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,8,5 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,12,5 , w=0:9,*,1]))"
+
+## alter overlap. The overlap of the explicit MUST match the needed schema (otherwise error)
+### alter the overlap of the first dimension
+####   (first autochunked, smaller overlap) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,1]))
+####   (second autochunked, smaller overlap): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,1]))
+####   (both autochunked, smaller overlap)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,1]))
+####   (first autochunked, greater overlap) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,1]))
+####   (second autochunked, greater overlap): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,1]))
+####   (both autochunked, greater overlap)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,*,1]))
+--echo Negative Test cases: bad overlap
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,*,1]))"
+### alter the overlap of the second dimension
+####   (first autochunked, smaller overlap) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,0]))
+####   (second autochunked, smaller overlap): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,0]))
+####   (both autochunked, smaller overlap)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,0]))
+####   (first autochunked, greater overlap) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,2]))
+####   (second autochunked, greater overlap): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,2]))
+####   (both autochunked, greater overlap)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,2]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,10,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,5 , w=0:9,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,5 , w=0:9,*,2]))"
+### alter the overlap of the both dimension
+####   (first autochunked, smaller, smaller) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,0]))
+####   (second autochunked, smaller, smaller): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,0]))
+####   (both autochunked, smaller, smaller)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,0]))
+####   (first autochunked, smaller, greater) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,2]))
+####   (second autochunked, smaller, greater): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,2]))
+####   (both autochunked, smaller, greater)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,2]))
+####   (first autochunked, greater, smaller) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,0]))
+####   (second autochunked, greater, smaller): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,0]))
+####   (both autochunked, greater, smaller)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,*,0]))
+####   (first autochunked, greater, greater) : merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,2]))
+####   (second autochunked, greater, greater): merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,2]))
+####   (both autochunked, greater, greater)  : merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,2]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,10,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,4 , w=0:9,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,4 , w=0:9,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,*,0]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,*,6 , w=0:9,10,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "merge(aa,redimension(bb,<v2:int64>[z=0:99,10,6 , w=0:9,*,2]))"
+
+
+--stop-query-logging
+
+--cleanup
+
+remove(aa)
+remove(bb)
+remove(cc)
+remove(aa_bb)
+remove(aa_repart_A_10)
+remove(aa_repart_10_A)
+remove(aa_repart_A_A)
+remove(repart_A_A_bb)
+remove(repart_A_10_bb)
+remove(repart_100_A_bb)
+
+#  LocalWords:  iquery igdata aq afl IQUERY sed TESTDIR physplan
+#  LocalWords:  aa bb scidb SCIDB
+#  LocalWords:  startMin endMax chunkInterval chunkOverlap
+#  LocalWords:  requiresRedimensionOrRepartition
+#  LocalWords:  PhysicalOperator PhysicalMerge

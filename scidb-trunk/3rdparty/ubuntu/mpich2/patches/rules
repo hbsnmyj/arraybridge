@@ -1,0 +1,81 @@
+#! /usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/utils.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+CC=/usr/bin/gcc-4.9
+CXX=/usr/bin/g++-4.9
+CXXFLAGS=-std=c++14
+FC=/usr/bin/gfortran-4.9
+
+# export DH_OPTIONS='CC=/usr/bin/gcc-4.9 CXX=/usr/bin/g++-4.9 CXXFLAGS=-std=c++14 FC=/usr/bin/gfortran-4.9'
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# Fix Ubuntu 12.04 compile
+CFLAGS+=-Wno-format-security
+
+NAME_PREFIX=scidb-15.12
+PREFIX=/opt/scidb/15.12/3rdparty/mpich2
+export LD_LIBRARY_PATH := $(PREFIX)/lib:$(LD_LIBRARY_PATH)
+DEB_CONFIGURE_EXTRA_FLAGS := \
+	--enable-sharedlibs=gcc \
+	--prefix=$(PREFIX) \
+	--enable-f90 \
+	--sysconfdir=$(PREFIX)/etc/mpich2 \
+	--includedir=$(PREFIX)/include/mpich2 \
+	--datadir=$(PREFIX)/share
+# On sparc and sh4, OPA isn't available, so we need to fallback to
+# emulation mode. There's a performance penalty, unfortunately.
+ifneq (,$(findstring $(DEB_HOST_GNU_CPU),sparc sh4))
+	        DEB_CONFIGURE_EXTRA_FLAGS += --with-atomic-primitives=no
+endif
+
+DEB_MAKE_CLEAN_TARGET := distclean
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(DEB_CONFIGURE_EXTRA_FLAGS)
+
+clean::
+	rm -f src/binding/f90/libmpichf90.la bin/mpic++ bin/parkill src/mpe2/src/slog2sdk/awt_color.jar src/mpe2/src/slog2sdk/share/logfiles/fpilog.clog src/mpe2/src/slog2sdk/share/logfiles/fpilog.slog2
+
+# run MPI test suite
+# Custom rules based on the makefile CDBS class
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+common-build-arch common-build-indep:: debian/stamp-makefile-testing
+debian/stamp-makefile-testing: debian/stamp-makefile-build
+#	bash debian/run-tests.bash
+	touch $@
+
+makefile-clean::
+	rm -f debian/stamp-makefile-testing
+endif
+
+binary-install/$(NAME_PREFIX)-libmpich2-dev::
+	for i in  mpicc mpicxx mpif77 mpif90; do \
+	(cd debian/$(NAME_PREFIX)-libmpich2-dev/$(PREFIX)/bin/ && mv $$i $$i.mpich2); \
+	done
+	rm -f debian/$(NAME_PREFIX)-libmpich2-dev/$(PREFIX)/bin/mpic++
+	dh_link -p$(NAME_PREFIX)-libmpich2-dev $(PREFIX)/bin/mpicxx.mpich2 $(PREFIX)/bin/mpic++.mpich2
+
+binary-install/$(NAME_PREFIX)-mpich2::
+	dh_pysupport -p$(NAME_PREFIX)-mpich2
+	for i in mpd mpdallexit mpdboot mpdcheck mpdcleanup mpdexit \
+	       	mpdgdbdrv mpdhelp mpdkilljob mpdlistjobs mpdman \
+	       	mpdringtest mpdrun mpdsigjob mpdtrace; do \
+	   dh_link -p$(NAME_PREFIX)-mpich2 $(PREFIX)/share/mpich2/$$i.py $(PREFIX)/bin/$$i ;\
+	done
+	for i in mpiexec mpirun; do \
+	   dh_link -p$(NAME_PREFIX)-mpich2 $(PREFIX)/share/mpich2/$$i.py $(PREFIX)/bin/$$i.mpich2 ;\
+	done
+
+list-missing-mine:
+	(cd debian/tmp && find . -type f -exec md5sum {} \+ | grep -v '/DEBIAN/') > debian/tmp-files
+	(for package in $(DEB_ALL_PACKAGES); do \
+	(cd debian/$$package && find . -type f -exec md5sum {} \+ | grep -v '/DEBIAN/'); done) > debian/pkg-files
+	awk '{print $$1}' debian/tmp-files > debian/tmp-files-md5
+	awk '{print $$1}' debian/pkg-files > debian/pkg-files-md5
+	for i in $$(combine debian/tmp-files-md5 not debian/pkg-files-md5); do \
+		grep $$i debian/tmp-files; done

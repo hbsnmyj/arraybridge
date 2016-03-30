@@ -1,0 +1,57 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <insert(another,original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('insert(another,original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalInsert ddl 0 tile 1 children 1
+  schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.another<val:double> [ipublic.another=0:9 (x:y),10,2]
+
+SCIDB QUERY : <store(build(original,i),original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <insert(repart(another,<val:double>[i=0:9,*,0]),original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('insert(repart(another,<val:double>[i=0:9,*,0]),original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalInsert ddl 0 tile 0 children 1
+  schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.another<val:double> [i=0:9 (x:y),5,0]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.another<val:double> [i=0:9 (x:y),5,0]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.another<val:double> [ipublic.another=0:9 (x:y),10,2]
+
+SCIDB QUERY : <insert(redimension(another,<val:double>[i=1:9,*,0]),original)>
+[An error expected at this place for the query "insert(redimension(another,<val:double>[i=1:9,*,0]),original)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <insert(redimension(another,<val:double>[i]),original)>
+[An error expected at this place for the query "insert(redimension(another,<val:double>[i]),original)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <insert(redimension(another,<val:double>[i=1:10,*,0]),original)>
+[An error expected at this place for the query "insert(redimension(another,<val:double>[i=1:10,*,0]),original)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <insert(repart(another,<val:double>[i=0:9,*,1]),original)>
+[An error expected at this place for the query "insert(repart(another,<val:double>[i=0:9,*,1]),original)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Query was executed successfully
+
+Query was executed successfully
+

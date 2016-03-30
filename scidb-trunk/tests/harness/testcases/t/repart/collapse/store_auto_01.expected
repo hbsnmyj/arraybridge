@@ -1,0 +1,53 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(another,original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(another,original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] impl_sg ddl 0 tile 0 children 1
+  schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>[pNode] physicalRepart ddl 0 tile 0 children 1
+   schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>>[pNode] physicalScan ddl 0 tile 1 children 0
+    schema public.another<val:double> [ipublic.another=0:9 (x:y),10,2]
+
+SCIDB QUERY : <store(build(original,i),original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(repart(another,<val:double>[i=0:9,*,0]),original)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('store(repart(another,<val:double>[i=0:9,*,0]),original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] impl_sg ddl 0 tile 0 children 1
+  schema public.original<val:double> [i=0:9 (x:y),5,0]
+>>[pNode] physicalRepart ddl 0 tile 0 children 1
+   schema public.another<val:double> [i=0:9 (x:y),5,0]
+>>>[pNode] physicalScan ddl 0 tile 1 children 0
+    schema public.another<val:double> [ipublic.another=0:9 (x:y),10,2]
+
+SCIDB QUERY : <store(redimension(another,<val:double>[i=1:9,*,0]),original)>
+[An error expected at this place for the query "store(redimension(another,<val:double>[i=1:9,*,0]),original)". And it failed.]
+
+SCIDB QUERY : <store(redimension(another,<val:double>[i]),original)>
+[An error expected at this place for the query "store(redimension(another,<val:double>[i]),original)". And it failed.]
+
+SCIDB QUERY : <store(redimension(another,<val:double>[i=1:10,*,0]),original)>
+[An error expected at this place for the query "store(redimension(another,<val:double>[i=1:10,*,0]),original)". And it failed.]
+
+SCIDB QUERY : <store(repart(another,<val:double>[i=0:9,*,1]),original)>
+[An error expected at this place for the query "store(repart(another,<val:double>[i=0:9,*,1]),original)". And it failed.]
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,23 @@
+--setup
+--start-query-logging
+# Ticket number: 5006
+# A simpler repro for the error as revealed in other.binary_load9_udt_aql.
+
+load_library('rational')
+load_library('point')
+create array A <a:int32>[x=0:0,1,0]
+create array Y <a:int32,c:rational> [x=0:0,1,0]
+store(build(A,x+1),A)
+store(apply(A,c,point2str(str2point('(3,2)'))),ZZ)
+
+--test
+
+save(ZZ, 'mat.dmp', -2, '(int32,string)')
+load(Y, 'mat.dmp', -2, '(int32,string)', 100, Y_shad)
+
+--cleanup
+remove(A)
+remove(Y)
+remove(ZZ)
+remove(Y_shad)
+

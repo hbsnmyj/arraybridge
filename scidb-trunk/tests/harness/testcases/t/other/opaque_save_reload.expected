@@ -1,0 +1,33 @@
+SCIDB QUERY : <create temp array KgVar<val:double>[i=0:*,1,0, j=0:*,10000000,0, k=0:*,10000000,0, l=0:19,20,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create temp array KgVar2<val:double>[i=0:*,1,0, j=0:*,10000000,0, k=0:*,10000000,0, l=0:19,20,0]>
+Query was executed successfully
+
+SCIDB QUERY : <insert(redimension(apply(build(<val:double>[i=0:3,4,0], i), j, i+1, k, i+2, l, i+3), KgVar), KgVar)>
+{i,j,k,l} val
+{0,1,2,3} 0
+{1,2,3,4} 1
+{2,3,4,5} 2
+{3,4,5,6} 3
+
+SCIDB QUERY : <save(KgVar, '/tmp/KgVar.opaque', -2, 'opaque')>
+{i,j,k,l} val
+
+SCIDB QUERY : <load(KgVar2, '/tmp/KgVar.opaque', -2, 'opaque')>
+{i,j,k,l} val
+{0,1,2,3} 0
+{1,2,3,4} 1
+{2,3,4,5} 2
+{3,4,5,6} 3
+
+SCIDB QUERY : <aggregate(filter(join(KgVar as A, KgVar2 as B), A.val <> B.val), count(*))>
+{i} count
+{0} 0
+
+SCIDB QUERY : <remove(KgVar)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(KgVar2)>
+Query was executed successfully
+

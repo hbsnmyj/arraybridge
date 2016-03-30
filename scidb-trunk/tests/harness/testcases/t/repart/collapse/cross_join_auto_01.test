@@ -1,0 +1,99 @@
+# Test collapse of automatic repartitioning with explicitly given
+# autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the cross_join operator
+# (inserted by requiresRedimensionOrRepartition() in the
+# PhysicalCrossJoin operator).
+#
+# The cross Join operator requires that matching dimensions have:
+#   * same startMin
+#   * same chunkInterval as the left-most non-autochunked dimension
+#   * chunkOverlap less than or equal to left-most non-autochunked dimension
+#
+# An explicit repart/redimension which has autochunking must have the
+# same shape (startMin, chunkOverlap, and chunkInterval) that the
+# cross_join operator expects (which is defined by the auto-inserted
+# repart/redimension) for the matching dimension "predicates".  The
+# collapsed repart/redimension will populate the chunkInterval based
+# upon the auto-inserted repart/redimension schema.
+#
+# Additionally tests to confirm failures when an explicitly given
+# repart/redimension that are mismatched (startMin, endMax,
+# chunkOverlap) with the "auto-inserted" (needed) repart/redimension
+# schema fail with the expected Error Codes are given.
+##
+## The cross_join operator uses the dimension of the left-most
+## NON-AUTOCHUNKED input for determining the shape.
+##
+## This set of tests defines an autochunked repart/redimension on the
+## right schema so the matching dimensions in the left schema are used
+## as the bases of the auto-inserted redimension, and checks to see if
+## the auto-inserted repart can be collapsed into the explicitly defined
+## repart/redimension
+
+--setup
+
+create TEMP array left_array<val:double>[i=0:29,10,2, j=0:19,5,3]
+create TEMP array right_array<val:double>[k=0:39,20,4]
+create TEMP array other_right <val:double>[k=1:40,20,4]
+
+
+--test
+
+--start-query-logging
+# confirm that the auto-insert of repart/redimension still works
+--echo "Physical Plan of auto-inserted repart/redimension for cross_join(left_array,right_array,j,k)"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array,right_array,j,k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# collapse right-hand autochunk
+# Show expain plan for: cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,3]), j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,3]), j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+## Alter various aspects of the matched dimension (k) -- startMin, endMax, chunkInterval(*), and chunkOverlap
+### Anytime startMin does not match ==> error
+--echo "Test startMin Mismatch"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "cross_join(left_array, redimension(right_array,<val:double>[k=1:39,*,0]), j, k)"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "cross_join(left_array, redimension(right_array,<val:double>[k=1:40,*,0]), j, k)"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "cross_join(left_array, redimension(other_right,<val:double>[k=1:40,*,0]), j, k)"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "cross_join(left_array, other_right, j, k)"
+## redimensioning an(other) array to have the same starting value is okay. -- note this does not shift , it simple leaves empty cells at k==0
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array,redimension(other_right,<val:double>[k=0:39,*,3]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+### endMax
+# cross_join(left_array, redimension(right_array,<val:double>[k=0:29,5,3]), j, k)
+# The end value can be reduced (as long as the redimension doesn't find a value outside the new range)
+--echo "Test altering endMax"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array,redimension(right_array,<val:double>[k=0:3,*,3]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# increase endmax
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array, redimension(right_array,<val:double>[k=0:44,*,3]), j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+#
+# chunkInterval
+# Confirm that non-matching chunkInterval result in errors.
+# These tests are not using autochunked schemas, just confirming that chunkInterval between explicit
+# and injected repart/redimension causes an error.
+--echo "Explicit Chunk Interval does not match auto-inserted repart"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "cross_join(left_array, redimension(right_array,<val:double>[k=0:39,4,3]), j, k)"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "cross_join(left_array, redimension(right_array,<val:double>[k=0:39,6,3]), j, k)"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "cross_join(left_array, redimension(right_array,<val:double>[k=0:39,20,3]), j, k)"
+#
+# chunkOverlap changes
+# left dimension overlap > right dimension overlap
+--echo "repart ChunkOverlap is <= joining dimension's overlap"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,0]), j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,0]), j, k)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,1]), j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,2]), j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# left dimension < right dimension
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "cross_join(left_array, repart(right_array,<val:double>[k=0:39,*,5]), j, k)"
+
+
+
+--stop-query-logging
+--cleanup
+
+remove(left_array)
+remove(right_array)
+remove(other_right)
+

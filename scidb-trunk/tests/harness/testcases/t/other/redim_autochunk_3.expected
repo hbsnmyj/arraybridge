@@ -1,0 +1,589 @@
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+== A ops
+SCIDB QUERY : <apply(redimension(distance,<miles:double>[i]),kilometers,1.6*miles)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(redimension(distance,<miles:double>[i]), count(*))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <avg_rank(redimension(heatmap,<celsius:double>[x=0:*,*,0,y=0:9,10,0]), celsius, x)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== B ops
+SCIDB QUERY : <bernoulli(redimension(heatmap, <celsius:double>[x,y]), 0.1, 42)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <between(redimension(heatmap, <celsius:double>[x,y]), 3, 3, 7, 7)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <between(redimension(square, <v:int64>[x,y]), 3, 3, 7, 7)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== C ops
+SCIDB QUERY : <cast(redimension(distance, <miles:double>[i]), <smiles:float>[per_mile])>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <consume(redimension(square, <v:int64>[x,y]))>
+Query was executed successfully
+
+SCIDB QUERY : <consume(redimension(square, <v:int64>[x,y]), 20)>
+Query was executed successfully
+
+SCIDB QUERY : <cross_between(redimension(cbB, <attrB1:double>[i,j]), repart(rB, <iLo:int64 null,jLo:Int64,iHi:int64,jHi:int64>[rBi]))>
+{i,j} attrB1
+{0,0} 1
+{0,1} 2
+{1,0} 5
+{1,1} 6
+{2,0} 9
+{2,3} 12
+{3,0} 13
+{3,3} 16
+
+SCIDB QUERY : <cross_join(repart(left_array, <val:double>[i,j]),redimension(right_array,<val:double>[k]), j, k)>
+[An error expected at this place for the query "cross_join(repart(left_array, <val:double>[i,j]),redimension(right_array,<val:double>[k]), j, k)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED.]
+
+SCIDB QUERY : <cross_join(repart(left_array, <val:double>[i,j]), right_array, j, k)>
+{i,j} val,val
+{0,0} 0,101
+{0,1} 1,102
+{0,2} 2,103
+{1,0} 3,101
+{1,1} 4,102
+{1,2} 5,103
+{2,0} 6,101
+{2,1} 7,102
+{2,2} 8,103
+
+SCIDB QUERY : <cross_join(left_array, redimension(right_array,<val:double>[k]), j, k)>
+{i,j} val,val
+{0,0} 0,101
+{0,1} 1,102
+{0,2} 2,103
+{1,0} 3,101
+{1,1} 4,102
+{1,2} 5,103
+{2,0} 6,101
+{2,1} 7,102
+{2,2} 8,103
+
+SCIDB QUERY : <cumulate(repart(heatmap, <celsius:double>[x,y]), stdev(celsius), x)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== F ops
+SCIDB QUERY : <filter(redimension(heatmap, <celsius:double>[x,y]), celsius < 100.0)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== G ops
+SCIDB QUERY : <gemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II,CC)>
+[An error expected at this place for the query "gemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II,CC)". And it failed with error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10. Expected error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10.]
+
+SCIDB QUERY : <gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,32,0]),'U')>
+[An error expected at this place for the query "gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,32,0]),'U')". And it failed with error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10. Expected error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10.]
+
+SCIDB QUERY : <gesvd(repart(product, <val:double>[i=0:1,32,0,j=0:1,*,0]),'S')>
+[An error expected at this place for the query "gesvd(repart(product, <val:double>[i=0:1,32,0,j=0:1,*,0]),'S')". And it failed with error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10. Expected error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10.]
+
+SCIDB QUERY : <gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,*,0]),'VT')>
+[An error expected at this place for the query "gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,*,0]),'VT')". And it failed with error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10. Expected error code = DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10.]
+
+== I ops
+SCIDB QUERY : <index_lookup(trades, repart(stock_symbols, <symbol:string>[i]), trades.symbol, index)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <index_lookup(redimension(trades, <symbol:string,tval:string,price:float,shares:int64>[i]) as X, stock_symbols, X.symbol, index)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <index_lookup(redimension(trades, <symbol:string,tval:string,price:float,shares:int64>[i]) as X, repart(stock_symbols, <symbol:string>[i]), X.symbol, index)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== J ops
+SCIDB QUERY : <join(repart(square, <v:int64>[x,y]), repart(heatmap, <celsius:double>[x,y]))>
+[An error expected at this place for the query "join(repart(square, <v:int64>[x,y]), repart(heatmap, <celsius:double>[x,y]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED.]
+
+SCIDB QUERY : <join(repart(square, <v:int64>[x,y]), heatmap)>
+{x,y} v,celsius
+{0,0} 0,0
+{0,1} 1,3.7
+{0,2} 2,7.4
+{0,3} 3,11.1
+{0,4} 4,14.8
+{1,0} 100,11
+{1,1} 101,14.7
+{1,2} 102,18.4
+{1,3} 103,22.1
+{1,4} 104,25.8
+{2,0} 200,22
+{2,1} 201,25.7
+{2,2} 202,29.4
+{2,3} 203,33.1
+{2,4} 204,36.8
+{3,0} 300,33
+{3,1} 301,36.7
+{3,2} 302,40.4
+{3,3} 303,44.1
+{3,4} 304,47.8
+{4,0} 400,44
+{4,1} 401,47.7
+{4,2} 402,51.4
+{4,3} 403,55.1
+{4,4} 404,58.8
+{0,5} 5,18.5
+{0,6} 6,22.2
+{0,7} 7,25.9
+{0,8} 8,29.6
+{0,9} 9,33.3
+{1,5} 105,29.5
+{1,6} 106,33.2
+{1,7} 107,36.9
+{1,8} 108,40.6
+{1,9} 109,44.3
+{2,5} 205,40.5
+{2,6} 206,44.2
+{2,7} 207,47.9
+{2,8} 208,51.6
+{2,9} 209,55.3
+{3,5} 305,51.5
+{3,6} 306,55.2
+{3,7} 307,58.9
+{3,8} 308,62.6
+{3,9} 309,66.3
+{4,5} 405,62.5
+{4,6} 406,66.2
+{4,7} 407,69.9
+{4,8} 408,73.6
+{4,9} 409,77.3
+{5,0} 500,55
+{5,1} 501,58.7
+{5,2} 502,62.4
+{5,3} 503,66.1
+{5,4} 504,69.8
+{6,0} 600,66
+{6,1} 601,69.7
+{6,2} 602,73.4
+{6,3} 603,77.1
+{6,4} 604,80.8
+{7,0} 700,77
+{7,1} 701,80.7
+{7,2} 702,84.4
+{7,3} 703,88.1
+{7,4} 704,91.8
+{8,0} 800,88
+{8,1} 801,91.7
+{8,2} 802,95.4
+{8,3} 803,99.1
+{8,4} 804,102.8
+{9,0} 900,99
+{9,1} 901,102.7
+{9,2} 902,106.4
+{9,3} 903,110.1
+{9,4} 904,113.8
+{5,5} 505,73.5
+{5,6} 506,77.2
+{5,7} 507,80.9
+{5,8} 508,84.6
+{5,9} 509,88.3
+{6,5} 605,84.5
+{6,6} 606,88.2
+{6,7} 607,91.9
+{6,8} 608,95.6
+{6,9} 609,99.3
+{7,5} 705,95.5
+{7,6} 706,99.2
+{7,7} 707,102.9
+{7,8} 708,106.6
+{7,9} 709,110.3
+{8,5} 805,106.5
+{8,6} 806,110.2
+{8,7} 807,113.9
+{8,8} 808,117.6
+{8,9} 809,121.3
+{9,5} 905,117.5
+{9,6} 906,121.2
+{9,7} 907,124.9
+{9,8} 908,128.6
+{9,9} 909,132.3
+
+SCIDB QUERY : <join(square, repart(heatmap, <celsius:double>[x,y]))>
+{x,y} v,celsius
+{0,0} 0,0
+{0,1} 1,3.7
+{0,2} 2,7.4
+{0,3} 3,11.1
+{0,4} 4,14.8
+{1,0} 100,11
+{1,1} 101,14.7
+{1,2} 102,18.4
+{1,3} 103,22.1
+{1,4} 104,25.8
+{2,0} 200,22
+{2,1} 201,25.7
+{2,2} 202,29.4
+{2,3} 203,33.1
+{2,4} 204,36.8
+{3,0} 300,33
+{3,1} 301,36.7
+{3,2} 302,40.4
+{3,3} 303,44.1
+{3,4} 304,47.8
+{4,0} 400,44
+{4,1} 401,47.7
+{4,2} 402,51.4
+{4,3} 403,55.1
+{4,4} 404,58.8
+{0,5} 5,18.5
+{0,6} 6,22.2
+{0,7} 7,25.9
+{0,8} 8,29.6
+{0,9} 9,33.3
+{1,5} 105,29.5
+{1,6} 106,33.2
+{1,7} 107,36.9
+{1,8} 108,40.6
+{1,9} 109,44.3
+{2,5} 205,40.5
+{2,6} 206,44.2
+{2,7} 207,47.9
+{2,8} 208,51.6
+{2,9} 209,55.3
+{3,5} 305,51.5
+{3,6} 306,55.2
+{3,7} 307,58.9
+{3,8} 308,62.6
+{3,9} 309,66.3
+{4,5} 405,62.5
+{4,6} 406,66.2
+{4,7} 407,69.9
+{4,8} 408,73.6
+{4,9} 409,77.3
+{5,0} 500,55
+{5,1} 501,58.7
+{5,2} 502,62.4
+{5,3} 503,66.1
+{5,4} 504,69.8
+{6,0} 600,66
+{6,1} 601,69.7
+{6,2} 602,73.4
+{6,3} 603,77.1
+{6,4} 604,80.8
+{7,0} 700,77
+{7,1} 701,80.7
+{7,2} 702,84.4
+{7,3} 703,88.1
+{7,4} 704,91.8
+{8,0} 800,88
+{8,1} 801,91.7
+{8,2} 802,95.4
+{8,3} 803,99.1
+{8,4} 804,102.8
+{9,0} 900,99
+{9,1} 901,102.7
+{9,2} 902,106.4
+{9,3} 903,110.1
+{9,4} 904,113.8
+{5,5} 505,73.5
+{5,6} 506,77.2
+{5,7} 507,80.9
+{5,8} 508,84.6
+{5,9} 509,88.3
+{6,5} 605,84.5
+{6,6} 606,88.2
+{6,7} 607,91.9
+{6,8} 608,95.6
+{6,9} 609,99.3
+{7,5} 705,95.5
+{7,6} 706,99.2
+{7,7} 707,102.9
+{7,8} 708,106.6
+{7,9} 709,110.3
+{8,5} 805,106.5
+{8,6} 806,110.2
+{8,7} 807,113.9
+{8,8} 808,117.6
+{8,9} 809,121.3
+{9,5} 905,117.5
+{9,6} 906,121.2
+{9,7} 907,124.9
+{9,8} 908,128.6
+{9,9} 909,132.3
+
+== M ops
+SCIDB QUERY : <merge(cast(square, <v:double>[x,y]), redimension(heatmap, <celsius:double>[x,y]))>
+{x,y} v
+{0,0} 0
+{0,1} 1
+{0,2} 2
+{0,3} 3
+{0,4} 4
+{1,0} 100
+{1,1} 101
+{1,2} 102
+{1,3} 103
+{1,4} 104
+{2,0} 200
+{2,1} 201
+{2,2} 202
+{2,3} 203
+{2,4} 204
+{3,0} 300
+{3,1} 301
+{3,2} 302
+{3,3} 303
+{3,4} 304
+{4,0} 400
+{4,1} 401
+{4,2} 402
+{4,3} 403
+{4,4} 404
+{0,5} 5
+{0,6} 6
+{0,7} 7
+{0,8} 8
+{0,9} 9
+{1,5} 105
+{1,6} 106
+{1,7} 107
+{1,8} 108
+{1,9} 109
+{2,5} 205
+{2,6} 206
+{2,7} 207
+{2,8} 208
+{2,9} 209
+{3,5} 305
+{3,6} 306
+{3,7} 307
+{3,8} 308
+{3,9} 309
+{4,5} 405
+{4,6} 406
+{4,7} 407
+{4,8} 408
+{4,9} 409
+{5,0} 500
+{5,1} 501
+{5,2} 502
+{5,3} 503
+{5,4} 504
+{6,0} 600
+{6,1} 601
+{6,2} 602
+{6,3} 603
+{6,4} 604
+{7,0} 700
+{7,1} 701
+{7,2} 702
+{7,3} 703
+{7,4} 704
+{8,0} 800
+{8,1} 801
+{8,2} 802
+{8,3} 803
+{8,4} 804
+{9,0} 900
+{9,1} 901
+{9,2} 902
+{9,3} 903
+{9,4} 904
+{5,5} 505
+{5,6} 506
+{5,7} 507
+{5,8} 508
+{5,9} 509
+{6,5} 605
+{6,6} 606
+{6,7} 607
+{6,8} 608
+{6,9} 609
+{7,5} 705
+{7,6} 706
+{7,7} 707
+{7,8} 708
+{7,9} 709
+{8,5} 805
+{8,6} 806
+{8,7} 807
+{8,8} 808
+{8,9} 809
+{9,5} 905
+{9,6} 906
+{9,7} 907
+{9,8} 908
+{9,9} 909
+
+SCIDB QUERY : <merge(redimension(heatmap, <celsius:double>[x,y]), cast(square, <v:double>[x,y]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+== P ops
+SCIDB QUERY : <project(redimension(trades, <symbol:string,shares:int64,price:float>[i]), price, shares)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== Q ops
+SCIDB QUERY : <quantile(redimension(heatmap,<celsius:double>[x=0:99,*,0,y=0:9,10,0]), 2, celsius, x)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== R ops
+SCIDB QUERY : <rank(redimension(heatmap,<celsius:double>[x=0:99,*,0,y=0:9,10,0]), celsius, y)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <redimension(redimension(trades, <symbol:string,price:float>[i,shares,synth]), <price:float,i:int64>[shares,synth2])>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <regrid(repart(square, <v:int64>[x,y]), 2, 2, sum(v))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <repart(redimension(square, <v:int64,x:int64>[y=0:*,*,0,synth=0:9,10,0]), <v:int64,x:int64>[y=0:*,10,2,synth=0:9,5,0])>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <reshape(redimension(square, <v:int64>[x=0:9,*,0,y=0:9,*,0]), <v:int64>[x=0:99,10,0])>
+[Query was executed successfully, ignoring data output by this query.]
+
+== S ops
+SCIDB QUERY : <slice(redimension(square, <v:int64>[x,y]), x, 3)>
+{y} v
+{0} 300
+{1} 301
+{2} 302
+{3} 303
+{4} 304
+{5} 305
+{6} 306
+{7} 307
+{8} 308
+{9} 309
+
+SCIDB QUERY : <sort(repart(slice(square, x, 3), <v:int64>[y]), v desc)>
+{n} v
+{0} 309
+{1} 308
+{2} 307
+{3} 306
+{4} 305
+{5} 304
+{6} 303
+{7} 302
+{8} 301
+{9} 300
+
+SCIDB QUERY : <spgemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II)>
+[An error expected at this place for the query "spgemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR6. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR6.]
+
+SCIDB QUERY : <subarray(redimension(square, <v:int64>[x,y]), 3, 3, 7, 7)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <substitute(redimension(apply(square, w, iif((x%2)=0, v+1, null)), <v:int64,w:int64>[x,y]), build(<q:int64>[i=0:0,1,0], 42))>
+[Query was executed successfully, ignoring data output by this query.]
+
+== T ops
+SCIDB QUERY : <transpose(redimension(square, <v:int64>[x,y]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+== U ops
+SCIDB QUERY : <unfold(redimension(trades, <symbol:string,tval:string>[i]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <uniq(redimension(trades, <price:float>[i]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <unpack(redimension(square, <v:int64>[x,y]), x)>
+[Query was executed successfully, ignoring data output by this query.]
+
+== W ops
+SCIDB QUERY : <window(redimension(heatmap, <celsius:double>[x,y]), 0, 2, 0, 2, max(celsius), min(celsius))>
+[An error expected at this place for the query "window(redimension(heatmap, <celsius:double>[x,y]), 0, 2, 0, 2, max(celsius), min(celsius))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <window(redimension(heatmap, <celsius:double>[x=0:9,*,4,y=0:9,*,2]), 0, 2, 0, 2, max(celsius), min(celsius))>
+[Query was executed successfully, ignoring data output by this query.]
+
+== X ops
+SCIDB QUERY : <xgrid(redimension(square, <v:int64>[x=0:9,*,0,y=0:9,2,0]), 2, 3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+Cleanup...
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

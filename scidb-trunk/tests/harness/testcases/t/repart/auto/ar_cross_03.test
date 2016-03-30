@@ -1,0 +1,24 @@
+# Ticket #4712.  Give the right cross_join() argument a smaller chunk
+# overlap, and make sure that the smaller overlap appears in the
+# result schema.  (Previously the left argument's overlaps always won.)
+
+--setup
+
+# Left j-overlap 3 > right k-overlap 2 !!
+create temp array left_array<val:double>[i=0:9,5,3, j=0:9,5,3]
+create temp array right_array<val:double>[k=0:19,10,2]
+
+--test
+
+--start-query-logging
+
+--echo We want to see that j-overlap is now 2 ...
+show('cross_join(left_array,right_array,j,k)', 'afl')
+--echo Confirm that the same value is used for autochunking.
+show('cross_join(left_array,redimension(right_array,<val:double>[k=0:19,*,2]),j,k)','afl')
+--stop-query-logging
+
+--cleanup
+
+remove(left_array)
+remove(right_array)

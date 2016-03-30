@@ -1,0 +1,36 @@
+# Ticket #674 redux.  Make sure store(repart()) only works if
+# explicit repart matches target partitioning.
+
+--setup
+
+create array Numbers < num : int64 > [ I=0:9,10,0, J=0:9,10,0 ]
+create array A_chunks   < X_A : int64, Y_A : int64 > [ I_A=0:9,3,0,  J_A=0:9,3,0 ]
+create array B_chunks   < X_A : int64, Y_A : int64 > [ I_A=0:9,5,0,  J_A=0:9,5,0 ]
+create array A_overlaps < X_A : int64, Y_A : int64 > [ I_A=0:9,10,2, J_A=0:9,10,2 ]
+create array A_both     < X_A : int64, Y_A : int64 > [ I_A=0:9,3,2,  J_A=0:9,3,2 ]
+
+
+--test
+
+--echo Explicitly force a different chunk interval.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), B_chunks), A_chunks)"
+
+--echo Explicitly force a different overlap.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_overlaps), A_chunks)"
+
+--echo Explicitly force a different interval and overlap.
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_both), A_chunks)"
+
+--echo Explicitly force correct size and overlap.
+--start-igdata
+store(repart(join( build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_both), A_both)
+--stop-igdata
+aggregate(A_both, count(*))
+
+
+--cleanup
+remove(Numbers)
+remove(A_chunks)
+remove(B_chunks)
+remove(A_overlaps)
+remove(A_both)

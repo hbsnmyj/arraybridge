@@ -1,0 +1,37 @@
+--setup 
+--start-query-logging
+--start-ignore-warnings
+
+create array SortedPrevious <d:int64 NOT NULL> [ X=0:*,10000,0]
+
+--test
+# If the output from the following shell command fails the test (causes a diff), then it is 
+# time to update the input file for this test (${TEST_DATA_DIR}/previous.out).  For example,
+# if the latest released version of SciDB is 15.7, and the development has moved on to
+# version 15.8, then follow these steps to update the test:
+# 1) install the latest released version of SciDB (15.7) onto a clean machine
+# 2) load the SortedPrevious array from the data file (see above and below)
+# 3) save the array in opaque format (save to one instance)
+# 4) check in the saved array file ${TEST_DATA_DIR}/previous.out
+# 5) update the number in the query below to the NEXT OFFICIAL RELEASE (15.12 perhaps)
+# 6) record the test
+# 7) check in the test and its expected file
+#
+--shell --store --command "${SCIDB_INSTALL_PATH}/bin/scidb -V | sed -n 1p | sed s/[^\:]*\:[^0-9]*// | sed s/\.[0-9]*$/\<=15.7/ | bc"
+# load the array from the opaque file saved by the previous version of SciDB
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -naq "load(SortedPrevious, '${TEST_DATA_DIR}/previous.out', -2, 'opaque')""
+
+# check that the size is correct and that the data is sorted
+aggregate(SortedPrevious, count(d))
+--igdata "store(subarray(SortedPrevious, 1000, 1100), Slice)"
+--igdata "store(window(Slice, 0, 1, min(d)), Window)"
+aggregate(filter(join(Slice, Window), d!=d_min), count(*))
+
+--cleanup
+
+remove(SortedPrevious)
+remove(Slice)
+remove(Window)
+
+--stop-ignore-warnings
+--stop-query-logging

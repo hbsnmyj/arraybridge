@@ -1,0 +1,2 @@
+# Some basic functional tests.
+--shell --store --command "PYTHONPATH=${SCIDB_INSTALL_PATH}/bin ${TESTDIR}/redim_autochunk_2.py -c ${IQUERY_HOST} -p ${IQUERY_PORT} --run-id=${HPID}"

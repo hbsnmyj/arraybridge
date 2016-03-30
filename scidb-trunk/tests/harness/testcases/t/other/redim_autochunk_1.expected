@@ -1,0 +1,26 @@
+[Query was executed successfully, ignoring data output by this query.]
+
+"Can't build from an autochunked schema."
+[An error expected at this place for the query "build(<v:int64>[i=0:99999,*,0], i*3+100)". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_AUTOCHUNKING_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_AUTOCHUNKING_NOT_SUPPORTED.]
+
+"Can't input using an autochunked schema."
+[An error expected at this place for the query "input(<v:int64>[x=-180:180,*,0;y=-90:90,10,0], '/dev/null')". And it failed with error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_AUTOCHUNKING_NOT_SUPPORTED. Expected error code = scidb::SCIDB_SE_SYNTAX::SCIDB_LE_AUTOCHUNKING_NOT_SUPPORTED.]
+
+Can redim and store though.
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} schema
+{0} 'A_redim<v:int64> [i=0:*,131072,0]'
+
+Can repart and store.
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} schema
+{0} 'A_repart<v:int64> [i=0:*,131072,0]'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

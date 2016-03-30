@@ -1,0 +1,35 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Explicitly force a different chunk interval.
+[An error expected at this place for the query "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), B_chunks), A_chunks)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Explicitly force a different overlap.
+[An error expected at this place for the query "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_overlaps), A_chunks)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Explicitly force a different interval and overlap.
+[An error expected at this place for the query "store(repart(join(build(Numbers, (I*10) + J), build(Numbers, (13 + I + (J * 10)) % 10) ), A_both), A_chunks)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Explicitly force correct size and overlap.
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} count
+{0} 100
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,659 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <show('merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,5,1]),redimension(cc,<v3:int64>[z=0:9,10,5, y=0:5,10,1]))','afl')>
+{i} schema
+{0} 'aa<v1:int64> [x=0:99,60,7,y=0:9,5,1]'
+
+SCIDB QUERY : <show('merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,5,1]),cc)','afl')>
+{i} schema
+{0} 'aa<v1:int64> [x=0:99,60,7,y=0:9,5,1]'
+
+Physical Plan of auto-inserted repart/redimension: merge(aa,cc)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),10,5,wpublic.cc=0:9 (x:y),10,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),10,5,wpublic.cc=0:9 (x:y),10,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+Physical Plan of auto-inserted repart/redimension: merge(cc,aa)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(cc,aa)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),60,8,ypublic.aa=0:9 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),60,8,ypublic.aa=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+
+Physical Plan of collapsed repart/redimension
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,8, y=0:9,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <create TEMP array aa_cc <v1:int64>[x=0:99,10,5 , y=0:9,10,1]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create TEMP array repart_A_5_cc <v1:int64>[x=0:99,60,8,y=0:9,5,1]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create TEMP array repart_60_A_cc <v1:int64>[x=0:99,60,8,y=0:9,5,1]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create TEMP array repart_A_A_cc <v1:int64>[x=0:99,60,8,y=0:9,5,1]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(merge(aa,cc),aa_cc)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(merge(repart(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,1]),cc), repart_A_5_cc)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(merge(repart(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,1]),cc),repart_60_A_cc)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(merge(repart(aa,<v1:int64>[x=0:99,*,8, y=0:9,*,1]),cc),repart_A_A_cc)>
+[Query was executed successfully, ignoring data output by this query.]
+
+confirm that the results of output are the same
+SCIDB QUERY : <scan(aa_cc)>
+{x,y} v1
+{0,0} 0
+{0,1} 1
+{0,2} 2
+{0,3} 3
+{0,4} 4
+{0,5} 5
+{0,6} 6
+{0,7} 7
+{0,8} 8
+{0,9} 9
+{1,0} 1
+{1,1} 2
+{1,2} 3
+{1,3} 4
+{1,4} 5
+{1,5} 6
+{1,6} 7
+{1,7} 8
+{1,8} 9
+{1,9} 10
+{2,0} 2
+{2,1} 3
+{2,2} 4
+{2,3} 5
+{2,4} 6
+{2,5} 7
+{2,6} 8
+{2,7} 9
+{2,8} 10
+{2,9} 11
+{3,0} 3
+{3,1} 4
+{3,2} 5
+{3,3} 6
+{3,4} 7
+{3,5} 8
+{3,6} 9
+{3,7} 10
+{3,8} 11
+{3,9} 12
+{4,0} 4
+{4,1} 5
+{4,2} 6
+{4,3} 7
+{4,4} 8
+{4,5} 9
+{4,6} 10
+{4,7} 11
+{4,8} 12
+{4,9} 13
+
+SCIDB QUERY : <scan(repart_A_5_cc)>
+{x,y} v1
+{0,0} 0
+{0,1} 1
+{0,2} 2
+{0,3} 3
+{0,4} 4
+{1,0} 1
+{1,1} 2
+{1,2} 3
+{1,3} 4
+{1,4} 5
+{2,0} 2
+{2,1} 3
+{2,2} 4
+{2,3} 5
+{2,4} 6
+{3,0} 3
+{3,1} 4
+{3,2} 5
+{3,3} 6
+{3,4} 7
+{4,0} 4
+{4,1} 5
+{4,2} 6
+{4,3} 7
+{4,4} 8
+{0,5} 5
+{0,6} 6
+{0,7} 7
+{0,8} 8
+{0,9} 9
+{1,5} 6
+{1,6} 7
+{1,7} 8
+{1,8} 9
+{1,9} 10
+{2,5} 7
+{2,6} 8
+{2,7} 9
+{2,8} 10
+{2,9} 11
+{3,5} 8
+{3,6} 9
+{3,7} 10
+{3,8} 11
+{3,9} 12
+{4,5} 9
+{4,6} 10
+{4,7} 11
+{4,8} 12
+{4,9} 13
+
+SCIDB QUERY : <scan(repart_60_A_cc)>
+{x,y} v1
+{0,0} 0
+{0,1} 1
+{0,2} 2
+{0,3} 3
+{0,4} 4
+{1,0} 1
+{1,1} 2
+{1,2} 3
+{1,3} 4
+{1,4} 5
+{2,0} 2
+{2,1} 3
+{2,2} 4
+{2,3} 5
+{2,4} 6
+{3,0} 3
+{3,1} 4
+{3,2} 5
+{3,3} 6
+{3,4} 7
+{4,0} 4
+{4,1} 5
+{4,2} 6
+{4,3} 7
+{4,4} 8
+{0,5} 5
+{0,6} 6
+{0,7} 7
+{0,8} 8
+{0,9} 9
+{1,5} 6
+{1,6} 7
+{1,7} 8
+{1,8} 9
+{1,9} 10
+{2,5} 7
+{2,6} 8
+{2,7} 9
+{2,8} 10
+{2,9} 11
+{3,5} 8
+{3,6} 9
+{3,7} 10
+{3,8} 11
+{3,9} 12
+{4,5} 9
+{4,6} 10
+{4,7} 11
+{4,8} 12
+{4,9} 13
+
+SCIDB QUERY : <scan(repart_A_A_cc)>
+{x,y} v1
+{0,0} 0
+{0,1} 1
+{0,2} 2
+{0,3} 3
+{0,4} 4
+{1,0} 1
+{1,1} 2
+{1,2} 3
+{1,3} 4
+{1,4} 5
+{2,0} 2
+{2,1} 3
+{2,2} 4
+{2,3} 5
+{2,4} 6
+{3,0} 3
+{3,1} 4
+{3,2} 5
+{3,3} 6
+{3,4} 7
+{4,0} 4
+{4,1} 5
+{4,2} 6
+{4,3} 7
+{4,4} 8
+{0,5} 5
+{0,6} 6
+{0,7} 7
+{0,8} 8
+{0,9} 9
+{1,5} 6
+{1,6} 7
+{1,7} 8
+{1,8} 9
+{1,9} 10
+{2,5} 7
+{2,6} 8
+{2,7} 9
+{2,8} 10
+{2,9} 11
+{3,5} 8
+{3,6} 9
+{3,7} 10
+{3,8} 11
+{3,9} 12
+{4,5} 9
+{4,6} 10
+{4,7} 11
+{4,8} 12
+{4,9} 13
+
+Negative Test Cases: startMin
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=0:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=0:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,60,8, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,60,8, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=1:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=1:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=1:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=1:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=1:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=1:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=1:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=1:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,60,8, y=1:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,60,8, y=1:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=1:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=1:99,*,8, y=1:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+Increasing endMax
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:999,*,8, y=0:9,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:999,60,8, y=0:9,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:999,*,8, y=0:9,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:999 (x:y),60,8,y=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:999 (x:y),60,8,wpublic.cc=0:9 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:99,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:99,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:99,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),60,8,y=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),60,8,wpublic.cc=0:99 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:*,*,8, y=0:*,5,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:*,60,8, y=0:*,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(redimension(aa,<v1:int64>[x=0:*,*,8, y=0:*,*,1]),cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 2
+  schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:* (x:y),60,8,y=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:9 (x:y),10,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:* (x:y),60,8,wpublic.cc=0:* (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:9 (x:y),60,8,wpublic.cc=0:5 (x:y),5,1]
+
+Negative test case: decrease endMax
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:5,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:5,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,60,8, y=0:5,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,60,8, y=0:5,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:5,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:5,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:9,*,8, y=0:4,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:9,*,8, y=0:4,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:9,60,8, y=0:4,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:9,60,8, y=0:4,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:9,*,8, y=0:4,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:9,*,8, y=0:4,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:8,*,8, y=0:4,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Negative test case: invalid chunkInterval for non-autochunked input
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,4,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,4,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,6,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,6,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,59,8, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,59,8, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,61,8, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,61,8, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Negative Test cases: bad overlap
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,1]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,1]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,8, y=0:9,5,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,8, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,*,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,*,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,5,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,7, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,7, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,*,0]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,*,0]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,5,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,60,9, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,*,2]),cc)>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x=0:99,*,9, y=0:9,*,2]),cc)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,65 @@
+# CSV files may contain embedded newlines if they are quoted.
+--setup
+
+create array simple1 <s1:string null,s2:string null>[i=0:*,100,0]
+create array simple2 <s1:string null,s2:string null>[i=0:*,100,0]
+create array simp2_reloaded <s1:string null,s2:string null>[i=0:*,100,0]
+
+--test
+
+# Make sure Bryan's simple #4122 test case works.
+
+# This first example, with second record being short by a field, used to work relatively cleanly because
+# loadcsv.py was translating to text format, and the TextScanner was lenient about this.  Now that CSV is
+# parsed directly in the load()/input() operator, we must provide shadow array parameters to get the same
+# leniency.
+
+--echo First simple test
+--shell --command "printf '\"one\",\n\"two\"\n' > /tmp/onetwo.csv"
+load(simple1, '/tmp/onetwo.csv', -2, 'csv:d', 100, simp1_shadow)
+scan(simp1_shadow)
+
+# This test also requires leniency due to changing field count, but the embedded newlines should be ingested
+# without problems.
+
+--echo Second simple test
+--shell --command "printf '\"three\n\",\n\"four\nand five\"\n' > /tmp/threefour.csv"
+load(simple2, '/tmp/threefour.csv', -2, 'csv:d', 100, simp2_shadow)
+scan (simp2_shadow)
+
+# Save and reload that!  SciDB format...
+--echo Save and reload simple2
+--start-igdata
+save(simple2, '/tmp/simple2.scidb')
+load(simp2_reloaded, '/tmp/simple2.scidb')
+--stop-igdata
+scan(simp2_reloaded)
+
+# Save and reload via CSV. Note 'csv:E' means write nulls as empty strings.
+--echo Save and reload simple2 via csv:E
+remove(simp2_reloaded)
+create array simp2_reloaded <s1:string null,s2:string null>[i=0:*,100,0]
+save(simple2, '/tmp/simple2.csv', -2, 'csv:E')
+load(simp2_reloaded, '/tmp/simple2.csv', -2, 'csv')
+
+--echo Save reloaded simple2 array in .scidb format, should be identical.
+save(simp2_reloaded, '/tmp/simple2.reloaded.scidb')
+--echo Diff output should be empty...
+--shell --command "diff /tmp/simple2.scidb /tmp/simple2.reloaded.scidb"
+--echo Was it?
+
+# Something slightly more ornate... (double quotes in file requires :d modifier)
+--echo Tricky embedded newlines
+--shell --command "sed 1d ${TEST_DATA_DIR}/newlines.csv > /tmp/newlines.csv"
+create array grades_array <name:string,grade:double,remarks:string null>[i=0:*,100,0]
+load(grades_array, '/tmp/newlines.csv', -2, 'csv:d')
+aggregate(grades_array, count(*))
+
+--cleanup
+--shell --command "rm -f /tmp/simple2.* /tmp/onetwo.csv /tmp/threefour.csv /tmp/newlines.csv"
+remove(simple1)
+remove(simple2)
+remove(simp1_shadow)
+remove(simp2_shadow)
+remove(simp2_reloaded)
+remove(grades_array)

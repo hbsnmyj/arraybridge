@@ -1,0 +1,179 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,10,4,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),10,4,jleft_array=0:19 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),*,4,jleft_array=0:19 (x:y),10,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),*,4,j=0:29 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),*,4,j=0:29 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:39,*,4 ,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),*,4,jleft_array=0:19 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),-2,4,j=0:29 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),-2,4,j=0:29 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:24,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),10,4,jleft_array=0:19 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),10,4,j=0:24 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),10,4,j=0:24 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),*,4,jleft_array=0:19 (x:y),10,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),*,4,j=0:24 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),*,4,j=0:24 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:24,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),*,4,jleft_array=0:19 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),-2,4,j=0:24 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),-2,4,j=0:24 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,10,4,j=0:14,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),10,4,jleft_array=0:14 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),10,4,j=0:14 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),10,4,j=0:14 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,10,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),*,4,jleft_array=0:14 (x:y),10,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),*,4,j=0:14 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),*,4,j=0:14 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(redimension(left_array,<val:double>[i=0:29,*,4 ,j=0:14,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:29 (x:y),*,4,jleft_array=0:14 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:29 (x:y),-2,4,j=0:14 (x:y),10,4]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:29 (x:y),-2,4,j=0:14 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,8,4,j=0:29,*,4]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),8,4,jleft_array=0:19 (x:y),*,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),8,4,j=0:29 (x:y),10,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),8,4,j=0:29 (x:y),10,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,0]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),10,4,jleft_array=0:19 (x:y),*,0]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,0]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,0]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,3]), right_array, j, k)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalCrossJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ileft_array=0:39 (x:y),10,4,jleft_array=0:19 (x:y),*,3]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,3]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.left_array<val:double> [i=0:39 (x:y),10,4,j=0:29 (x:y),10,3]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.left_array<val:double> [ipublic.left_array=0:39 (x:y),6,2,jpublic.left_array=0:29 (x:y),5,3]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.right_array<val:double> [kpublic.right_array=0:19 (x:y),10,4]
+
+SCIDB QUERY : <cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,5]), right_array, j, k)>
+[An error expected at this place for the query "cross_join(repart(left_array,<val:double>[i=0:39,10,4,j=0:29,*,5]), right_array, j, k)". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Query was executed successfully
+
+Query was executed successfully
+

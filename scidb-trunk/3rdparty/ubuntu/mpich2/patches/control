@@ -1,0 +1,66 @@
+Source: scidb-15.12-mpich2
+Section: devel
+Priority: extra
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Lucas Nussbaum <lucas@lucas-nussbaum.net>
+Build-Depends: debhelper (>= 7), cdbs, python, gfortran, txt2man, libxt-dev, x11proto-core-dev, default-jdk, python-support, quilt, procps, gcc-4.9, g++-4.9, gfortran-4.9
+Standards-Version: 3.8.4
+Homepage: http://www.mcs.anl.gov/research/projects/mpich2/
+Vcs-Browser: http://git.debian.org/?p=debian-science/packages/mpich2.git;a=summary
+Vcs-Git: git://git.debian.org/debian-science/packages/mpich2.git
+
+Package: scidb-15.12-mpich2
+Architecture: any
+Depends: scidb-15.12-libmpich2-1.2 (= ${binary:Version}), ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Recommends: scidb-15.12-libmpich2-dev (= ${binary:Version})
+Conflicts: mpd
+Description: Implementation of the MPI Message Passing Interface standard
+ MPICH2 is a high-performance and widely portable implementation of the
+ Message Passing Interface (MPI) standard (both MPI-1 and MPI-2). It
+ efficiently supports different computation and communication platforms
+ including commodity clusters, SMPs, massively parallel systems, and
+ high-speed networks.
+ .
+ This package includes the program binaries necessary to run MPICH2 programs.
+
+Package: scidb-15.12-libmpich2-1.2
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Shared libraries for MPICH2
+ MPICH2 is a high-performance and widely portable implementation of the
+ Message Passing Interface (MPI) standard (both MPI-1 and MPI-2). It
+ efficiently supports different computation and communication platforms
+ including commodity clusters, SMPs, massively parallel systems, and
+ high-speed networks.
+ .
+ This package includes the MPICH2 shared libraries.
+
+Package: scidb-15.12-libmpich2-dev
+Architecture: any
+Section: libdevel
+Depends: scidb-15.12-libmpich2-1.2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Recommends: scidb-15.12-mpich2 (= ${binary:Version})
+Description: Development files for MPICH2
+ MPICH2 is a high-performance and widely portable implementation of the
+ Message Passing Interface (MPI) standard (both MPI-1 and MPI-2). It
+ efficiently supports different computation and communication platforms
+ including commodity clusters, SMPs, massively parallel systems, and
+ high-speed networks.
+ .
+ This package includes the MPICH2 headers and static libraries, as well
+ as the compiler wrappers needed to build MPICH2 programs.
+
+#Package: libmpe-mpich2-dev
+#Architecture: any
+#Section: libdevel
+#Depends: mpich2 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+#Description: Analysis tools for MPICH2 programs
+# This is an implementation of the Message-Passing Interface (MPI). The goals of
+# MPICH2 are to provide an MPI implementation for important platforms, including 
+# clusters, SMPs, and massively parallel processors. It also provides a vehicle 
+# for MPI implementation research and for developing new and better parallel 
+# programming environments.
+# .
+# This package includes the MPE environment, which provides a complete suite of 
+# analysis tools for MPI programs based on port processing approach.

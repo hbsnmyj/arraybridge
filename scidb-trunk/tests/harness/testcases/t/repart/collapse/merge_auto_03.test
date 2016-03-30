@@ -1,0 +1,254 @@
+# Test collapse of automatically inserted repartition/repart with
+# explicitly given autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the merge operator (inserted
+# by requiresRedimensionOrRepartition() in the PhysicalMerge
+# operator).
+#
+# An explicit repart/redimension which has autochunking must have the same
+# shape (startMin, chunkOverlap) that the merge operator expects
+# (which is defined by the auto-inserted repart/redimension).  The
+# collapsed repart/redimension will populate the chunkInterval based upon
+# the auto-inserted repart/redimension schema.
+#
+
+##
+## The merge operator uses the schema of the left-most NON-AUTOCHUNKED
+## input. Merge is an n-ary operator.
+##
+##  The following tests check  that repart/redimension operators are
+##  auto-inserted for any and all operators not matching the left-most
+##  NON-AUTOCHUNKED input.
+##
+##  Explicitly defined repart/redimension input operators to merge
+##  which are autochunked should either be collapsed into a singular
+##  repart/redimension or an exception should be raised
+
+
+--setup
+
+create TEMP array aa <v1:int64> [x=0:29,10,5 , y=0:15,4,2]
+create TEMP array bb <v2:int64> [z=0:99,100,3, w=0:63,16,4]
+create TEMP array cc <v3:int64> [z=0:19,20,6 , w=0:4,5,1]
+
+
+--start-igdata
+store(between(build(aa, x+y), 0,0, 4,9), aa)
+store(between(build(bb, z + 100), 5,0, 10,9 ), bb)
+store(between(build(cc, w + 200), 10,0, 99,9), cc)
+--stop-igdata
+
+--test
+
+--start-query-logging
+# confirm that the auto-insert of repart/redimension still works
+--echo Physical Plan of merge(aa,bb,cc)
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,bb,cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--igdata "merge(aa,bb,cc)"
+
+
+### check that error is given if ALL inputs are autochunked
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "merge(redimension(aa,<v1:int64>[x,y]),redimension(bb,<v2:int64>[z,w]),redimension(cc,<v3:int64>[z,w]))"
+
+# using first schema as the "exemplar", use autochunk repart for other inputs
+# the dimensions of repart must have the form:  0:(max of all endMax),chunkInterval of left-most, chunkOverlap of left-most
+#
+#  merge(aa,repart(Autochunk_bb),repart(Autochunk_cc))
+#  aa is the exemplar ...
+#
+#  aa: <int64> [x=0:29,10,5 , y=0:15,4,2]
+#  bb: <int64> [z=0:99,100,3, w=0:63,16,4]
+#  cc: <int64> [z=0:19,20,6 , w=0:4,5,1]
+#
+#  exemplar: <int64> [X=0:99,10,5 , Y=0:63,4,2]
+# C(4,0)  => 1
+--echo Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,0))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,1)  => 4
+#   merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))
+#        same as merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),cc)
+#   merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))
+#        same as merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),cc)
+#   merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))
+#        same as merge(aa,bb,repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))
+#   merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))
+#        same as merge(aa,bb,repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))
+--echo Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,1))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,2)  => 6
+# 1,2: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))
+#      same as merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),cc)
+# 1,3: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))
+# 1,4: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))
+# 2,3: merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))
+# 2,4: merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))
+# 3,4: merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))
+#      same as merge(aa,bb,repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))
+--echo Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,2))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,3)  => 4
+# 1,2,3: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))
+# 1,2,4: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))
+# 1,3,4: merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))
+# 2,3,4: merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))
+--echo Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,3))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,4)  => 1
+--echo Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,4))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+#
+#  merge(repart(Autochunk_aa),bb,repart(Autochunk_cc))
+#  bb is the "exemplar" schema
+#
+#  NOTE: At least ONE of the dimensions in aa MUST be autochunked for this set of tests
+#  otherwise, the repart(aa..) would be the exemplar schema.
+#  Specifying the full non-autochunking of repart/redimension of array aa
+#  does not check any form of collapsing. It will auto-insert any needed repart onto
+#  bb and/or cc and confirm that any given explicit repart/redimension schema.
+#
+#  bb is the exemplar ...
+#
+#  aa: <int64> [x=0:29,10,5 , y=0:15,4,2]
+#  bb: <int64> [z=0:99,100,3, w=0:63,16,4]
+#  cc: <int64> [z=0:19,20,6 , w=0:4,5,1]
+#
+#  exemplar: <int64> [X=0:99,100,3 , Y=0:63,16,4]
+#
+# C(4,0)  => 1
+# This does not deal with collapsing, but it does confirm that the no repart is needed on bb
+#       And that the repart inserted on cc matches the given schema exactly.
+#  see NOTE Above
+--echo Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,0))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,1)  => 4
+#   merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))
+#        same as merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,cc)
+#   merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))
+#        same as merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,cc)
+#   merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))
+#      This does not check collapse on aa but it does check collapse on cc. See NOTE above.
+#   merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))
+#      This does not check collapse on aa but it does check collapse on cc. See NOTE above.
+--echo Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,1))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,2)  => 6
+# 1,2: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))
+# 1,3: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))
+# 1,4: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))
+# 2,3: merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))
+# 2,4: merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))
+# 3,4: See Note Above: merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))
+--echo Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,2))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# N/A
+# C(4,3)  => 4
+# 1,2,3: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))
+# 1,2,4: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))
+# 1,3,4: merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))
+# 2,3,4: merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))
+--echo Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,3))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,4)  => 1
+# merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))
+--echo Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,4))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+#
+#  merge(repart(Autochunk_aa),repart(Autochunk_bb),cc)
+#  cc is the "exemplar" schema
+#  NOTE: At least ONE of the dimensions in aa, and bb MUST be autochunked for this set of tests
+#  otherwise, the repart(aa), or repart(bb)  would be the exemplar schema
+#  cc is the exemplar ...
+#
+#  aa: <int64> [x=0:29,10,5 , y=0:15,4,2]
+#  bb: <int64> [z=0:99,100,3, w=0:63,16,4]
+#  cc: <int64> [z=0:19,20,6 , w=0:4,5,1]
+#
+#  exemplar: <int64> [X=0:99,20,6 , Y=0:63,5,1]
+#
+# C(4,0)  => 1
+--echo Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,0))
+#  see NOTE Above merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,5,1]), repart(bb,<v2:int64>[z=0:99,20,w=0:63:5,1]),cc)
+# C(4,1)  => 4
+#   see NOTE Above: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,5,1]), cc)
+#   see NOTE Above: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,5,1]), cc)
+#   see NOTE Above: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)
+#   see NOTE Above: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)
+--echo Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,1))
+# N/A
+# N/A
+# N/A
+# N/A
+# C(4,2)  => 6
+# 1,2: see NOTE Above: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,5,1]), cc)
+# 1,3: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)
+# 1,4: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)
+# 2,3: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)
+# 2,4: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)
+# 3,4: See Note Above: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)
+# N/A
+--echo Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,2))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# N/A
+# C(4,3)  => 4
+# 1,2,3: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)
+# 1,2,4: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)
+# 1,3,4: merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)
+# 2,3,4: merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)
+--echo Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,3))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+# C(4,4)  => 1
+# merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)
+--echo Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,4))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+
+# These tests do not run through the permutations of altering startMin, endMax, and chunkOverlap
+# The functionality is adequately tested in merge_auto_01 and merge_auto_02
+
+--stop-query-logging
+
+--cleanup
+
+remove(aa)
+remove(bb)
+remove(cc)
+
+
+
+#  LocalWords:  iquery igdata aq afl IQUERY sed TESTDIR physplan
+#  LocalWords:  aa bb scidb SCIDB ary
+#  LocalWords:  startMin endMax chunkInterval chunkOverlap
+#  LocalWords:  requiresRedimensionOrRepartition
+#  LocalWords:  PhysicalOperator PhysicalMerge

@@ -1,0 +1,960 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Physical Plan of merge(aa,bb,cc)
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,bb,cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [zpublic.bb=0:29 (x:y),10,5,wpublic.bb=0:15 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [zpublic.bb=0:29 (x:y),10,5,wpublic.bb=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:29 (x:y),10,5,wpublic.cc=0:15 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:29 (x:y),10,5,wpublic.cc=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <merge(aa,bb,cc)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <merge(redimension(aa,<v1:int64>[x,y]),redimension(bb,<v2:int64>[z,w]),redimension(cc,<v3:int64>[z,w]))>
+[An error expected at this place for the query "merge(redimension(aa,<v1:int64>[x,y]),redimension(bb,<v2:int64>[z,w]),redimension(cc,<v3:int64>[z,w]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED.]
+
+Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,0))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,1))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,2))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,3))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,10,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,4,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,10,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(aa,repart(bb,AC),(repart(cc,AC)): C(4,4))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(aa,repart(bb,<v2:int64>[z=0:99,*,5,w=0:63,*,2]),repart(cc,<v3:int64>[z=0:99,*,5,w=0:63,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [xpublic.aa=0:99 (x:y),10,5,ypublic.aa=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),10,5,w=0:63 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,0))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,1))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,2))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,3))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,16,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,100,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,16,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,100,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),bb,(repart(cc,AC)): C(4,4))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,3,y=0:63,*,4]), bb ,repart(cc,<v3:int64>[z=0:99,*,3,w=0:63,*,4]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),100,3,y=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [z=0:99 (x:y),100,3,w=0:63 (x:y),16,4]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,0))
+Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,1))
+Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,2))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,3))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,5,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,20,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,5,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,20,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Physical Plan of merge(repart(aa,AC),repart(bb,AC),cc): C(4,4))
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('merge(repart(aa,<v1:int64>[x=0:99,*,6,y=0:63,*,1]), repart(bb,<v3:int64>[z=0:99,*,6,w=0:63,*,1]), cc)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalMerge ddl 0 tile 0 children 3
+  schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.aa<v1:int64> [x=0:99 (x:y),20,6,y=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.aa<v1:int64> [xpublic.aa=0:29 (x:y),10,5,ypublic.aa=0:15 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.bb<v2:int64> [z=0:99 (x:y),20,6,w=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.bb<v2:int64> [zpublic.bb=0:99 (x:y),100,3,wpublic.bb=0:63 (x:y),16,4]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.cc<v3:int64> [zpublic.cc=0:99 (x:y),20,6,wpublic.cc=0:63 (x:y),5,1]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.cc<v3:int64> [zpublic.cc=0:19 (x:y),20,6,wpublic.cc=0:4 (x:y),5,1]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,24 @@
+# TEST:   Inject error into insert() path for a temp array.
+# EXPECT: Error in insert(), temp arrays should be unavailable for queries,
+#          but still part of the catalog.
+
+--setup
+
+load_library('misc')
+
+create temp array ARRAY1 <v : int64> [I=0:200,25,0]
+--igdata "store(build(ARRAY1,I),ARRAY1)"
+
+--test
+--start-query-logging
+
+aggregate(ARRAY1, SUM(v), MIN(v), MAX(v))
+
+# inject error into a write query
+--igdata "apply(ARRAY1,zz,injectError(1, 4))"
+--error --code=scidb::SCIDB_SE_INJECTED_ERROR::SCIDB_LE_INJECTED_ERROR "insert(project(apply(project(apply(filter(ARRAY1, I <> 0), v1, v*2), v1), v, v1), v), ARRAY1)"
+--error --code=scidb::SCIDB_SE_STORAGE::SCIDB_LE_BAD_TEMP_ARRAY "scan(ARRAY1)"
+
+--cleanup
+remove(ARRAY1)
+

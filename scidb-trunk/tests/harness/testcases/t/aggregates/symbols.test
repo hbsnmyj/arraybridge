@@ -1,0 +1,43 @@
+# ticket # 1449
+#
+
+--setup
+--start-query-logging
+CREATE ARRAY Raw_Data_One < Symbol:string NOT NULL, ID:int32, Qty:int32 > [ Line=0:*,100,0]
+--shell --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -naq "load ( Raw_Data_One, '${TEST_DATA_DIR}/symbols_1.txt' )""
+CREATE ARRAY Raw_Data_Two < Symbol:string NOT NULL, Time:string NOT NULL, Price:double > [Line=0:*,100,0]
+--shell --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -naq "load ( Raw_Data_Two, '${TEST_DATA_DIR}/symbols_2.txt' )""
+
+
+--igdata "store(redimension(uniq(sort(project(Raw_Data_One, Symbol))),<Symbol:string NOT NULL>[i=0:*,1000,0]), symbol_indices)"
+--igdata "store(redimension(uniq(sort(project(Raw_Data_Two, Time))),<Time:string NOT NULL>[i=0:*,1000,0]), time_indices)"
+
+CREATE array Symbols < ID:int32, Qty:int32 > [ sym_dim=0:*,30,0 ]
+
+--igdata "store(redimension(project(index_lookup(Raw_Data_One,symbol_indices,Raw_Data_One.Symbol,sym_dim),sym_dim,ID,Qty),Symbols),Symbols)"
+
+CREATE array Timeseries < Price : double > [ sym_dim=0:*,100,0, time_dim=0:*,100,0 ]
+--igdata "store(redimension(project(cross_join(index_lookup(Raw_Data_Two,symbol_indices,Raw_Data_Two.Symbol,sym_dim) as A1, project(index_lookup(Raw_Data_Two,time_indices,Raw_Data_Two.Time,time_dim),time_dim) as A2, A1.Line, A2.Line),sym_dim,time_dim,Price),Timeseries),Timeseries)"
+
+
+--test
+aggregate(Symbols,count ( * ))
+
+# With labels.
+--set-format csv+:l
+scan ( Symbols )
+aggregate (Timeseries,avg ( Price ),sym_dim)
+
+# Without labels, for whatever bizarre reason.
+--set-format csv+
+scan ( Symbols )
+aggregate (Timeseries,avg ( Price ),sym_dim)
+
+--cleanup
+remove(Raw_Data_One)
+remove(Raw_Data_Two)
+remove(Symbols)
+remove(Timeseries)
+remove(symbol_indices)
+remove(time_indices)
+

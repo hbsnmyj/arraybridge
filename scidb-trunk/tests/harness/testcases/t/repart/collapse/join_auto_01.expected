@@ -1,0 +1,357 @@
+Query was executed successfully
+
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+physical plan of auto-inserted repart/redimension
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,right_array)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [ipublic.right_array, xleft_array, public.left_array=0:9 (x:y),2,1,jpublic.right_array, yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),2,1,jpublic.right_array=0:15 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),2,1,jpublic.right_array=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <join(repart(left_array,<val:double>[x=0:9,*,3, y=0:15,4,4]),repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))>
+[An error expected at this place for the query "join(repart(left_array,<val:double>[x=0:9,*,3, y=0:15,4,4]),repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+Physical Plan of collapsing redimension
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] physicalRepart ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <store(join(left_array,right_array), L_R)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <show(L_R)>
+{i} schema
+{0} 'L_R<val:double,val_2:double> [x=0:9,2,1,y=0:9,4,2]'
+
+SCIDB QUERY : <store(join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2])),L_rR)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <show(L_rR)>
+{i} schema
+{0} 'L_rR<val:double,val_2:double> [x=0:9,2,1,y=0:9,4,2]'
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,4,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,4,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=1:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=1:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,4,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=1:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=1:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH.]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,2,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:* (x:y),2,1,j=0:15 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:*,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:9 (x:y),2,1,j=0:* (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,2,1, j=0:199,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed>
+{No} physical_plan
+{0} '[pPlan]:
+>[pNode] physicalJoin ddl 0 tile 0 children 2
+  schema public.left_arrayright_array<val:double,val:double> [xleft_array, public.left_array=0:9 (x:y),2,1,yleft_array, public.left_array=0:9 (x:y),4,2]
+>>[pNode] physicalScan ddl 0 tile 1 children 0
+   schema public.left_array<val:double> [xpublic.left_array=0:9 (x:y),2,1,ypublic.left_array=0:9 (x:y),4,2]
+>>[pNode] impl_sg ddl 0 tile 0 children 1
+   schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>[pNode] PhysicalRedimension ddl 0 tile 0 children 1
+    schema public.right_array<val:double> [i=0:99 (x:y),2,1,j=0:199 (x:y),4,2]
+>>>>[pNode] physicalScan ddl 0 tile 1 children 0
+     schema public.right_array<val:double> [ipublic.right_array=0:9 (x:y),3,3,jpublic.right_array=0:15 (x:y),5,4]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,4,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,4,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:12,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:12,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,4,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,4,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:12,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:12,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,*,2]))>
+[An error expected at this place for the query "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,2]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,2]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,2]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,2]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,2]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,2]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,1]))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,1]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,1]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,1]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,1]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,1]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,1]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,3]))>
+[An error expected at this place for the query "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,3]))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

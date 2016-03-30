@@ -1,0 +1,27 @@
+
+--setup
+
+create temp array heatmap<celsius:double>[h=0:9,5,0,m=0:9,5,0]
+--igdata "store(build(heatmap,h*1.1*10+m*3.7), heatmap)"
+
+create temp array square<v:int64>[s=0:9,5,0,q=0:9,5,0]
+--igdata "store(build(square, s*100 + q), square)"
+
+# This setup is from the Ref Guide's cross_between() example:
+--start-query-logging
+show(square)
+show(heatmap)
+--echo == J ops
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "join(repart(square, <v:int64>[s,q]), repart(heatmap, <celsius:double>[h,m]))"
+
+join(square , heatmap)
+join(repart(square, <v:int64>[s,q]), heatmap)
+join(square, repart(heatmap, <celsius:double>[h,m]))
+
+
+--stop-query-logging
+
+--cleanup
+--echo Cleanup...
+remove(heatmap)
+remove(square)

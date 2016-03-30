@@ -1,0 +1,150 @@
+SCIDB QUERY : <CREATE ARRAY Raw_Data_One < Symbol:string NOT NULL, ID:int32, Qty:int32 > [ Line=0:*,100,0]>
+Query was executed successfully
+
+SCIDB QUERY : <CREATE ARRAY Raw_Data_Two < Symbol:string NOT NULL, Time:string NOT NULL, Price:double > [Line=0:*,100,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(uniq(sort(project(Raw_Data_One, Symbol))),<Symbol:string NOT NULL>[i=0:*,1000,0]), symbol_indices)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(redimension(uniq(sort(project(Raw_Data_Two, Time))),<Time:string NOT NULL>[i=0:*,1000,0]), time_indices)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <CREATE array Symbols < ID:int32, Qty:int32 > [ sym_dim=0:*,30,0 ]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(project(index_lookup(Raw_Data_One,symbol_indices,Raw_Data_One.Symbol,sym_dim),sym_dim,ID,Qty),Symbols),Symbols)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <CREATE array Timeseries < Price : double > [ sym_dim=0:*,100,0, time_dim=0:*,100,0 ]>
+Query was executed successfully
+
+SCIDB QUERY : <store(redimension(project(cross_join(index_lookup(Raw_Data_Two,symbol_indices,Raw_Data_Two.Symbol,sym_dim) as A1, project(index_lookup(Raw_Data_Two,time_indices,Raw_Data_Two.Time,time_dim),time_dim) as A2, A1.Line, A2.Line),sym_dim,time_dim,Price),Timeseries),Timeseries)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(Symbols,count ( * ))>
+{i} count
+{0} 24
+
+SCIDB QUERY : <scan ( Symbols )>
+sym_dim,ID,Qty
+0,0,10
+1,1,100
+2,21,100000
+3,3,10000
+4,4,100000
+5,6,10000000
+6,2,1000
+7,8,100000
+8,9,10000
+9,10,1000
+10,11,100
+11,12,10
+12,23,1000
+13,14,1000
+14,20,1000000
+15,15,1000
+16,22,10000
+17,16,10000
+18,17,100000
+19,18,1000000
+20,7,1000000
+21,19,10000000
+22,13,100
+23,5,1000000
+
+SCIDB QUERY : <aggregate (Timeseries,avg ( Price ),sym_dim)>
+sym_dim,Price_avg
+0,14.2917
+1,14.2917
+2,14.2917
+3,14.2917
+4,14.2917
+5,14.2917
+6,14.2917
+7,14.2917
+8,14.2917
+9,14.2917
+10,14.2917
+11,14.2917
+12,14.2917
+13,14.2917
+14,14.2917
+15,14.2917
+16,14.2917
+17,14.2917
+18,14.2917
+19,14.2917
+21,14.2917
+22,14.2917
+23,14.2917
+
+SCIDB QUERY : <scan ( Symbols )>
+0,0,10
+1,1,100
+2,21,100000
+3,3,10000
+4,4,100000
+5,6,10000000
+6,2,1000
+7,8,100000
+8,9,10000
+9,10,1000
+10,11,100
+11,12,10
+12,23,1000
+13,14,1000
+14,20,1000000
+15,15,1000
+16,22,10000
+17,16,10000
+18,17,100000
+19,18,1000000
+20,7,1000000
+21,19,10000000
+22,13,100
+23,5,1000000
+
+SCIDB QUERY : <aggregate (Timeseries,avg ( Price ),sym_dim)>
+0,14.2917
+1,14.2917
+2,14.2917
+3,14.2917
+4,14.2917
+5,14.2917
+6,14.2917
+7,14.2917
+8,14.2917
+9,14.2917
+10,14.2917
+11,14.2917
+12,14.2917
+13,14.2917
+14,14.2917
+15,14.2917
+16,14.2917
+17,14.2917
+18,14.2917
+19,14.2917
+21,14.2917
+22,14.2917
+23,14.2917
+
+SCIDB QUERY : <remove(Raw_Data_One)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(Raw_Data_Two)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(Symbols)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(Timeseries)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(symbol_indices)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(time_indices)>
+Query was executed successfully
+

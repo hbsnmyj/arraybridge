@@ -1,0 +1,63 @@
+# See ticket 1772 for detals: https://trac.scidb.net/ticket/1772
+#
+# A list of negative tests for the .csv and .tsv loaders. 
+--setup
+--test
+--start-query-logging
+
+CREATE ARRAY loadTest < attr_one : string not null, attr_two : int64 > [i=0:*,5,0]
+
+#
+#  Checks for .csv file format
+#
+
+# Check that a '?' symbol with no associated value is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_001.csv',-2, 'csv')"
+
+# Check that a '?' symbol with a value > 256 is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_002.csv',-2, 'csv')"
+
+# Check that a '?' symbol with a value < 0 is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_003.csv',-2, 'csv')"
+
+# Check that a '?' symbol with a string following is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_004.csv',-2, 'csv')"
+
+# Check that a valid missing code is rejected when applied to a not nullable column
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_005.csv',-2, 'csv')"
+
+# Check that a load missing a column is rejected 
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_006.csv',-2, 'csv')"
+
+# Check that a load with a malformed type is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_007.csv',-2, 'csv')"
+
+#
+#  Equivalent checks for .tsv file format (which uses a different parser)
+#
+
+# Check that a '?' symbol with no associated value is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_001.tsv',-2, 'tsv')"
+
+# Check that a '?' symbol with a value > 256 is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_002.tsv',-2, 'tsv')"
+
+# Check that a '?' symbol with a value < 0 is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_003.tsv',-2, 'tsv')"
+
+# Check that a '?' symbol with a string following is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_004.tsv',-2, 'tsv')"
+
+# Check that a valid missing code is rejected whan applied to a not nullable column
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_005.tsv',-2, 'tsv')"
+
+# Check that a load missing a column is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_006.tsv',-2, 'tsv')"
+
+# Check that a load with a malformed type is rejected
+--error --hideQueryString --code=scidb::SCIDB_SE_IMPORT_ERROR::SCIDB_LE_FILE_IMPORT_FAILED "load(loadTest,'${TEST_DATA_DIR}/negative_tests_input_007.csv',-2, 'csv')"
+
+--stop-query-logging
+
+--cleanup
+remove(loadTest)

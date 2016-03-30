@@ -1,0 +1,11 @@
+# ticket:4102, allow 90 nested levels of AFL operators, but not 91.
+--setup
+--test
+
+# 90 operators (89 project + 1 build) is fine.
+project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(build(<a:double>[i=0:7,1,0],0),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a)
+
+# 91 operators is not fine.
+--error --code=scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_HAS_TOO_DEEP_NESTING_LEVELS "project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(build(<a:double>[i=0:7,1,0],0),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a)"
+
+--cleanup

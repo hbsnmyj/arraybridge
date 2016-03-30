@@ -1,0 +1,22 @@
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} schema
+{0} 'XG<v:int64> [i=0:1999,200,0,j=0:399,40,0]'
+
+{i} schema
+{0} 'XG_ac<v:int64> [i=0:1999,256,0,j=0:399,20,0]'
+
+{i,j} v,v
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

@@ -1,0 +1,25 @@
+--setup
+
+CREATE array Raw_Test_Data < I : int64, J : int64, V : double NULL, W : string > [ Line=0:*,100,0 ]
+--shell --store-all --command "iquery -c ${IQUERY_HOST:=127.0.0.1} -p ${IQUERY_PORT:=1239} -aq "load ( Raw_Test_Data, '${TEST_DATA_DIR}/redim_data1_str.txt')""
+--igdata "store(redimension(uniq(sort(project(Raw_Test_Data, W))),<W:string>[i=0:*,1000,0]), w_indices)"
+
+--test
+--start-query-logging
+
+CREATE ARRAY Data < AV : double NULL DEFAULT 9.999 > [ I=0:999,10,0, J=0:999,10,0, W_dim=0:999,4,0 ]
+
+--set-format csv+:l
+store(redimension(project(index_lookup(Raw_Test_Data,w_indices,Raw_Test_Data.W,W_dim),W_dim,V,I,J),Data, avg(V) as AV),Data)
+
+scan (Raw_Test_Data)
+scan (Data)
+--reset-format
+
+--stop-query-logging
+--cleanup
+
+remove(Raw_Test_Data)
+remove(Data)
+remove(w_indices)
+

@@ -1,0 +1,95 @@
+Query was executed successfully
+
+Query was executed successfully
+
+Load the odd characters.
+[Query was executed successfully, ignoring data output by this query.]
+
+{i} count
+{0} 8
+
+{i} id,s1,s2,code,s3,s4
+{0} 1,'Brian','Griffin',1,'5 Spooner St., Quahog RI','[dog]'
+{1} 2,'Lois','Griffin*',1,'Quahog','{Utterly charming}'
+{2} 4,'Peter','Griffin',2,'Quahog','[less charming]'
+{3} 8,'Meg','Griffin',2,'(Remulax ®)','[It\'s terrible what they do to Meg...]'
+{4} 16,'Stewie','Griffin',7,'Evil Genius ®','[unbound]'
+{5} 32,'Chris','Griffin',2,'Quahog','[usually not inhumane]'
+{6} 64,'Glenn','Quagmire',69,'I live next door to "Mr. Etiquette".','!@#$%^&*()-'
+{7} 128,'Cleveland','Brown',6,'I used to live across from "Mr. Etiquette."','evil triple quote'
+
+Save and reload those odd chars.
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+
+Save as CSV, reload as CSV, resave, check for diffs.
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Final CSV output:
+1,'Brian','Griffin',1,'5 Spooner St., Quahog RI','[dog]'
+2,'Lois','Griffin*',1,'Quahog','{Utterly charming}'
+4,'Peter','Griffin',2,'Quahog','[less charming]'
+8,'Meg','Griffin',2,'(Remulax ®)','[It\'s terrible what they do to Meg...]'
+16,'Stewie','Griffin',7,'Evil Genius ®','[unbound]'
+32,'Chris','Griffin',2,'Quahog','[usually not inhumane]'
+64,'Glenn','Quagmire',69,'I live next door to "Mr. Etiquette".','!@#$%^&*()-'
+128,'Cleveland','Brown',6,'I used to live across from "Mr. Etiquette."','evil triple quote'
+
+
+Same test but with double quoting (exhibits libcsv bug):
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Final CSV-with-double-quotes output:
+1,"Brian","Griffin",1,"5 Spooner St., Quahog RI","[dog]"
+2,"Lois","Griffin*",1,"Quahog","{Utterly charming}"
+4,"Peter","Griffin",2,"Quahog","[less charming]"
+8,"Meg","Griffin",2,"(Remulax ®)","[It's terrible what they do to Meg...]"
+16,"Stewie","Griffin",7,"Evil Genius ®","[unbound]"
+32,"Chris","Griffin",2,"Quahog","[usually not inhumane]"
+64,"Glenn","Quagmire",69,"I live next door to \"Mr. Etiquette\".","!@#$%^&*()-"
+128,"Cleveland","Brown",6,"I used to live across from \"Mr. Etiquette.\",\"evil triple quote",null
+
+8c8
+< 128,"Cleveland","Brown",6,"I used to live across from \"Mr. Etiquette.\"","evil triple quote"
+---
+> 128,"Cleveland","Brown",6,"I used to live across from \"Mr. Etiquette.\",\"evil triple quote",null
+
+{i} id,s1,s2,code,s3,s4,row_offset
+{7} null,null,null,null,null,'Too few input record fields at position 451, line 8, column 5',451
+
+Same test but using TSV.
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+[Query was executed successfully, ignoring data output by this query.]
+
+Final TSV output (with pipes):
+1|Brian|Griffin|1|5 Spooner St., Quahog RI|[dog]
+2|Lois|Griffin*|1|Quahog|{Utterly charming}
+4|Peter|Griffin|2|Quahog|[less charming]
+8|Meg|Griffin|2|(Remulax ®)|[It's terrible what they do to Meg...]
+16|Stewie|Griffin|7|Evil Genius ®|[unbound]
+32|Chris|Griffin|2|Quahog|[usually not inhumane]
+64|Glenn|Quagmire|69|I live next door to "Mr. Etiquette".|!@#$%^&*()-
+128|Cleveland|Brown|6|I used to live across from "Mr. Etiquette."|evil triple quote
+
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

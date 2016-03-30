@@ -1,0 +1,21 @@
+--setup
+--start-query-logging
+
+# Dimensions similar to variant_warehouse variant arrays.
+create temp array KgVar<val:double>[i=0:*,1,0, j=0:*,10000000,0, k=0:*,10000000,0, l=0:19,20,0]
+create temp array KgVar2<val:double>[i=0:*,1,0, j=0:*,10000000,0, k=0:*,10000000,0, l=0:19,20,0]
+
+--test
+
+# Opaque save and load with logical chunk size > 2**32 (SDB-5220)
+insert(redimension(apply(build(<val:double>[i=0:3,4,0], i), j, i+1, k, i+2, l, i+3), KgVar), KgVar)
+save(KgVar, '/tmp/KgVar.opaque', -2, 'opaque')
+load(KgVar2, '/tmp/KgVar.opaque', -2, 'opaque')
+aggregate(filter(join(KgVar as A, KgVar2 as B), A.val <> B.val), count(*))
+
+--cleanup
+--shell --command "rm -f /tmp/KgVar.opaque"
+remove(KgVar)
+remove(KgVar2)
+
+--stop-query-logging

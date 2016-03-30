@@ -1,0 +1,79 @@
+# Test collapse of automatically inserted repartition/repart with
+# explicitly given autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the insert operator (inserted
+# by requiresRedimensionOrRepartition() in the PhysicalInsert
+# operator).
+#
+# An explicit repart/redimension which has autochunking must have the same
+# shape (startMin, endMax, chunkOverlap) that the insert operator
+# expects (which is defined by the auto-inserted repart/redimension).
+# The collapsed repart/redimension will populate the chunkInterval based upon
+# the auto-inserted repart/redimension schema.
+#
+# Additionally tests to confirm failures when an explicitly given
+# repart/redimension that are mismatched (startMin, endMax,
+# chunkOverlap) with the "auto-inserted" (needed) repart/redimension
+# schema fail with the expected Error Codes are given.
+
+--setup
+create TEMP array original<val:double>[i=0:9,5,0]
+create TEMP array another<val:double>[i=0:9,10,2]
+--start-igdata
+store(build(original,i),original)
+store(build(another,i*2),another)
+--stop-igdata
+
+--test
+--start-query-logging
+#
+# Confirm that auto-insert of repart/redimension still works without error
+#
+--start-igdata
+insert(another,original)
+--stop-igdata
+# physical plan of auto-inserted repart/redimension
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('insert(another,original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+####  [reset data in original]
+--start-igdata
+store(build(original,i),original)
+--stop-igdata
+
+
+#
+# Confirm that autochunk repart with matching startMin,endMax,and chunkOverlap is collapsed
+#
+--start-igdata
+insert(repart(another,<val:double>[i=0:9,*,0]),original)
+--stop-igdata
+# physical plan of collapsed repart/redimension
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('insert(repart(another,<val:double>[i=0:9,*,0]),original)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+### Negative Test cases
+### with the negative test cases, no physical plan is generated.
+#
+# Confirm that mismatched values in the explicit repart/redimension error as expected
+#
+# invalid startMin
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "insert(redimension(another,<val:double>[i=1:9,*,0]),original)"
+# invalid endMax in Dimension in explicit repart
+# Note: [i] is the same as [i=0:*,*,0]
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "insert(redimension(another,<val:double>[i]),original)"
+# invalid startMin/endMax
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "insert(redimension(another,<val:double>[i=1:10,*,0]),original)"
+# invalid overlap in dimension in explicit repart
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "insert(repart(another,<val:double>[i=0:9,*,1]),original)"
+
+--stop-query-logging
+--cleanup
+
+remove(original)
+remove(another)
+
+#  LocalWords:  iquery igdata aq afl IQUERY sed TESTDIR physplan scidb SCIDB
+#  LocalWords:  startMin endMax chunkInterval chunkOverlap
+#  LocalWords:  requiresRedimensionOrRepartition
+#  LocalWords:  PhysicalOperator PhysicalInsert

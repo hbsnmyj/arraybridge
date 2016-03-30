@@ -1,0 +1,80 @@
+# Test the quoting of quotes in CSV files
+--setup
+
+create array simple1 <s1:string null,n:int64 null>[i=0:*,4,0]
+create array simple2 <s1:string null,n:int64 null>[i=0:*,4,0]
+
+--test
+
+# TSV faithfully records the quotes in a standardized manner, so load
+# the CSV, dump it as TSV, and see what you get....
+
+--shell --command "printf "\"Double 'quotes' w/ , & (\"\") inside\",1\n" > /tmp/quotes1.csv"
+load(simple1, '/tmp/quotes1.csv', -2, 'csv:d')
+--start-igdata
+save(simple1, '/tmp/quotes1.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes1.tsv"
+
+--echo Same but w/o the :d option, auto-quoting should handle it OK.
+--shell --command "printf "\"Double 'quotes' w/ , & (\"\") inside\",1\n" > /tmp/quotes1.csv"
+load(simple1, '/tmp/quotes1.csv', -2, 'csv')
+--start-igdata
+save(simple1, '/tmp/quotes1.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes1.tsv"
+
+--shell --command "printf "\"Double 'quotes' w/ , & (\\\") inside\",1\n" > /tmp/quotes2.csv"
+load(simple1, '/tmp/quotes2.csv', -2, 'csv:d')
+--start-igdata
+save(simple1, '/tmp/quotes2.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes2.tsv"
+
+--echo Same but w/o the :d option, auto-quoting should handle it OK.
+--shell --command "printf "\"Double 'quotes' w/ , & (\\\") inside\",1\n" > /tmp/quotes2.csv"
+load(simple1, '/tmp/quotes2.csv', -2, 'csv')
+--start-igdata
+save(simple1, '/tmp/quotes2.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes2.tsv"
+
+--shell --command "printf "'Single \"quotes\" w/ , & ('') inside',3\n" > /tmp/quotes3.csv"
+load(simple2, '/tmp/quotes3.csv', -2, 'csv')
+--start-igdata
+save(simple2, '/tmp/quotes3.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes3.tsv"
+
+--shell --command "printf "'Single \"quotes\" w/ , & (\\') inside',4\n" > /tmp/quotes4.csv"
+load(simple2, '/tmp/quotes4.csv', -2, 'csv')
+--start-igdata
+save(simple2, '/tmp/quotes4.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes4.tsv"
+
+--echo This input used to crash in the CsvParser, but now it should just make a shadow entry.
+--shell --command "printf "'Single \"quotes\" w/ , MISSING_END_QUOTE,5\n" > /tmp/quotes5.csv"
+load(simple2, '/tmp/quotes5.csv', -2, 'csv', 100, simp2_shadow)
+--start-igdata
+save(simple2, '/tmp/quotes5.tsv', -2, 'tsv')
+--stop-igdata
+--shell --store --command "od -c /tmp/quotes5.tsv"
+scan(simp2_shadow)
+
+# Ticket 4125.
+--echo This used to cause a CsvParser assertion failure.
+--shell --command "printf "'Single \"quotes\" w/ , MISSING_END_QUOTE,5\n" > /tmp/quotes6.csv"
+# ...and append about 8KiB more... well beyond the parser's read buffer size.
+--shell --command "for x in $(seq 420) ;do echo '20 bytes of fun.,42' ;done >> /tmp/quotes6.csv"
+--start-igdata
+load(simple2, '/tmp/quotes6.csv', -2, 'csv', 100, simp3_shadow)
+--stop-igdata
+scan(simp3_shadow)
+
+--cleanup
+--shell --command "rm -f /tmp/quotes[0-9].?sv"
+remove(simple1)
+remove(simple2)
+remove(simp2_shadow)
+remove(simp3_shadow)

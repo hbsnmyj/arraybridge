@@ -1,0 +1,78 @@
+Query was executed successfully
+
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(window(m20x20,0,2,0,2,max(val),min(val)),autoredim)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(window(redimension(m20x20,<val:double>[i=0:19,20,2,j=0:19,20,2]),0,2,0,2,max(val),min(val)),window_complete_redim)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(window(redimension(m20x20,<val:double>[i=0:19,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val)),window_autochunk_redim)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:19,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:19,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:19,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:19,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:14,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:14,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:14,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:14,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:*,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:*,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=1:*,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=1:*,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,10,4,j=0:19,10,4]),0,2,0,2,max(val),min(val))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,4,j=0:19,*,4]),0,2,0,2,max(val),min(val))>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,10,1]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,10,1]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,10,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,10,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,2]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,2]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,2,j=0:19,*,1]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,*,2,j=0:19,*,1]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))>
+[An error expected at this place for the query "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))". And it failed with error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART. Expected error code = scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART.]
+
+SCIDB QUERY : <show(autoredim)>
+{i} schema
+{0} 'autoredim<val_max:double,val_min:double> [i=0:19,2,0,j=0:19,2,0]'
+
+SCIDB QUERY : <show(window_complete_redim)>
+{i} schema
+{0} 'window_complete_redim<val_max:double,val_min:double> [i=0:19,20,0,j=0:19,20,0]'
+
+SCIDB QUERY : <show(window_autochunk_redim)>
+{i} schema
+{0} 'window_autochunk_redim<val_max:double,val_min:double> [i=0:19,16,0,j=0:19,16,0]'
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+
+Query was executed successfully
+

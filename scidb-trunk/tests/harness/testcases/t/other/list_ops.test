@@ -1,0 +1,16 @@
+# Ticket 4751: Hide internal operators.
+# Note we filter on library='scidb' so the test passes regardless of which libraries are loaded.
+--setup
+--test
+--set-format csv:l
+
+--echo Internal operators only.
+filter(list('operators', true), internal and library='scidb')
+
+--echo All external operators.
+filter(list('operators'), library='scidb')
+
+--echo All external operators, derived by filtering.
+project(filter(list('operators',true), internal=false and library='scidb'), name, library)
+
+--cleanup

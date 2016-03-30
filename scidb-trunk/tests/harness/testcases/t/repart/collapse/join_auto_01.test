@@ -1,0 +1,215 @@
+# Test collapse of automatically inserted repartition/repart with
+# explicitly given autochunked redimension/repart as input
+
+# This set of tests uses the physical plan output to confirm that the
+# explicitly specified repart/redimension which has autochunking is
+# collapsed into a singular repart/redimension with the
+# "auto-inserted" repart/redimension of the join operator (inserted
+# by requiresRedimensionOrRepartition() in the PhysicalJoin
+# operator).
+#
+# An explicit repart/redimension which has autochunking must have the same
+# shape (startMin, chunkOverlap) that the join operator
+# expects (which is defined by the auto-inserted repart/redimension).
+# The collapsed repart/redimension will populate the chunkInterval based upon
+# the auto-inserted repart/redimension schema.
+#
+# Additionally tests to confirm failures when an explicitly given
+# repart/redimension that are mismatched (startMin, endMax,
+# chunkOverlap) with the "auto-inserted" (needed) repart/redimension
+# schema fail with the expected Error Codes are given.
+
+##
+## The join operator uses the schema of the left-most NON-AUTOCHUNKED
+## input.
+##
+##  The following tests the case where the explicit AUTOCHUNKED
+##  repart/redimension is on the second input schema. In this case the
+##  "needed" schema for the join is the left_array (<val:double>[i=0:9,2,0, j=0:9,4,1])
+
+
+--setup
+create TEMP array left_array  <val:double>[x=0:9,2,1, y=0:9,4,2]
+create TEMP array right_array <val:double>[i=0:9,3,3, j=0:15,5,4]
+--start-igdata
+store(build(left_array,1),left_array)
+store(build(right_array,0),right_array)
+--stop-igdata
+
+--test
+--start-query-logging
+#
+# Confirm that auto-insert of repart/redimension still works without error
+#
+# physical plan of auto-inserted repart/redimension
+--echo physical plan of auto-inserted repart/redimension
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,right_array)','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+#
+# At least one of the inputs has to be non-autochunked
+#
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "join(repart(left_array,<val:double>[x=0:9,*,3, y=0:15,4,4]),repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))"
+#
+# confirm that exact match to auto-insert still works
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+# This repart matches all non-chunk interval portions of the schema, so the collapse occurs
+## physical plan of join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))
+###      (first autochunked):  join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,2]))
+###      (second autochunked): join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,2]))
+###      (both autochunked):   join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))
+--echo Physical Plan of collapsing redimension
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+
+--igdata "store(join(left_array,right_array), L_R)"
+show(L_R)
+--igdata "store(join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,2])),L_rR)"
+show(L_rR)
+
+#
+# Vary the other aspects (startMin/endMax/chunkOverlap) of the dimensions in the explicit repart/redimension
+#
+##
+## alter startMin --> all cases should error
+##
+### alter first dimension's startMin
+###      (first autochunked):  join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,4,2]))
+###      (second autochunked): join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=0:15,*,2]))
+###      (both autochunked):   join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,*,2]))
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,4,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=0:15,*,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=0:15,*,2]))"
+### alter second dimension's startMin
+###      (first autochunked):  join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,4,2]))
+###      (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=1:15,*,2]))
+###      (both autochunked):   join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,*,2]))
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,4,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=1:15,*,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=1:15,*,2]))"
+### alter both dimension's startMin
+###      (first autochunked):  join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,4,2]))
+###      (second autochunked): join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=1:15,*,2]))
+###      (both autochunked):   join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,*,2]))
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,4,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,2,1, j=1:15,*,2]))"
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_START_INDEX_MISMATCH "join(left_array,redimension(right_array,<val:double>[i=1:9,*,1, j=1:15,*,2]))"
+##
+## alter EndMax
+##
+### The endMax can be greater
+###
+### increase endMax for first dim
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:*,2,1, j=0:15,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,*,2]))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,2,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:15,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+### increase endMax for second dim
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:*,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,*,2]))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:*,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:*,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+### increase endMax for both dims
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:99,2,1, j=0:199,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,*,2]))
+#### physical plan for: join(left_array,redimension(right_array,<val:double>[i=0:*,*,1, j=0:*,*,2]))
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,4,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,2,1, j=0:199,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+--shell --store-all --command "iquery -c $IQUERY_HOST -p $IQUERY_PORT -aq "_explain_physical('join(left_array,redimension(right_array,<val:double>[i=0:99,*,1, j=0:199,*,2]))','afl')" | sed -f ${TESTDIR}/fix_physplan.sed"
+###
+### Invalid EndMax (smaller than original array) ==> error
+###
+#### decrease the endMax of the first dimension (below the min)
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:15,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,*,2]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,4,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:15,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:15,*,2]))"
+#### decrease the endMax of the second dimension
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:12,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,*,2]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,4,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:9,2,1, j=0:12,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:9,*,1, j=0:12,*,2]))"
+#### decrease the endMax of both the dimensions
+####   (first autochunked) : join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,4,2]))
+####   (second autochunked): join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:12,*,2]))
+####   (both autochunked)  : join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,*,2]))
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,4,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,2,1, j=0:12,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "join(left_array,redimension(right_array,<val:double>[i=0:7,*,1, j=0:12,*,2]))"
+##
+## alter overlap. The overlap of the explicit repart MUST be <= the overlap of the exemplar
+### alter the overlap of the first dimension:
+###  schema of left_array: <val:double>[i=0:9,2,1, j=0:9,4,2]
+####   (first autochunked, smaller overlap) : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,2]))
+####   (second autochunked, smaller overlap): join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,2]))
+####   (both autochunked, smaller overlap)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,2]))
+####   (first autochunked, greater overlap) : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,2]))
+####   (second autochunked, greater overlap): join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,2]))
+####   (both autochunked, greater overlap)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,2]))
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,2]))"
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,2]))"
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,2]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,2]))"
+### alter the overlap of the second dimension
+####   (first autochunked, smaller overlap) : join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,1]))
+####   (second autochunked, smaller overlap): join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,1]))
+####   (both autochunked, smaller overlap)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,1]))
+####   (first autochunked, greater overlap) : join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,3]))
+####   (second autochunked, greater overlap): join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,3]))
+####   (both autochunked, greater overlap)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,3]))
+--igdata   "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,1]))"
+--igdata   "join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,1]))"
+--igdata   "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,4,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,2,1, j=0:15,*,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,1, j=0:15,*,3]))"
+### alter the overlap of the both dimension
+####   (first autochunked, smaller, smaller) : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,1]))
+####   (second autochunked, smaller, smaller): join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,1]))
+####   (both autochunked, smaller, smaller)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,1]))
+####   (first autochunked, smaller, greater) : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,3]))
+####   (second autochunked, smaller, greater): join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,3]))
+####   (both autochunked, smaller, greater)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,3]))
+####   (first autochunked, greater, smaller) : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,1]))
+####   (second autochunked, greater, smaller): join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,1]))
+####   (both autochunked, greater, smaller)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,1]))
+####   (first autochunked, greater, greater) : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,3]))
+####   (second autochunked, greater, greater): join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,3]))
+####   (both autochunked, greater, greater)  : join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,3]))
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,1]))"
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,1]))"
+--igdata  "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,4,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,2,0, j=0:15,*,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,0, j=0:15,*,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,1]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,4,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,2,2, j=0:15,*,3]))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "join(left_array,repart(right_array,<val:double>[i=0:9,*,2, j=0:15,*,3]))"
+
+--stop-query-logging
+
+--cleanup
+remove(left_array)
+remove(right_array)
+remove(L_R)
+remove(L_rR)
+
+#  LocalWords:  iquery igdata aq afl IQUERY sed TESTDIR physplan scidb SCIDB
+#  LocalWords:  startMin endMax chunkInterval chunkOverlap
+#  LocalWords:  requiresRedimensionOrRepartition
+#  LocalWords:  PhysicalOperator PhysicalJoin

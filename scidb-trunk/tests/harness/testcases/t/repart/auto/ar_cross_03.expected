@@ -1,0 +1,18 @@
+Query was executed successfully
+
+Query was executed successfully
+
+We want to see that j-overlap is now 2 ...
+SCIDB QUERY : <show('cross_join(left_array,right_array,j,k)', 'afl')>
+{i} schema
+{0} 'left_arrayright_array<val:double,val:double> [i=0:9,5,3,j=0:9,5,2]'
+
+Confirm that the same value is used for autochunking.
+SCIDB QUERY : <show('cross_join(left_array,redimension(right_array,<val:double>[k=0:19,*,2]),j,k)','afl')>
+{i} schema
+{0} 'left_arrayright_array<val:double,val:double> [i=0:9,5,3,j=0:9,5,2]'
+
+Query was executed successfully
+
+Query was executed successfully
+

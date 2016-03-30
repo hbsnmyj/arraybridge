@@ -1,0 +1,51 @@
+--setup
+# CREATE TEMP ARRAY m4x4 <val:double>[i=0:3,2,0,j=0:3,2,0]
+CREATE TEMP ARRAY m20x20 <val:double>[i=0:19,2,0,j=0:19,2,0]
+
+--start-igdata
+# store(build(m4x4,i*4+j),m4x4)
+store(build(m20x20,i*20+j),m20x20)
+--stop-igdata
+
+--test
+--start-query-logging
+--start-igdata
+store(window(m20x20,0,2,0,2,max(val),min(val)),autoredim)
+store(window(redimension(m20x20,<val:double>[i=0:19,20,2,j=0:19,20,2]),0,2,0,2,max(val),min(val)),window_complete_redim)
+store(window(redimension(m20x20,<val:double>[i=0:19,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val)),window_autochunk_redim)
+# alter startMin
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:19,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:19,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=0:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:19,*,2,j=1:19,*,2]),0,2,0,2,max(val),min(val))"
+# alter endMax (<)
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:14,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:14,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))"
+# alter endMax (>)
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:*,2,2,j=0:19,2,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_INVALID_REDIMENSION_POSITION "window(redimension(m20x20,<val:double>[i=1:*,*,2,j=0:19,*,2]),0,2,0,2,max(val),min(val))"
+# alter overlap
+## "redim is larger than needed"
+window(redimension(m20x20,<val:double>[i=0:19,10,4,j=0:19,10,4]),0,2,0,2,max(val),min(val))
+window(redimension(m20x20,<val:double>[i=0:19,*,4,j=0:19,*,4]),0,2,0,2,max(val),min(val))
+## "redim is smaller than needed"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,10,1]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(m20x20,<val:double>[i=0:19,10,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))"
+
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,2]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(m20x20,<val:double>[i=0:19,*,2,j=0:19,*,1]),0,2,0,2,max(val),min(val))"
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(m20x20,<val:double>[i=0:19,*,1,j=0:19,*,1]),0,2,0,2,max(val),min(val))"
+
+--stop-igdata
+
+show(autoredim)
+show(window_complete_redim)
+show(window_autochunk_redim)
+--stop-query-logging
+
+--cleanup
+# remove(m4x4)
+remove(m20x20)
+remove(autoredim)
+remove(window_complete_redim)
+remove(window_autochunk_redim)

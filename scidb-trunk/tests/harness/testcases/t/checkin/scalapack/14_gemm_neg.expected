@@ -1,0 +1,897 @@
+SCIDB QUERY : <load_library('linear_algebra')>
+Query was executed successfully
+
+SCIDB QUERY : <create array M1 <val: double not null> [I=1:10,5,0, J=1:6,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M2 <val: double not null> [I=1:6,3,0, J=1:15,5,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M3 <val: double not null> [I=1:5,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M4 <val: double not null> [I=1:5,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M5 <val: string not null> [I=1:10,5,0, J=1:6,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M6 <val: string not null> [I=1:6,3,0, J=1:15,5,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M7 <val: double> [I=1:10,5,0, J=1:6,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M8 <val: double not null> [I=1:6,3,0, J=1:15,5,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M9 <val: double not null> [I=1:10,5,0, J=1:6,3,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M10 <val: double not null> [I=1:6,3,0, J=1:15,5,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M12 <val: double not null> [I=1:*,3,0, J=1:15,5,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array M13 <val: double not null> [I=1:6,2,0, J=1:15,4,0]>
+Query was executed successfully
+
+SCIDB QUERY : <store(build(M1, (I*3)+J), M1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M2, (I*3)+J), M2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M3, (I+1)), M3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M4, (I+1)), M4)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M5, (I*3)+J), M5)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M6, (I*3)+J), M6)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(M8, (I*3)+J), M8)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(cross_join(M1, M1), M11)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(M2, M12)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(M2, M13)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <spgemm(M1,M2)>
+{I,J} multiply
+{1,1} 501
+{1,2} 540
+{1,3} 579
+{1,4} 618
+{1,5} 657
+{2,1} 708
+{2,2} 765
+{2,3} 822
+{2,4} 879
+{2,5} 936
+{3,1} 915
+{3,2} 990
+{3,3} 1065
+{3,4} 1140
+{3,5} 1215
+{4,1} 1122
+{4,2} 1215
+{4,3} 1308
+{4,4} 1401
+{4,5} 1494
+{5,1} 1329
+{5,2} 1440
+{5,3} 1551
+{5,4} 1662
+{5,5} 1773
+{1,6} 696
+{1,7} 735
+{1,8} 774
+{1,9} 813
+{1,10} 852
+{2,6} 993
+{2,7} 1050
+{2,8} 1107
+{2,9} 1164
+{2,10} 1221
+{3,6} 1290
+{3,7} 1365
+{3,8} 1440
+{3,9} 1515
+{3,10} 1590
+{4,6} 1587
+{4,7} 1680
+{4,8} 1773
+{4,9} 1866
+{4,10} 1959
+{5,6} 1884
+{5,7} 1995
+{5,8} 2106
+{5,9} 2217
+{5,10} 2328
+{1,11} 891
+{1,12} 930
+{1,13} 969
+{1,14} 1008
+{1,15} 1047
+{2,11} 1278
+{2,12} 1335
+{2,13} 1392
+{2,14} 1449
+{2,15} 1506
+{3,11} 1665
+{3,12} 1740
+{3,13} 1815
+{3,14} 1890
+{3,15} 1965
+{4,11} 2052
+{4,12} 2145
+{4,13} 2238
+{4,14} 2331
+{4,15} 2424
+{5,11} 2439
+{5,12} 2550
+{5,13} 2661
+{5,14} 2772
+{5,15} 2883
+{6,1} 1536
+{6,2} 1665
+{6,3} 1794
+{6,4} 1923
+{6,5} 2052
+{7,1} 1743
+{7,2} 1890
+{7,3} 2037
+{7,4} 2184
+{7,5} 2331
+{8,1} 1950
+{8,2} 2115
+{8,3} 2280
+{8,4} 2445
+{8,5} 2610
+{9,1} 2157
+{9,2} 2340
+{9,3} 2523
+{9,4} 2706
+{9,5} 2889
+{10,1} 2364
+{10,2} 2565
+{10,3} 2766
+{10,4} 2967
+{10,5} 3168
+{6,6} 2181
+{6,7} 2310
+{6,8} 2439
+{6,9} 2568
+{6,10} 2697
+{7,6} 2478
+{7,7} 2625
+{7,8} 2772
+{7,9} 2919
+{7,10} 3066
+{8,6} 2775
+{8,7} 2940
+{8,8} 3105
+{8,9} 3270
+{8,10} 3435
+{9,6} 3072
+{9,7} 3255
+{9,8} 3438
+{9,9} 3621
+{9,10} 3804
+{10,6} 3369
+{10,7} 3570
+{10,8} 3771
+{10,9} 3972
+{10,10} 4173
+{6,11} 2826
+{6,12} 2955
+{6,13} 3084
+{6,14} 3213
+{6,15} 3342
+{7,11} 3213
+{7,12} 3360
+{7,13} 3507
+{7,14} 3654
+{7,15} 3801
+{8,11} 3600
+{8,12} 3765
+{8,13} 3930
+{8,14} 4095
+{8,15} 4260
+{9,11} 3987
+{9,12} 4170
+{9,13} 4353
+{9,14} 4536
+{9,15} 4719
+{10,11} 4374
+{10,12} 4575
+{10,13} 4776
+{10,14} 4977
+{10,15} 5178
+
+SCIDB QUERY : <spgemm(M9,M10)>
+{I,J} multiply
+{1,1} 501
+{1,2} 540
+{1,3} 579
+{1,4} 618
+{1,5} 657
+{2,1} 708
+{2,2} 765
+{2,3} 822
+{2,4} 879
+{2,5} 936
+{3,1} 915
+{3,2} 990
+{3,3} 1065
+{3,4} 1140
+{3,5} 1215
+{4,1} 1122
+{4,2} 1215
+{4,3} 1308
+{4,4} 1401
+{4,5} 1494
+{5,1} 1329
+{5,2} 1440
+{5,3} 1551
+{5,4} 1662
+{5,5} 1773
+{1,6} 696
+{1,7} 735
+{1,8} 774
+{1,9} 813
+{1,10} 852
+{2,6} 993
+{2,7} 1050
+{2,8} 1107
+{2,9} 1164
+{2,10} 1221
+{3,6} 1290
+{3,7} 1365
+{3,8} 1440
+{3,9} 1515
+{3,10} 1590
+{4,6} 1587
+{4,7} 1680
+{4,8} 1773
+{4,9} 1866
+{4,10} 1959
+{5,6} 1884
+{5,7} 1995
+{5,8} 2106
+{5,9} 2217
+{5,10} 2328
+{1,11} 891
+{1,12} 930
+{1,13} 969
+{1,14} 1008
+{1,15} 1047
+{2,11} 1278
+{2,12} 1335
+{2,13} 1392
+{2,14} 1449
+{2,15} 1506
+{3,11} 1665
+{3,12} 1740
+{3,13} 1815
+{3,14} 1890
+{3,15} 1965
+{4,11} 2052
+{4,12} 2145
+{4,13} 2238
+{4,14} 2331
+{4,15} 2424
+{5,11} 2439
+{5,12} 2550
+{5,13} 2661
+{5,14} 2772
+{5,15} 2883
+{6,1} 1536
+{6,2} 1665
+{6,3} 1794
+{6,4} 1923
+{6,5} 2052
+{7,1} 1743
+{7,2} 1890
+{7,3} 2037
+{7,4} 2184
+{7,5} 2331
+{8,1} 1950
+{8,2} 2115
+{8,3} 2280
+{8,4} 2445
+{8,5} 2610
+{9,1} 2157
+{9,2} 2340
+{9,3} 2523
+{9,4} 2706
+{9,5} 2889
+{10,1} 678
+{10,2} 774
+{10,3} 870
+{10,4} 966
+{10,5} 1062
+{6,6} 2181
+{6,7} 2310
+{6,8} 2439
+{6,9} 2568
+{6,10} 2697
+{7,6} 2478
+{7,7} 2625
+{7,8} 2772
+{7,9} 2919
+{7,10} 3066
+{8,6} 2775
+{8,7} 2940
+{8,8} 3105
+{8,9} 3270
+{8,10} 3435
+{9,6} 3072
+{9,7} 3255
+{9,8} 3438
+{9,9} 3621
+{9,10} 3804
+{10,6} 1158
+{10,7} 1254
+{10,8} 1350
+{10,9} 1446
+{10,10} 1542
+{6,11} 2826
+{6,12} 2955
+{6,13} 3084
+{6,14} 3213
+{6,15} 3342
+{7,11} 3213
+{7,12} 3360
+{7,13} 3507
+{7,14} 3654
+{7,15} 3801
+{8,11} 3600
+{8,12} 3765
+{8,13} 3930
+{8,14} 4095
+{8,15} 4260
+{9,11} 3987
+{9,12} 4170
+{9,13} 4353
+{9,14} 4536
+{9,15} 4719
+{10,11} 1638
+{10,12} 1734
+{10,13} 1830
+{10,14} 1926
+{10,15} 2022
+
+SCIDB QUERY : <spgemm(M1,M2)>
+{I,J} multiply
+{1,1} 501
+{1,2} 540
+{1,3} 579
+{1,4} 618
+{1,5} 657
+{2,1} nan
+{2,2} nan
+{2,3} nan
+{2,4} nan
+{2,5} nan
+{3,1} 915
+{3,2} 990
+{3,3} 1065
+{3,4} 1140
+{3,5} 1215
+{4,1} 1122
+{4,2} 1215
+{4,3} 1308
+{4,4} 1401
+{4,5} 1494
+{5,1} 1329
+{5,2} 1440
+{5,3} 1551
+{5,4} 1662
+{5,5} 1773
+{1,6} 696
+{1,7} 735
+{1,8} 774
+{1,9} 813
+{1,10} 852
+{2,6} nan
+{2,7} nan
+{2,8} nan
+{2,9} nan
+{2,10} nan
+{3,6} 1290
+{3,7} 1365
+{3,8} 1440
+{3,9} 1515
+{3,10} 1590
+{4,6} 1587
+{4,7} 1680
+{4,8} 1773
+{4,9} 1866
+{4,10} 1959
+{5,6} 1884
+{5,7} 1995
+{5,8} 2106
+{5,9} 2217
+{5,10} 2328
+{1,11} 891
+{1,12} 930
+{1,13} 969
+{1,14} 1008
+{1,15} 1047
+{2,11} nan
+{2,12} nan
+{2,13} nan
+{2,14} nan
+{2,15} nan
+{3,11} 1665
+{3,12} 1740
+{3,13} 1815
+{3,14} 1890
+{3,15} 1965
+{4,11} 2052
+{4,12} 2145
+{4,13} 2238
+{4,14} 2331
+{4,15} 2424
+{5,11} 2439
+{5,12} 2550
+{5,13} 2661
+{5,14} 2772
+{5,15} 2883
+{6,1} 1536
+{6,2} 1665
+{6,3} 1794
+{6,4} 1923
+{6,5} 2052
+{7,1} 1743
+{7,2} 1890
+{7,3} 2037
+{7,4} 2184
+{7,5} 2331
+{8,1} 1950
+{8,2} 2115
+{8,3} 2280
+{8,4} 2445
+{8,5} 2610
+{9,1} 2157
+{9,2} 2340
+{9,3} 2523
+{9,4} 2706
+{9,5} 2889
+{10,1} nan
+{10,2} nan
+{10,3} nan
+{10,4} nan
+{10,5} nan
+{6,6} 2181
+{6,7} 2310
+{6,8} 2439
+{6,9} 2568
+{6,10} 2697
+{7,6} 2478
+{7,7} 2625
+{7,8} 2772
+{7,9} 2919
+{7,10} 3066
+{8,6} 2775
+{8,7} 2940
+{8,8} 3105
+{8,9} 3270
+{8,10} 3435
+{9,6} 3072
+{9,7} 3255
+{9,8} 3438
+{9,9} 3621
+{9,10} 3804
+{10,6} nan
+{10,7} nan
+{10,8} nan
+{10,9} nan
+{10,10} nan
+{6,11} 2826
+{6,12} 2955
+{6,13} 3084
+{6,14} 3213
+{6,15} 3342
+{7,11} 3213
+{7,12} 3360
+{7,13} 3507
+{7,14} 3654
+{7,15} 3801
+{8,11} 3600
+{8,12} 3765
+{8,13} 3930
+{8,14} 4095
+{8,15} 4260
+{9,11} 3987
+{9,12} 4170
+{9,13} 4353
+{9,14} 4536
+{9,15} 4719
+{10,11} nan
+{10,12} nan
+{10,13} nan
+{10,14} nan
+{10,15} nan
+
+SCIDB QUERY : <spgemm(M1,M2)>
+{I,J} multiply
+{1,1} 501
+{1,2} 540
+{1,3} 579
+{1,4} 618
+{1,5} 657
+{2,1} nan
+{2,2} nan
+{2,3} nan
+{2,4} nan
+{2,5} nan
+{3,1} 915
+{3,2} 990
+{3,3} 1065
+{3,4} 1140
+{3,5} 1215
+{4,1} 1122
+{4,2} 1215
+{4,3} 1308
+{4,4} 1401
+{4,5} 1494
+{5,1} 1329
+{5,2} 1440
+{5,3} 1551
+{5,4} 1662
+{5,5} 1773
+{1,6} 696
+{1,7} 735
+{1,8} 774
+{1,9} 813
+{1,10} 852
+{2,6} nan
+{2,7} nan
+{2,8} nan
+{2,9} nan
+{2,10} nan
+{3,6} 1290
+{3,7} 1365
+{3,8} 1440
+{3,9} 1515
+{3,10} 1590
+{4,6} 1587
+{4,7} 1680
+{4,8} 1773
+{4,9} 1866
+{4,10} 1959
+{5,6} 1884
+{5,7} 1995
+{5,8} 2106
+{5,9} 2217
+{5,10} 2328
+{1,11} 891
+{1,12} 930
+{1,13} 969
+{1,14} 1008
+{1,15} 1047
+{2,11} nan
+{2,12} nan
+{2,13} nan
+{2,14} nan
+{2,15} nan
+{3,11} 1665
+{3,12} 1740
+{3,13} 1815
+{3,14} 1890
+{3,15} 1965
+{4,11} 2052
+{4,12} 2145
+{4,13} 2238
+{4,14} 2331
+{4,15} 2424
+{5,11} 2439
+{5,12} 2550
+{5,13} 2661
+{5,14} 2772
+{5,15} 2883
+{6,1} 1536
+{6,2} 1665
+{6,3} 1794
+{6,4} 1923
+{6,5} 2052
+{7,1} 1743
+{7,2} 1890
+{7,3} 2037
+{7,4} 2184
+{7,5} 2331
+{8,1} 1950
+{8,2} 2115
+{8,3} 2280
+{8,4} 2445
+{8,5} 2610
+{9,1} 2157
+{9,2} 2340
+{9,3} 2523
+{9,4} 2706
+{9,5} 2889
+{10,1} nan
+{10,2} nan
+{10,3} nan
+{10,4} nan
+{10,5} nan
+{6,6} 2181
+{6,7} 2310
+{6,8} 2439
+{6,9} 2568
+{6,10} 2697
+{7,6} 2478
+{7,7} 2625
+{7,8} 2772
+{7,9} 2919
+{7,10} 3066
+{8,6} 2775
+{8,7} 2940
+{8,8} 3105
+{8,9} 3270
+{8,10} 3435
+{9,6} 3072
+{9,7} 3255
+{9,8} 3438
+{9,9} 3621
+{9,10} 3804
+{10,6} nan
+{10,7} nan
+{10,8} nan
+{10,9} nan
+{10,10} nan
+{6,11} 2826
+{6,12} 2955
+{6,13} 3084
+{6,14} 3213
+{6,15} 3342
+{7,11} 3213
+{7,12} 3360
+{7,13} 3507
+{7,14} 3654
+{7,15} 3801
+{8,11} 3600
+{8,12} 3765
+{8,13} 3930
+{8,14} 4095
+{8,15} 4260
+{9,11} 3987
+{9,12} 4170
+{9,13} 4353
+{9,14} 4536
+{9,15} 4719
+{10,11} nan
+{10,12} nan
+{10,13} nan
+{10,14} nan
+{10,15} nan
+
+SCIDB QUERY : <spgemm(M1,M2)>
+{I,J} multiply
+{1,1} 501
+{1,2} 540
+{1,3} 579
+{1,4} 618
+{1,5} 657
+{2,1} inf
+{2,2} inf
+{2,3} inf
+{2,4} inf
+{2,5} inf
+{3,1} 915
+{3,2} 990
+{3,3} 1065
+{3,4} 1140
+{3,5} 1215
+{4,1} 1122
+{4,2} 1215
+{4,3} 1308
+{4,4} 1401
+{4,5} 1494
+{5,1} 1329
+{5,2} 1440
+{5,3} 1551
+{5,4} 1662
+{5,5} 1773
+{1,6} 696
+{1,7} 735
+{1,8} 774
+{1,9} 813
+{1,10} 852
+{2,6} inf
+{2,7} inf
+{2,8} inf
+{2,9} inf
+{2,10} inf
+{3,6} 1290
+{3,7} 1365
+{3,8} 1440
+{3,9} 1515
+{3,10} 1590
+{4,6} 1587
+{4,7} 1680
+{4,8} 1773
+{4,9} 1866
+{4,10} 1959
+{5,6} 1884
+{5,7} 1995
+{5,8} 2106
+{5,9} 2217
+{5,10} 2328
+{1,11} 891
+{1,12} 930
+{1,13} 969
+{1,14} 1008
+{1,15} 1047
+{2,11} inf
+{2,12} inf
+{2,13} inf
+{2,14} inf
+{2,15} inf
+{3,11} 1665
+{3,12} 1740
+{3,13} 1815
+{3,14} 1890
+{3,15} 1965
+{4,11} 2052
+{4,12} 2145
+{4,13} 2238
+{4,14} 2331
+{4,15} 2424
+{5,11} 2439
+{5,12} 2550
+{5,13} 2661
+{5,14} 2772
+{5,15} 2883
+{6,1} 1536
+{6,2} 1665
+{6,3} 1794
+{6,4} 1923
+{6,5} 2052
+{7,1} 1743
+{7,2} 1890
+{7,3} 2037
+{7,4} 2184
+{7,5} 2331
+{8,1} 1950
+{8,2} 2115
+{8,3} 2280
+{8,4} 2445
+{8,5} 2610
+{9,1} 2157
+{9,2} 2340
+{9,3} 2523
+{9,4} 2706
+{9,5} 2889
+{10,1} inf
+{10,2} inf
+{10,3} inf
+{10,4} inf
+{10,5} inf
+{6,6} 2181
+{6,7} 2310
+{6,8} 2439
+{6,9} 2568
+{6,10} 2697
+{7,6} 2478
+{7,7} 2625
+{7,8} 2772
+{7,9} 2919
+{7,10} 3066
+{8,6} 2775
+{8,7} 2940
+{8,8} 3105
+{8,9} 3270
+{8,10} 3435
+{9,6} 3072
+{9,7} 3255
+{9,8} 3438
+{9,9} 3621
+{9,10} 3804
+{10,6} inf
+{10,7} inf
+{10,8} inf
+{10,9} inf
+{10,10} inf
+{6,11} 2826
+{6,12} 2955
+{6,13} 3084
+{6,14} 3213
+{6,15} 3342
+{7,11} 3213
+{7,12} 3360
+{7,13} 3507
+{7,14} 3654
+{7,15} 3801
+{8,11} 3600
+{8,12} 3765
+{8,13} 3930
+{8,14} 4095
+{8,15} 4260
+{9,11} 3987
+{9,12} 4170
+{9,13} 4353
+{9,14} 4536
+{9,15} 4719
+{10,11} inf
+{10,12} inf
+{10,13} inf
+{10,14} inf
+{10,15} inf
+
+SCIDB QUERY : <spgemm(M1,M11)>
+[An error expected at this place for the query "spgemm(M1,M11)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR2. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR2.]
+
+SCIDB QUERY : <spgemm(M3, M4)>
+[An error expected at this place for the query "spgemm(M3, M4)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR3. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR3.]
+
+SCIDB QUERY : <spgemm(M1,M12)>
+[An error expected at this place for the query "spgemm(M1,M12)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR4. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR4.]
+
+SCIDB QUERY : <spgemm(M1,M9)>
+[An error expected at this place for the query "spgemm(M1,M9)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR5. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR5.]
+
+SCIDB QUERY : <spgemm(M1,M13)>
+[An error expected at this place for the query "spgemm(M1,M13)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR6. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR6.]
+
+SCIDB QUERY : <spgemm(M1,M6)>
+[An error expected at this place for the query "spgemm(M1,M6)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR7. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR7.]
+
+SCIDB QUERY : <spgemm(M7,M8)>
+[An error expected at this place for the query "spgemm(M7,M8)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR8. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR8.]
+
+SCIDB QUERY : <spgemm(M5, M6)>
+[An error expected at this place for the query "spgemm(M5, M6)". And it failed with error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR9. Expected error code = scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR9.]
+
+SCIDB QUERY : <remove(M1)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M2)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M3)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M4)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M5)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M6)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M7)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M8)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M9)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M10)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M11)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M12)>
+Query was executed successfully
+
+SCIDB QUERY : <remove(M13)>
+Query was executed successfully
+

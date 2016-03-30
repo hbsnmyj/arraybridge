@@ -1,0 +1,8 @@
+--setup
+
+--test
+#
+#  1. Test that scidbversion() exists, and that the result it computes is reasonable.
+aggregate ( filter ( op_scidbversion(), major BETWEEN 15 AND 99 AND minor BETWEEN 1 AND 12 AND build BETWEEN 9000 AND 100000 ), count(*) )
+
+--cleanup

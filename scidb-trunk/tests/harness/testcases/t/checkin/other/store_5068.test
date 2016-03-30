@@ -1,0 +1,14 @@
+# ticket:5068 revealed an overlook in store().
+# Previously, store() only checked for naming conflicts among attributes and among dimensions.
+# Some queries crashed the engine, when they generated conflicts between a dimension name and an attribute name.
+# Both queries in this test checks that case.
+
+--setup
+--test
+
+store(cross_join(build(<a:float>[b=0:0,1,0],1), apply(build(<a:float>[c=0:0,1,0],1), b, 1), b, c), a5068)
+store(unpack(sort(build(<n:double>[i=1:1,1,0],1) as A), n), b5068)
+
+--cleanup
+remove(a5068)
+remove(b5068)

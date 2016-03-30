@@ -1,0 +1,12 @@
+{i} a
+{0} 0
+{1} 0
+{2} 0
+{3} 0
+{4} 0
+{5} 0
+{6} 0
+{7} 0
+
+[An error expected at this place for the query "project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(project(build(<a:double>[i=0:7,1,0],0),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a),a)". And it failed with error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_HAS_TOO_DEEP_NESTING_LEVELS. Expected error code = scidb::SCIDB_SE_PARSER::SCIDB_LE_QUERY_HAS_TOO_DEEP_NESTING_LEVELS.]
+

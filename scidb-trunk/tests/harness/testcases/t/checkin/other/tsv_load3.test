@@ -1,0 +1,18 @@
+# TSV save/load/save datetime and char attributes.
+
+--setup
+--start-query-logging
+
+--test
+
+--start-igdata
+
+--shell --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -aq "save(apply(build(<v:int64>[i=0:39,10,0], (i*10*+60)), time, datetime(v), ch, char(float(i))), '/tmp/tload3_${HPID}.tsv', -2, 'tsv')" "
+
+--shell --command "iquery -c ${IQUERY_HOST} -p ${IQUERY_PORT} -naq "save(input(<v:int64, time:datetime, ch:char>[i=0:39,10,0], '/tmp/tload3_${HPID}.tsv', -2, 'tsv'), '/tmp/tload3_${HPID}_2.tsv', -2, 'tsv')" "
+
+--stop-igdata
+--shell --store --command "diff /tmp/tload3_${HPID}.tsv /tmp/tload3_${HPID}_2.tsv || true"
+
+--cleanup
+--shell --command "rm -f /tmp/tload3_${HPID}*"

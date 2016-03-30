@@ -1,0 +1,213 @@
+# Ensure autochunked redimension() can feed other operators cleanly.
+#
+# This exercises the code path (often involving AutochunkFixer) where
+# the upstream operator must fix up its _schema once it sees what the
+# downstream redimension() has really produced.
+
+--setup
+create temp array distance<miles:double>[i=0:9,10,0]
+--igdata "store(build(distance,i*100.0), distance)"
+
+create temp array heatmap<celsius:double>[x=0:9,5,0,y=0:9,5,0]
+--igdata "store(build(heatmap,x*1.1*10+y*3.7), heatmap)"
+
+create temp array square<v:int64>[x=0:9,5,0,y=0:9,5,0]
+--igdata "store(build(square, x*100 + y), square)"
+
+# This setup is from the Ref Guide's cross_between() example:
+--start-igdata
+create temp array cbB <attrB1:double>[i=0:3,4,0,j=0:3,4,0]
+store(build(cbB,j+1+4*i),cbB)
+create temp array rB <iLo:int64 null,jLo:Int64,iHi:int64,jHi:int64>[rBi=0:2,3,0]
+store(build(rB, '[(0,0,1,1),(1,0,3,0),(2,3,3,3)]',true),rB)
+--stop-igdata
+
+# ...and here is the setup for the Ref Guide cross_join() example.
+--start-igdata
+create temp array left_array<val:double>[i=0:2,3,0, j=0:2,3,0]
+store(build(left_array,i*3+j),left_array)
+create temp array right_array<val:double>[k=0:5,3,0]
+store(build(right_array,k+101),right_array)
+--stop-igdata
+
+load_library('dense_linear_algebra')
+load_library('linear_algebra')
+
+# Setup for gesvd().  Again, taken from the Ref Guide.
+--start-igdata
+# Construct a rotation matrix, A, that rotates by π/6.
+store(build(<val:double>[i=0:1,32,0,j=0:1,32,0], iif(i=j,sqrt(3)/2, iif(i=1,0.5,-0.5))), A)
+# Construct a scaling matrix, B, that distorts by a factor of 2.
+store(build(<val:double>[i=0:1,32,0,j=0:1,32,0],iif(i!=j, 0, iif(i=0,2,1))), B)
+# Construct a rotation matrix, C, that rotates by -π/6.
+store(build(<val:double>[i=0:1,32,0,j=0:1,32,0], iif(i=j,sqrt(3)/2, iif(i=1,-0.5,0.5))), C)
+# Multiply the matrices together. The product becomes the input to the gesvd operator.
+store(gemm(gemm(A,B, build(A,0)),C, build(A,0)), product)
+--stop-igdata
+
+# Setup for gemm().  Note: 32 is SCALAPACK minimum block size.
+create temp array AA <val:double> [i=0:31,32,0,j=0:31,32,0]
+create temp array CC <val:double> [i=0:31,32,0,j=0:31,32,0]
+--start-igdata
+store(build (AA, i*2 + j + 1), AA)
+store(build(<val:double>[i=0:31,32,0,j=0:31,32,0],iif(i=j,1,0)), II)
+store(build (CC, 1), CC)
+--stop-igdata
+
+# Setup for index_lookup().
+--start-igdata
+create temp array trades <symbol:string,tval:string,price:float,shares:int64>[i=0:*,8,0]
+load(trades, '${TEST_DATA_DIR}/NID_TS_Data.txt')
+store(uniq(sort(project(trades,symbol))), stock_symbols)
+--stop-igdata
+
+--test
+
+--start-query-logging
+
+# In general we'd like one trivial little test like this for every
+# operator whose output dimensions depend on input dimensions.  In
+# this test, we are less concerned about the actual outputs than about
+# whether the upstream operator blows up... so, much igdata happening.
+# (But if the output is short I leave it in, because why not.)
+
+--start-igdata
+--echo == A ops
+apply(redimension(distance,<miles:double>[i]),kilometers,1.6*miles)
+aggregate(redimension(distance,<miles:double>[i]), count(*))
+avg_rank(redimension(heatmap,<celsius:double>[x=0:*,*,0,y=0:9,10,0]), celsius, x)
+--echo == B ops
+bernoulli(redimension(heatmap, <celsius:double>[x,y]), 0.1, 42)
+between(redimension(heatmap, <celsius:double>[x,y]), 3, 3, 7, 7)
+between(redimension(square, <v:int64>[x,y]), 3, 3, 7, 7)
+--echo == C ops
+cast(redimension(distance, <miles:double>[i]), <smiles:float>[per_mile])
+--stop-igdata
+consume(redimension(square, <v:int64>[x,y]))
+consume(redimension(square, <v:int64>[x,y]), 20)
+cross_between(redimension(cbB, <attrB1:double>[i,j]), repart(rB, <iLo:int64 null,jLo:Int64,iHi:int64,jHi:int64>[rBi]))
+
+# CrossJoin is fun!  In general, all operators that support "local
+# auto-repartitioning" will be equally fun: merge(), join(), etc.
+
+--error --code=scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "cross_join(repart(left_array, <val:double>[i,j]),redimension(right_array,<val:double>[k]), j, k)"
+
+cross_join(repart(left_array, <val:double>[i,j]), right_array, j, k)
+
+cross_join(left_array, redimension(right_array,<val:double>[k]), j, k)
+
+--igdata "cumulate(repart(heatmap, <celsius:double>[x,y]), stdev(celsius), x)"
+
+--echo == F ops
+--igdata "filter(redimension(heatmap, <celsius:double>[x,y]), celsius < 100.0)"
+
+--echo == G ops
+
+# TL;DR --- If autochunked inputs to the linear algebra operators
+# don't crash the server, we call it a win.  For now.
+
+# The linear algebra operators have very specific chunk interval
+# requirements that are not going to be met by autochunked inputs, at
+# least not until we have a smarter optimizer.  They are a better
+# candidate for "local auto-repart" (LAR) than for autochunking, since
+# their inputs must be forced to conform.  However, although there is
+# a ticket, we haven't prioritized getting LAR working for these
+# operators yet.  See SDB-818, SDB-4749.
+
+--error --code DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10 "gemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II,CC)"
+
+# gesvd() has the same issues.
+# Calculate the U, S, and VT decompositions.
+--error --code DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10 "gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,32,0]),'U')"
+--error --code DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10 "gesvd(repart(product, <val:double>[i=0:1,32,0,j=0:1,*,0]),'S')"
+--error --code DLA::SCIDB_SE_INFER_SCHEMA::DLA_ERROR10 "gesvd(repart(product, <val:double>[i=0:1,*,0,j=0:1,*,0]),'VT')"
+
+--echo == I ops
+# TODO: You could throw an aggregate into this redim... sum the price etc.
+--start-igdata
+index_lookup(trades, repart(stock_symbols, <symbol:string>[i]), trades.symbol, index)
+index_lookup(redimension(trades, <symbol:string,tval:string,price:float,shares:int64>[i]) as X, stock_symbols, X.symbol, index)
+index_lookup(redimension(trades, <symbol:string,tval:string,price:float,shares:int64>[i]) as X, repart(stock_symbols, <symbol:string>[i]), X.symbol, index)
+--stop-igdata
+
+--echo == J ops
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_ALL_INPUTS_AUTOCHUNKED "join(repart(square, <v:int64>[x,y]), repart(heatmap, <celsius:double>[x,y]))"
+
+join(repart(square, <v:int64>[x,y]), heatmap)
+join(square, repart(heatmap, <celsius:double>[x,y]))
+
+# Note: kendall() is tested in P4's other.autochunk_1 test.
+
+--echo == M ops
+
+merge(cast(square, <v:double>[x,y]), redimension(heatmap, <celsius:double>[x,y]))
+# Hmmm, this one may be working by coincidence...
+--igdata "merge(redimension(heatmap, <celsius:double>[x,y]), cast(square, <v:double>[x,y]))"
+
+# Note: pearson() is tested in P4's other.autochunk_1 test.
+
+--echo == P ops
+--igdata "project(redimension(trades, <symbol:string,shares:int64,price:float>[i]), price, shares)"
+
+--echo == Q ops
+--igdata "quantile(redimension(heatmap,<celsius:double>[x=0:99,*,0,y=0:9,10,0]), 2, celsius, x)"
+
+--echo == R ops
+--igdata "rank(redimension(heatmap,<celsius:double>[x=0:99,*,0,y=0:9,10,0]), celsius, y)"
+--igdata "redimension(redimension(trades, <symbol:string,price:float>[i,shares,synth]), <price:float,i:int64>[shares,synth2])"
+--igdata "regrid(repart(square, <v:int64>[x,y]), 2, 2, sum(v))"
+#repart(redimension(trades, <symbol:string,price:float>[i,shares,synth]), <symbol:string,price:float>[i=0:*,10,0,shares=0:*,10,0,synth=0:19,20,0])
+--igdata "repart(redimension(square, <v:int64,x:int64>[y=0:*,*,0,synth=0:9,10,0]), <v:int64,x:int64>[y=0:*,10,2,synth=0:9,5,0])"
+--igdata "reshape(redimension(square, <v:int64>[x=0:9,*,0,y=0:9,*,0]), <v:int64>[x=0:99,10,0])"
+
+--echo == S ops
+slice(redimension(square, <v:int64>[x,y]), x, 3)
+sort(repart(slice(square, x, 3), <v:int64>[y]), v desc)
+
+# Note: spearman() is tested in P4's other.autochunk_1 test.
+
+# XXX Again, linear algebra is picky about chunk sizes and what's needed is not autochunking but
+# local auto-repartitioning.  See SDB-818, SDB-4749.
+--error --code scidb::SCIDB_SE_INFER_SCHEMA::SCIDB_LE_OP_MULTIPLY_ERROR6 "spgemm(redimension(AA, <val:double>[i=0:31,*,0,j=0:31,*,0]),II)"
+
+--igdata "subarray(redimension(square, <v:int64>[x,y]), 3, 3, 7, 7)"
+--igdata "substitute(redimension(apply(square, w, iif((x%2)=0, v+1, null)), <v:int64,w:int64>[x,y]), build(<q:int64>[i=0:0,1,0], 42))"
+
+--echo == T ops
+
+--igdata "transpose(redimension(square, <v:int64>[x,y]))"
+
+# Note: tsvd() is tested in P4's other.autochunk_1 test.
+
+--echo == U ops
+--igdata "unfold(redimension(trades, <symbol:string,tval:string>[i]))"
+--igdata "uniq(redimension(trades, <price:float>[i]))"
+--igdata "unpack(redimension(square, <v:int64>[x,y]), x)"
+
+--echo == W ops
+--error --code scidb::SCIDB_SE_OPERATOR::SCIDB_LE_BAD_EXPLICIT_REPART "window(redimension(heatmap, <celsius:double>[x,y]), 0, 2, 0, 2, max(celsius), min(celsius))"
+--igdata "window(redimension(heatmap, <celsius:double>[x=0:9,*,4,y=0:9,*,2]), 0, 2, 0, 2, max(celsius), min(celsius))"
+
+--echo == X ops
+--igdata "xgrid(redimension(square, <v:int64>[x=0:9,*,0,y=0:9,2,0]), 2, 3)"
+
+--stop-query-logging
+
+--cleanup
+--echo Cleanup...
+remove(cbB)
+remove(distance)
+remove(heatmap)
+remove(left_array)
+remove(right_array)
+remove(square)
+remove(rB)
+remove(AA)
+remove(II)
+remove(CC)
+remove(A)
+remove(B)
+remove(C)
+remove(product)
+remove(trades)
+remove(stock_symbols)

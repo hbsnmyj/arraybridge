@@ -1,0 +1,12 @@
+Query was executed successfully
+
+Query was executed successfully
+
+SCIDB QUERY : <op_count(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'))>
+{i} count
+{0} 2
+
+SCIDB QUERY : <op_count(project(filter(list(), name='fdafdarfewqfveqfeq' or name='fdafdarfewqfveqfeq2'), name))>
+{i} count
+{0} 0
+

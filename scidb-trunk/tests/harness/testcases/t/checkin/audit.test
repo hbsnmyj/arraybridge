@@ -1,0 +1,49 @@
+--setup
+--start-query-logging
+#
+#   The purpose of this test is to check the basics of how
+#  we implement the audit functionality. These tests have
+#  two parts.
+#
+#   First, we test the correctness of the sizeof(...) function.
+#
+#   Second, we test the "query that generates the query" used
+#   to compute the bytes of data in an array.
+#
+#   To check this, we generate arrays that use all of the
+#   data types, throwing in some compression and some null
+#   values. These tests re-use the implementation in the
+#   compression.test file.
+#
+create array all_types_no_compression < a01  : bool, a02  : char, a03  : datetime, a04  : datetimetz, a05  : double, a06  : float, a07  : int16, a08  : int32, a09  : int64, a10  : int8, a11  : string, a12  : uint16, a13  : uint32, a14  : uint64, a15  : uint8, a16  : bool null, a17  : char null, a18  : datetime null, a19  : datetimetz null, a20  : double null, a21  : float null, a22  : int16 null, a23  : int32 null, a24  : int64 null, a25  : int8 null, a26  : string null, a27  : uint16 null, a28  : uint32 null, a29  : uint64 null, a30  : uint8 null > [ X=-1001:*,10000,90 ]
+
+create array all_types_zlib < a01  : bool compression 'zlib', a02  : char compression 'zlib', a03  : datetime compression 'zlib', a04  : datetimetz compression 'zlib', a05  : double compression 'zlib', a06  : float compression 'zlib', a07  : int16 compression 'zlib', a08  : int32 compression 'zlib', a09  : int64 compression 'zlib', a10  : int8 compression 'zlib', a11  : string compression 'zlib', a12  : uint16 compression 'zlib', a13  : uint32 compression 'zlib', a14  : uint64 compression 'zlib', a15  : uint8 compression 'zlib', a16  : bool null compression 'zlib', a17  : char null compression 'zlib', a18  : datetime null compression 'zlib', a19  : datetimetz null compression 'zlib', a20  : double null compression 'zlib', a21  : float null compression 'zlib', a22  : int16 null compression 'zlib', a23  : int32 null compression 'zlib', a24  : int64 null compression 'zlib', a25  : int8 null compression 'zlib', a26  : string null compression 'zlib', a27  : uint16 null compression 'zlib', a28  : uint32 null compression 'zlib', a29  : uint64 null compression 'zlib', a30  : uint8 null compression 'zlib' > [ X=-1001:*,10000,90 ]
+
+create array all_types_bzlib < a01  : bool compression 'bzlib', a02  : char compression 'bzlib', a03  : datetime compression 'bzlib', a04  : datetimetz compression 'bzlib', a05  : double compression 'bzlib', a06  : float compression 'bzlib', a07  : int16 compression 'bzlib', a08  : int32 compression 'bzlib', a09  : int64 compression 'bzlib', a10  : int8 compression 'bzlib', a11  : string compression 'bzlib', a12  : uint16 compression 'bzlib', a13  : uint32 compression 'bzlib', a14  : uint64 compression 'bzlib', a15  : uint8 compression 'bzlib', a16  : bool null compression 'bzlib', a17  : char null compression 'bzlib', a18  : datetime null compression 'bzlib', a19  : datetimetz null compression 'bzlib', a20  : double null compression 'bzlib', a21  : float null compression 'bzlib', a22  : int16 null compression 'bzlib', a23  : int32 null compression 'bzlib', a24  : int64 null compression 'bzlib', a25  : int8 null compression 'bzlib', a26  : string null compression 'bzlib', a27  : uint16 null compression 'bzlib', a28  : uint32 null compression 'bzlib', a29  : uint64 null compression 'bzlib', a30  : uint8 null compression 'bzlib' > [ X=-1001:*,10000,90 ]
+
+--test
+--start-igdata
+store ( cast ( project ( apply ( build ( < dummy : bool > [ X=-1001:20001,10000,90 ], true ), a01, iif ( X%2=0, true, false ), a02, iif ( X%26=0,'A',iif(X%26=1,'B',iif(X%26=2,'C',iif(X%26=3,'D',iif(X%26=4,'E',iif(X%26=5,'F', iif ( X%26=6,'G',iif(X%26=7,'H',iif(X%26=8,'I',iif(X%26=9,'J',iif(X%26=10,'K',iif(X%26=11,'L', iif ( X%26=12,'M',iif(X%26=13,'N',iif(X%26=14,'O',iif(X%26=15,'P',iif(X%26=16,'Q',iif(X%26=17,'R', iif ( X%26=18,'S',iif(X%26=19,'T',iif(X%26=20,'U',iif(X%26=21,'V',iif(X%26=22,'W',iif(X%26=23,'X', iif ( X%26=24,'Y', 'Z'))))))))))))))))))))))))), a03, datetime('2010-01-01 00:00:00') + ( X * 3600 ) + X, a04, append_offset(datetime('2010-01-01 00:00:00') + ( X * 3600 ) + X, X * 1000), a05, double( X ), a06, float( X ), a07, int16(X%(pow(2,16)-1)), a08, int32(X%(pow(2,32)-1)), a09, X, a10, int8(X%pow(2,8)-1), a11, 'A' + string(X) + 'Z', a12, uint16(X%(pow(2,16)-1)), a13, uint32(X%(pow(2,32)-1)), a14, uint64(X), a15, uint8(X%pow(2,8)-1), a16, iif (X%3=0, missing(0), iif ( X%2=0, true, false )), a17, iif (X%3=0, missing(0), iif ( X%26=0,'A',iif(X%26=1,'B',iif(X%26=2,'C',iif(X%26=3,'D',iif(X%26=4,'E',iif(X%26=5,'F', iif ( X%26=6,'G',iif(X%26=7,'H',iif(X%26=8,'I',iif(X%26=9,'J',iif(X%26=10,'K',iif(X%26=11,'L', iif ( X%26=12,'M',iif(X%26=13,'N',iif(X%26=14,'O',iif(X%26=15,'P',iif(X%26=16,'Q',iif(X%26=17,'R', iif ( X%26=18,'S',iif(X%26=19,'T',iif(X%26=20,'U',iif(X%26=21,'V',iif(X%26=22,'W',iif(X%26=23,'X', iif ( X%26=24,'Y', 'Z')))))))))))))))))))))))))), a18, iif (X%3=0, missing(0), iif( X%3=0, missing(8), datetime('2010-01-01 00:00:00') + ( X * 3600 ) + X)), a19, iif (X%3=0, missing(0), append_offset(datetime('2010-01-01 00:00:00') + ( X * 3600 ) + X, X * 1000)), a20, iif (X%3=0, missing(0), double( X )), a21, iif (X%3=0, missing(0), float( X )), a22, iif (X%3=0, missing(0), int16(X%(pow(2,16)-1))), a23, iif (X%3=0, missing(0), int32(X%(pow(2,32)-1))), a24, iif (X%3=0, missing(0), X), a25, iif (X%3=0, missing(0), int8(X%pow(2,8)-1)), a26, iif (X%3=0, missing(0), 'A' + string(X) + 'Z'), a27, iif (X%3=0, missing(0), uint16(X%(pow(2,16)-1))), a28, iif (X%3=0, missing(0), uint32(X%(pow(2,32)-1))), a29, iif (X%3=0, missing(0), uint64(X)), a30, iif (X%3=0, missing(0), uint8(X%pow(2,8)-1))), a01, a02, a03, a04, a05, a06, a07, a08, a09, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30), < a01  : bool, a02  : char, a03  : datetime, a04  : datetimetz, a05  : double, a06  : float, a07  : int16, a08  : int32, a09  : int64, a10  : int8, a11  : string, a12  : uint16, a13  : uint32, a14  : uint64, a15  : uint8, a16  : bool null, a17  : char null, a18  : datetime null, a19  : datetimetz null, a20  : double null, a21  : float null, a22  : int16 null, a23  : int32 null, a24  : int64 null, a25  : int8 null, a26  : string null, a27  : uint16 null, a28  : uint32 null, a29  : uint64 null, a30  : uint8 null > [ X=-1001:20001,10000,90 ]), all_types_no_compression)
+
+store ( all_types_no_compression, all_types_zlib )
+store ( all_types_zlib, all_types_bzlib )
+
+--stop-igdata
+
+#
+#  First ... the queries that generate the queries that actually do the size calc.
+project ( apply ( aggregate ( apply ( attributes ( all_types_no_compression ), type_size_calc_string, iif ( No = 0, '', ' + ' ) + 'sizeof (' + name + ')'), sum ( type_size_calc_string ) AS calc_string), query_str, 'aggregate ( apply ( all_types_no_compression, attr_len, ' + calc_string + '  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN );'), query_str )
+project ( apply ( aggregate ( apply ( attributes ( all_types_zlib ), type_size_calc_string, iif ( No = 0, '', ' + ' ) + 'sizeof (' + name + ')'), sum ( type_size_calc_string ) AS calc_string), query_str, 'aggregate ( apply ( all_types_zlib, attr_len, ' + calc_string + '  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN );'), query_str )
+project ( apply ( aggregate ( apply ( attributes ( all_types_bzlib ), type_size_calc_string, iif ( No = 0, '', ' + ' ) + 'sizeof (' + name + ')'), sum ( type_size_calc_string ) AS calc_string), query_str, 'aggregate ( apply ( all_types_bzlib, attr_len, ' + calc_string + '  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN );'), query_str )
+#
+#  Second ... the actual size calc queries.
+aggregate ( apply ( all_types_no_compression, attr_len, sizeof (a01) + sizeof (a02) + sizeof (a03) + sizeof (a04) + sizeof (a05) + sizeof (a06) + sizeof (a07) + sizeof (a08) + sizeof (a09) + sizeof (a10) + sizeof (a11) + sizeof (a12) + sizeof (a13) + sizeof (a14) + sizeof (a15) + sizeof (a16) + sizeof (a17) + sizeof (a18) + sizeof (a19) + sizeof (a20) + sizeof (a21) + sizeof (a22) + sizeof (a23) + sizeof (a24) + sizeof (a25) + sizeof (a26) + sizeof (a27) + sizeof (a28) + sizeof (a29) + sizeof (a30)  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN )
+aggregate ( apply ( all_types_zlib, attr_len, sizeof (a01) + sizeof (a02) + sizeof (a03) + sizeof (a04) + sizeof (a05) + sizeof (a06) + sizeof (a07) + sizeof (a08) + sizeof (a09) + sizeof (a10) + sizeof (a11) + sizeof (a12) + sizeof (a13) + sizeof (a14) + sizeof (a15) + sizeof (a16) + sizeof (a17) + sizeof (a18) + sizeof (a19) + sizeof (a20) + sizeof (a21) + sizeof (a22) + sizeof (a23) + sizeof (a24) + sizeof (a25) + sizeof (a26) + sizeof (a27) + sizeof (a28) + sizeof (a29) + sizeof (a30)  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN )
+aggregate ( apply ( all_types_bzlib, attr_len, sizeof (a01) + sizeof (a02) + sizeof (a03) + sizeof (a04) + sizeof (a05) + sizeof (a06) + sizeof (a07) + sizeof (a08) + sizeof (a09) + sizeof (a10) + sizeof (a11) + sizeof (a12) + sizeof (a13) + sizeof (a14) + sizeof (a15) + sizeof (a16) + sizeof (a17) + sizeof (a18) + sizeof (a19) + sizeof (a20) + sizeof (a21) + sizeof (a22) + sizeof (a23) + sizeof (a24) + sizeof (a25) + sizeof (a26) + sizeof (a27) + sizeof (a28) + sizeof (a29) + sizeof (a30)  ), sum ( attr_len ) AS ALL_ATTRIBUTE_LEN )
+
+--cleanup
+
+remove ( all_types_no_compression )
+remove ( all_types_zlib )
+remove ( all_types_bzlib )
+
