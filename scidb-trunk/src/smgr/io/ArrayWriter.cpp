@@ -37,6 +37,7 @@
 #endif
 
 #include "util/FileIO.h"
+#include "HDF5Storage.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -64,6 +65,7 @@
 #include <smgr/io/TemplateParser.h>
 #include <system/Warnings.h>
 #include <util/FileIO.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 using namespace boost::archive;
@@ -106,7 +108,7 @@ namespace scidb
 
     static const char* supportedFormats[] = {
         "csv", "csv+", "dcsv", "dense", "lsparse", "opaque", "sparse",
-        "store", "text", "tsv", "tsv+",
+        "store", "text", "tsv", "tsv+", "hdf5",
     };
     static const unsigned NUM_FORMATS = SCIDB_SIZE(supportedFormats);
 
@@ -1282,6 +1284,54 @@ namespace scidb
     }
 
 #endif
+    static void parseHDF5Format( std::vector<std::string>& datasetNames, const std::string& format)
+    {
+        boost::algorithm::split(datasetNames, format, boost::is_any_of(":"));
+    }
+
+#ifndef SCIDB_CLIENT
+    static uint64_t saveHDF5Format(const Array& array, const ArrayDesc& desc, const std::string& filename,
+                                         std::vector<std::string> datasetnames, const std::shared_ptr<Query>& query)
+    {
+        using hdf5gateway::HDF5File;
+        using hdf5gateway::HDF5Dataset;
+        using hdf5gateway::H5Coordinates;
+
+        AttributeID nAttrs = safe_static_cast<AttributeID>(desc.getAttributes(true).size());
+        std::vector<std::shared_ptr<ConstArrayIterator> > arrayIterators(nAttrs);
+        HDF5File hdf5File(filename, true);
+        std::vector<std::unique_ptr<HDF5Dataset>> datasets;
+
+        H5Coordinates dims;
+        H5Coordinates chunk_dims;
+
+        for(auto& dimension: desc.getDimensions()) {
+            /* TODO: Deal with the corner cases,
+             * such as AUTO_CHUNKING, dimension starts with numbers other than 0, etc */
+            dims.push_back((unsigned long)dimension.getLength());
+            chunk_dims.push_back((unsigned long)dimension.getChunkInterval());
+        }
+
+        for (AttributeID i = 0; i < nAttrs; i++) {
+            arrayIterators[i] = array.getConstIterator(i);
+            const AttributeDesc& attrDesc = desc.getAttributes()[i];
+            datasets.push_back(std::unique_ptr<HDF5Dataset>(
+                    new HDF5Dataset(hdf5File, datasetnames[i], attrDesc.getType(), dims, chunk_dims)));
+        }
+
+        uint64_t n;
+        for (n = 0; !arrayIterators[0]->end(); n++) {
+            for (size_t i = 0; i < nAttrs; i++) {
+                ConstChunk const* chunk = &arrayIterators[i]->getChunk();
+                auto& first = chunk->getFirstPosition(false);
+                H5Coordinates target_pos(first.begin(), first.end());
+                datasets[i]->writeChunk(*chunk, target_pos);
+                ++(*arrayIterators[i]);
+            }
+        }
+        return n;
+    }
+#endif
 
     uint64_t ArrayWriter::save(Array const& array, string const& file,
                                const std::shared_ptr<Query>& query,
@@ -1292,36 +1342,39 @@ namespace scidb
 
         FILE* f;
         bool isBinary = compareStringsIgnoreCase(format, "opaque") == 0 || format[0] == '(';
-        if (file == "console" || file == "stdout") {
-            f = stdout;
-        } else if (file == "stderr") {
-            f = stderr;
-        } else {
-            bool append = flags & F_APPEND;
-            f = fopen(file.c_str(), isBinary ? append ? "ab" : "wb" : append ? "a" : "w");
-            if (NULL == f) {
-                int error = errno;
-                LOG4CXX_DEBUG(logger, "Attempted to open output file '" << file
-                              << "' failed: " << ::strerror(error) << " (" << error);
-                throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_CANT_OPEN_FILE)
-                    << file << ::strerror(error) << error;
-            }
-            struct flock flc;
-            flc.l_type = F_WRLCK;
-            flc.l_whence = SEEK_SET;
-            flc.l_start = 0;
-            flc.l_len = 1;
+        bool isHDF5 = (format.substr(0, 4) == "hdf5");
+        if (isHDF5 == false) {
+            if (file == "console" || file == "stdout") {
+                f = stdout;
+            } else if (file == "stderr") {
+                f = stderr;
+            } else {
+                bool append = flags & F_APPEND;
+                f = fopen(file.c_str(), isBinary ? append ? "ab" : "wb" : append ? "a" : "w");
+                if (NULL == f) {
+                    int error = errno;
+                    LOG4CXX_DEBUG(logger, "Attempted to open output file '" << file
+                                          << "' failed: " << ::strerror(error) << " (" << error);
+                    throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_CANT_OPEN_FILE)
+                          << file << ::strerror(error) << error;
+                }
+                struct flock flc;
+                flc.l_type = F_WRLCK;
+                flc.l_whence = SEEK_SET;
+                flc.l_start = 0;
+                flc.l_len = 1;
 
-            if(file.compare("/dev/null") != 0 ) {   // skip locking if /dev/null
-                // ... because the fcntl will fail
-                // in fact in parallel mode, all absolute paths will fail the fcntl
-                // so the logical operator and/or open code should be fixed to reject
-                // all absoluate paths in parallel mode *except* /dev/null
-                // which is very important to support for performance testing and diagnosis
-                int rc = fcntl(fileno(f), F_SETLK, &flc);
-                if (rc == -1) {
-                    throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_CANT_LOCK_FILE)
-                        << file << ::strerror(errno) << errno;
+                if(file.compare("/dev/null") != 0 ) {   // skip locking if /dev/null
+                    // ... because the fcntl will fail
+                    // in fact in parallel mode, all absolute paths will fail the fcntl
+                    // so the logical operator and/or open code should be fixed to reject
+                    // all absoluate paths in parallel mode *except* /dev/null
+                    // which is very important to support for performance testing and diagnosis
+                    int rc = fcntl(fileno(f), F_SETLK, &flc);
+                    if (rc == -1) {
+                        throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_CANT_LOCK_FILE)
+                              << file << ::strerror(errno) << errno;
+                    }
                 }
             }
         }
@@ -1348,6 +1401,14 @@ namespace scidb
         }
 
         try {
+#ifndef SCIDB_CLIENT
+            if (isHDF5) {
+//                std::vector<std::string> fileNames;
+                std::vector<std::string> datasetNames;
+                parseHDF5Format(datasetNames, format);
+                n = saveHDF5Format(array, desc, file, datasetNames, query);
+            } else
+#endif
             if (xParms.get()) {
                 xParms->setParallel(flags & F_PARALLEL);
                 xParms->setPrecision(ArrayWriter::getPrecision());
@@ -1378,17 +1439,19 @@ namespace scidb
                 << ::strerror(e.error) << e.error;
         }
 
-        int rc(0);
-        if (f == stdout || f == stderr) {
-            rc = ::fflush(f);
-        } else {
-            rc = ::fclose(f);
-        }
-        if (rc != 0) {
-            int err = errno ? errno : EIO;
-            assert(err!= EBADF);
-            throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_FILE_WRITE_ERROR)
-                << ::strerror(err) << err;
+        if(isHDF5 == false) {
+            int rc(0);
+            if (f == stdout || f == stderr) {
+                rc = ::fflush(f);
+            } else {
+                rc = ::fclose(f);
+            }
+            if (rc != 0) {
+                int err = errno ? errno : EIO;
+                assert(err != EBADF);
+                throw USER_EXCEPTION(SCIDB_SE_ARRAY_WRITER, SCIDB_LE_FILE_WRITE_ERROR)
+                      << ::strerror(err) << err;
+            }
         }
         return n;
     }
@@ -1418,4 +1481,8 @@ namespace scidb
         }
         return NULL;
     }
+
+
+
+
 }

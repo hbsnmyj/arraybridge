@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <functional>
+#include "array/Array.h"
 
 namespace scidb {
 namespace hdf5gateway
@@ -38,7 +39,7 @@ namespace hdf5gateway
                 H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
         assert(_datasetId >= 0);
         _fspaceId = H5Dget_space(_datasetId);
-        _mspaceId = H5Screate_simple(rank, dims.data(), NULL);
+        _mspaceId = H5Screate_simple(rank, chunk_dims.data(), NULL);
     }
 
     HDF5Dataset::~HDF5Dataset()
@@ -51,20 +52,31 @@ namespace hdf5gateway
     {
         H5Sselect_hyperslab(_fspaceId, H5S_SELECT_SET,
                             target_pos.data(), _stride.data(), _count.data(), block.data());
-        H5Dwrite(_datasetId, _type.getHDF5Type(), _mspaceId, _fspaceId, H5P_DEFAULT, data);
+        hid_t memspace = H5Screate_simple((int)block.size(), block.data(), NULL);
+        H5Dwrite(_datasetId, _type.getHDF5Type(), memspace, _fspaceId, H5P_DEFAULT, data);
+        H5Sclose(memspace);
         return 0;
     }
 
     int HDF5Dataset::writeChunk(ConstChunk const& chunk, H5Coordinates const& target_pos)
     {
-        void* data = chunk.getData();
+        std::vector<char> buffer;
+        buffer.reserve(chunk.count() * chunk.getAttributeDesc().getSize());
+        int iterationMode = ConstChunkIterator::IterationMode::IGNORE_OVERLAPS;
+        for(auto it = chunk.getConstIterator(iterationMode); !it->end(); ++(*it)) {
+            auto& value = it->getItem();
+            buffer.insert(buffer.end(),(char*)value.data(),
+                          (char*)value.data() + value.size());
+        }
+
+        /* FIXME: decompress the payload. */
         auto first = chunk.getFirstPosition(false);
         auto last = chunk.getLastPosition(false);
         H5Coordinates block;
         block.reserve(first.size());
         std::transform(last.begin(), last.end(), first.begin(), std::back_inserter(block),
-                std::minus<size_t>());
-        writeData(data, target_pos, block);
+                [](hsize_t a, hsize_t b){ return a - b + 1;});
+        writeData(buffer.data(), target_pos, block);
         return 0;
     }
 
