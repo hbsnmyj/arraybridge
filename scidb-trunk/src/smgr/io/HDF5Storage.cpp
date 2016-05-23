@@ -7,9 +7,9 @@ namespace scidb {
 namespace hdf5gateway
 {
 
-    HDF5File::HDF5File(std::string const &file, bool is_read)
+    HDF5File::HDF5File(std::string const &file, bool createFile)
     {
-        if (is_read == false) {
+        if (createFile) {
             _fileID = H5Fcreate(file.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
             assert(_fileID >= 0);
         }
@@ -44,7 +44,7 @@ namespace hdf5gateway
     HDF5Dataset::~HDF5Dataset()
     {
         if (_datasetId >= 0)
-            H5Fclose(_datasetId);
+            H5Dclose(_datasetId);
     }
 
     int HDF5Dataset::writeData(void* data, H5Coordinates const& target_pos, H5Coordinates const& block)

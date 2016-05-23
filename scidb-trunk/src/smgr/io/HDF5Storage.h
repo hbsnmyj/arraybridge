@@ -56,7 +56,7 @@ namespace hdf5gateway {
 
     class HDF5File {
       public:
-        HDF5File(std::string const& file, bool is_read);
+        HDF5File(std::string const& file, bool createFile);
         HDF5File(const HDF5File&) = delete;
         HDF5File(HDF5File&&) = delete;
         HDF5File& operator=(const HDF5File&) = delete;

@@ -30,6 +30,6 @@ set (io_src
 file(GLOB io_include "*.h")
 
 add_library(io_lib STATIC ${io_src} ${io_include})
-target_link_libraries(io_lib ${Boost_LIBRARIES})
+target_link_libraries(io_lib ${Boost_LIBRARIES} ${HDF5_LIBRARIES})
 target_link_libraries(io_lib catalog_lib compression_lib util_lib scalar_proc_lib)
 
