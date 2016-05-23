@@ -25,7 +25,7 @@ set (io_src
     Storage.cpp
     ReplicationManager.cpp
     PersistentChunk.cpp
-)
+        HDF5Storage.cpp HDF5Storage.h)
 
 file(GLOB io_include "*.h")
 
