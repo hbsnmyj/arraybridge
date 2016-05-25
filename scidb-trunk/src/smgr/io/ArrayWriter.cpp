@@ -1296,10 +1296,11 @@ namespace scidb
         using hdf5gateway::HDF5File;
         using hdf5gateway::HDF5Dataset;
         using hdf5gateway::H5Coordinates;
+        using CreateOption = HDF5File::CreateOption;
 
         AttributeID nAttrs = safe_static_cast<AttributeID>(desc.getAttributes(true).size());
         std::vector<std::shared_ptr<ConstArrayIterator> > arrayIterators(nAttrs);
-        HDF5File hdf5File(filename, true);
+        HDF5File hdf5File(filename, CreateOption::kTrunc);
         std::vector<std::unique_ptr<HDF5Dataset>> datasets;
 
         H5Coordinates dims;

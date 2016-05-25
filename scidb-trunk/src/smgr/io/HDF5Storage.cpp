@@ -8,12 +8,30 @@ namespace scidb {
 namespace hdf5gateway
 {
 
-    HDF5File::HDF5File(std::string const &file, bool createFile)
+    HDF5File::HDF5File(CreateOrOpenParam const& param)
     {
-        if (createFile) {
-            _fileID = H5Fcreate(file.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-            assert(_fileID >= 0);
+        if(existsFile(param.filename)) {
+            _fileID = H5Fopen(param.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+        } else {
+            _fileID = H5Fcreate(param.filename.c_str(), H5F_ACC_EXCL, H5P_DEFAULT,
+                                H5P_DEFAULT);
         }
+        assert(_fileID >= 0);
+    }
+
+    HDF5File::HDF5File(std::string const& filename, CreateOption const& option)
+    {
+        unsigned flags = (option == CreateOption::kTrunc)? H5F_ACC_TRUNC : H5F_ACC_EXCL;
+        _fileID = H5Fcreate(filename.c_str(), flags, H5P_DEFAULT, H5P_DEFAULT);
+        assert(_fileID >= 0);
+    }
+
+
+    HDF5File::HDF5File(std::string const& filename, OpenOption const& param)
+    {
+        unsigned flags = ( param == OpenOption::kRDONLY) ? H5F_ACC_RDONLY: H5F_ACC_RDWR;
+        _fileID = H5Fopen(filename.c_str(), flags, H5P_DEFAULT);
+        assert(_fileID >= 0);
     }
 
     HDF5File::~HDF5File()
@@ -21,7 +39,6 @@ namespace hdf5gateway
         if (_fileID >= 0)
             H5Fclose(_fileID);
     }
-
 
     HDF5Dataset::HDF5Dataset(HDF5File &file, std::string const &datasetName, std::string const& typeName,
                                                  const scidb::hdf5gateway::H5Coordinates &dims,

@@ -34,6 +34,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <hdf5.h>
 #include <array/Coordinate.h>
 #include <array/Array.h>
@@ -42,6 +44,11 @@ namespace scidb {
 namespace hdf5gateway {
 
     using H5Coordinates = std::vector<hsize_t>;
+
+    inline bool existsFile(std::string const& filename) {
+        boost::filesystem::path path(filename);
+        return boost::filesystem::exists(path);
+    }
 
     /**
      * a class to represent the type in HDF5 file.
@@ -54,9 +61,27 @@ namespace hdf5gateway {
         hid_t _hdf5_type;
     };
 
-    class HDF5File {
+    class HDF5File
+    {
       public:
-        HDF5File(std::string const& file, bool createFile);
+        enum class CreateOption {
+            kTrunc,
+            kExcl,
+        };
+        enum class OpenOption {
+            kRDWR,
+            kRDONLY,
+        };
+        struct CreateOrOpenParam
+        {
+            std::string& filename;
+        };
+
+      public:
+        HDF5File(std::string const& filename, CreateOption const& param);
+        HDF5File(std::string const& filename, OpenOption const& option);
+        HDF5File(CreateOrOpenParam const& option);
+
         HDF5File(const HDF5File&) = delete;
         HDF5File(HDF5File&&) = delete;
         HDF5File& operator=(const HDF5File&) = delete;
