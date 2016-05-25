@@ -39,6 +39,9 @@
 #include <hdf5.h>
 #include <array/Coordinate.h>
 #include <array/Array.h>
+#include <fcntl.h>
+#include <chrono>
+#include <thread>
 
 namespace scidb {
 namespace hdf5gateway {
@@ -50,12 +53,27 @@ namespace hdf5gateway {
         return boost::filesystem::exists(path);
     }
 
+    inline void lock_file(std::string const& filename) {
+        using namespace std::chrono_literals;
+        int fd = 0;
+        do {
+            fd = open(filename.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666);
+            std::this_thread::sleep_for(2ms);
+        } while (fd < 0);
+    }
+
+
+    inline void unlock(std::string const& filename) {
+        remove(filename.c_str());
+    }
+
     /**
      * a class to represent the type in HDF5 file.
      */
     class HDF5Type {
       public:
         HDF5Type(std::string const& typeName);
+        HDF5Type(const hid_t& typeName);
         hid_t getHDF5Type() { return _hdf5_type; }
       private:
         hid_t _hdf5_type;
@@ -74,7 +92,7 @@ namespace hdf5gateway {
         };
         struct CreateOrOpenParam
         {
-            std::string& filename;
+            const std::string& filename;
         };
 
       public:
@@ -93,6 +111,10 @@ namespace hdf5gateway {
         hid_t _fileID;
     };
 
+    inline bool existsLink(HDF5File& file, std::string const& linkname) {
+        return H5Lexists(file.getFileID(), linkname.c_str(), H5P_DEFAULT) > 0;
+    }
+
     class HDF5Dataset {
       public:
         /*
@@ -105,6 +127,7 @@ namespace hdf5gateway {
          */
         HDF5Dataset(HDF5File& file, std::string const& datasetName, std::string const& type,
                     H5Coordinates const & dims, H5Coordinates const& chunk_dims);
+        HDF5Dataset(HDF5File& file, std::string const& datasetName);
         HDF5Dataset(const HDF5Dataset&) = delete;
         HDF5Dataset(HDF5Dataset&&) = delete;
         HDF5Dataset& operator=(const HDF5Dataset&) = delete;
@@ -116,7 +139,6 @@ namespace hdf5gateway {
       private:
         hid_t _datasetId;
         hid_t _fspaceId;
-        hid_t _mspaceId;
         H5Coordinates _stride;
         H5Coordinates _count;
         HDF5Type _type;

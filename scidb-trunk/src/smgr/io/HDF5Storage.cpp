@@ -56,7 +56,19 @@ namespace hdf5gateway
                 H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
         assert(_datasetId >= 0);
         _fspaceId = H5Dget_space(_datasetId);
-        _mspaceId = H5Screate_simple(rank, chunk_dims.data(), NULL);
+    }
+
+    HDF5Dataset::HDF5Dataset(HDF5File&file, std::string const &datasetName)
+            : _type(H5T_NO_CLASS)
+    {
+        hid_t file_id = file.getFileID();
+        _datasetId = H5Dopen(file_id, datasetName.c_str(), H5P_DEFAULT);
+        assert(_datasetId >= 0);
+        _fspaceId = H5Dget_space(_datasetId);
+        int rank = H5Sget_simple_extent_ndims(_fspaceId);
+        _type = HDF5Type(H5Dget_type(_datasetId));
+        _stride.assign((size_t)rank,1);
+        _count.assign((size_t)rank,1);
     }
 
     HDF5Dataset::~HDF5Dataset()
@@ -97,12 +109,21 @@ namespace hdf5gateway
         return 0;
     }
 
+
+
+
     HDF5Type::HDF5Type(std::string const& typeName)
     {
         if(typeName == "float") {
             _hdf5_type = H5T_NATIVE_FLOAT;
         }
     }
+
+    HDF5Type::HDF5Type(const hid_t& type)
+    {
+        _hdf5_type = type;
+    }
+
 
 }
 }

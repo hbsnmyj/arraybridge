@@ -40,6 +40,9 @@
 #include <system/Config.h>
 #include <system/SciDBConfigOptions.h>
 #include <sys/file.h>
+#include <chrono>
+#include <iomanip>
+#include <smgr/io/HDF5Storage.h>
 
 using namespace std;
 using namespace boost;
@@ -154,12 +157,8 @@ public:
 
         if (parallel || sourceInstanceID == myInstanceID) {
             ArrayWriter::setPrecision(Config::getInstance()->getOption<int>(CONFIG_PRECISION));
-            auto lckFileName = fileName + ".lck";
-            int fd = open(lckFileName.c_str(), O_RDWR | O_CREAT);
-            flock(fd, LOCK_EX);
             ArrayWriter::save(*tmpRedistedInput, fileName, query, format,
                               (parallel ? ArrayWriter::F_PARALLEL : 0));
-            flock(fd, LOCK_UN);
         } // else dont need to pull
 
         if (wasConverted) {

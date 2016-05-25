@@ -1296,11 +1296,12 @@ namespace scidb
         using hdf5gateway::HDF5File;
         using hdf5gateway::HDF5Dataset;
         using hdf5gateway::H5Coordinates;
-        using CreateOption = HDF5File::CreateOption;
+        using CreateOrOpenParam = HDF5File::CreateOrOpenParam;
 
         AttributeID nAttrs = safe_static_cast<AttributeID>(desc.getAttributes(true).size());
         std::vector<std::shared_ptr<ConstArrayIterator> > arrayIterators(nAttrs);
-        HDF5File hdf5File(filename, CreateOption::kTrunc);
+        CreateOrOpenParam fileCreateParam {filename};
+        HDF5File hdf5File(fileCreateParam);
         std::vector<std::unique_ptr<HDF5Dataset>> datasets;
 
         H5Coordinates dims;
@@ -1316,8 +1317,15 @@ namespace scidb
         for (AttributeID i = 0; i < nAttrs; i++) {
             arrayIterators[i] = array.getConstIterator(i);
             const AttributeDesc& attrDesc = desc.getAttributes()[i];
-            datasets.push_back(std::unique_ptr<HDF5Dataset>(
-                    new HDF5Dataset(hdf5File, datasetnames[i], attrDesc.getType(), dims, chunk_dims)));
+            if(hdf5gateway::existsLink(hdf5File, datasetnames[i])) {
+                datasets.push_back(std::unique_ptr<HDF5Dataset>(
+                        new HDF5Dataset(hdf5File, datasetnames[i])
+                ));
+            } else {
+                datasets.push_back(std::unique_ptr<HDF5Dataset>(
+                        new HDF5Dataset(hdf5File, datasetnames[i],
+                                        attrDesc.getType(), dims, chunk_dims)));
+            }
         }
 
         uint64_t n;
@@ -1406,7 +1414,7 @@ namespace scidb
             if (isHDF5) {
 //                std::vector<std::string> fileNames;
                 std::vector<std::string> datasetNames;
-                parseHDF5Format(datasetNames, format);
+                parseHDF5Format(datasetNames, format.substr(colon + 1));
                 n = saveHDF5Format(array, desc, file, datasetNames, query);
             } else
 #endif
