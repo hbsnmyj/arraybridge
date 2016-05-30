@@ -7,6 +7,39 @@
 namespace scidb {
 namespace hdf5gateway
 {
+    /*
+     *  HDF5Type Class Implementation
+     */
+    HDF5Type::HDF5Type(std::string const& typeName)
+    {
+        if(typeName == "int") {
+            _hdf5_type = H5T_NATIVE_INT;
+        } else if(typeName == "float") {
+            _hdf5_type = H5T_NATIVE_FLOAT;
+        } else if(typeName == "double") {
+            _hdf5_type = H5T_NATIVE_DOUBLE;
+        } else if (typeName == "int64") {
+            _hdf5_type = H5T_NATIVE_INT64;
+        } else if (typeName == "uint64") {
+            _hdf5_type = H5T_NATIVE_UINT64;
+        } else if (typeName == "int32") {
+            _hdf5_type = H5T_NATIVE_INT32;
+        } else if (typeName == "uint32") {
+            _hdf5_type = H5T_NATIVE_UINT32;
+        } else if (typeName == "int16") {
+            _hdf5_type = H5T_NATIVE_INT16;
+        } else if (typeName == "uint16") {
+            _hdf5_type = H5T_NATIVE_UINT16;
+        } else if (typeName == "int8") {
+            _hdf5_type = H5T_NATIVE_INT8;
+        } else if (typeName == "uint8") {
+            _hdf5_type = H5T_NATIVE_UINT8;
+        } else if (typeName == "char") {
+            _hdf5_type = H5T_NATIVE_CHAR;
+        } else {
+            assert(false);
+        }
+    }
 
     HDF5File::HDF5File(CreateOrOpenParam const& param)
     {

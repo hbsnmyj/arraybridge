@@ -1351,7 +1351,7 @@ namespace scidb
 
         FILE* f;
         bool isBinary = compareStringsIgnoreCase(format, "opaque") == 0 || format[0] == '(';
-        bool isHDF5 = (format.substr(0, 4) == "hdf5");
+        bool isHDF5 = (format == "hdf5");
         if (isHDF5 == false) {
             if (file == "console" || file == "stdout") {
                 f = stdout;
@@ -1413,9 +1413,11 @@ namespace scidb
 #ifndef SCIDB_CLIENT
             if (isHDF5) {
 //                std::vector<std::string> fileNames;
+                int colonInFileName = file.find(':');
+                auto fileName = file.substr(0, colonInFileName);
                 std::vector<std::string> datasetNames;
-                parseHDF5Format(datasetNames, format.substr(colon + 1));
-                n = saveHDF5Format(array, desc, file, datasetNames, query);
+                parseHDF5Format(datasetNames, file.substr(colonInFileName + 1));
+                n = saveHDF5Format(array, desc, fileName , datasetNames, query);
             } else
 #endif
             if (xParms.get()) {
