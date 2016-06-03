@@ -1284,12 +1284,12 @@ namespace scidb
     }
 
 #endif
+#ifndef SCIDB_CLIENT
     static void parseHDF5Format( std::vector<std::string>& datasetNames, const std::string& format)
     {
         boost::algorithm::split(datasetNames, format, boost::is_any_of(":"));
     }
 
-#ifndef SCIDB_CLIENT
     static uint64_t saveHDF5Format(const Array& array, const ArrayDesc& desc, const std::string& filename,
                                          std::vector<std::string> datasetnames, const std::shared_ptr<Query>& query)
     {
@@ -1412,8 +1412,7 @@ namespace scidb
         try {
 #ifndef SCIDB_CLIENT
             if (isHDF5) {
-//                std::vector<std::string> fileNames;
-                int colonInFileName = file.find(':');
+                auto colonInFileName = file.find(':');
                 auto fileName = file.substr(0, colonInFileName);
                 std::vector<std::string> datasetNames;
                 parseHDF5Format(datasetNames, file.substr(colonInFileName + 1));

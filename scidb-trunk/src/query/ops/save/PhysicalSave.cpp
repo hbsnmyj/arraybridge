@@ -168,8 +168,6 @@ public:
 
         return make_shared<MemArray>(inputArrayDesc, query); //empty array
     }
-  private:
-
 };
 
 DECLARE_PHYSICAL_OPERATOR_FACTORY(PhysicalSave, "save", "impl_save")

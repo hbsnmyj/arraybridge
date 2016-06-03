@@ -288,6 +288,7 @@ find_package(Log4CXX REQUIRED)
 find_package(Doxygen)
 find_package(LibPQXX REQUIRED)
 find_package(LibPQ REQUIRED)
+find_package(HDF5 REQUIRED)
 
 #
 # configure CPPUNIT

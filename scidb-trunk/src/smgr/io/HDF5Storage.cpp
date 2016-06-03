@@ -41,6 +41,11 @@ namespace hdf5gateway
         }
     }
 
+    HDF5Type::HDF5Type(const hid_t& type)
+    {
+        _hdf5_type = type;
+    }
+
     HDF5File::HDF5File(CreateOrOpenParam const& param)
     {
         if(existsFile(param.filename)) {
@@ -141,25 +146,5 @@ namespace hdf5gateway
         writeData(buffer.data(), target_pos, block);
         return 0;
     }
-
-
-
-
-    HDF5Type::HDF5Type(std::string const& typeName)
-    {
-        if(typeName == "float") {
-            _hdf5_type = H5T_NATIVE_FLOAT;
-        }
-    }
-
-    HDF5Type::HDF5Type(const hid_t& type)
-    {
-        _hdf5_type = type;
-    }
-
-
 }
 }
-
-
-
