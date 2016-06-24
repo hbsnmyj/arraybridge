@@ -1,0 +1,1712 @@
+SCIDB QUERY : <create array array1 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double,attr96: double,attr97: double,attr98: double,attr99: double> [dim0=0:999,10,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array temp0 <attr0: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(temp0, dim0), temp0)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp1 <attr0: double,attr1: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp0, attr1, attr0), temp1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp0)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp2 <attr0: double,attr1: double,attr2: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp1, attr2, attr0), temp2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp3 <attr0: double,attr1: double,attr2: double,attr3: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp2, attr3, attr0), temp3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp2)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp4 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp3, attr4, attr0), temp4)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp3)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp5 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp4, attr5, attr0), temp5)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp4)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp6 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp5, attr6, attr0), temp6)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp5)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp7 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp6, attr7, attr0), temp7)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp6)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp8 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp7, attr8, attr0), temp8)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp7)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp9 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp8, attr9, attr0), temp9)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp8)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp10 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp9, attr10, attr0), temp10)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp9)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp11 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp10, attr11, attr0), temp11)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp10)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp12 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp11, attr12, attr0), temp12)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp11)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp13 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp12, attr13, attr0), temp13)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp12)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp14 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp13, attr14, attr0), temp14)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp13)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp15 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp14, attr15, attr0), temp15)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp14)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp16 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp15, attr16, attr0), temp16)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp15)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp17 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp16, attr17, attr0), temp17)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp16)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp18 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp17, attr18, attr0), temp18)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp17)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp19 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp18, attr19, attr0), temp19)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp18)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp20 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp19, attr20, attr0), temp20)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp19)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp21 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp20, attr21, attr0), temp21)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp20)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp22 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp21, attr22, attr0), temp22)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp21)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp23 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp22, attr23, attr0), temp23)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp22)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp24 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp23, attr24, attr0), temp24)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp23)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp25 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp24, attr25, attr0), temp25)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp24)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp26 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp25, attr26, attr0), temp26)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp25)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp27 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp26, attr27, attr0), temp27)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp26)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp28 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp27, attr28, attr0), temp28)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp27)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp29 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp28, attr29, attr0), temp29)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp28)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp30 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp29, attr30, attr0), temp30)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp29)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp31 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp30, attr31, attr0), temp31)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp30)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp32 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp31, attr32, attr0), temp32)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp31)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp33 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp32, attr33, attr0), temp33)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp32)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp34 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp33, attr34, attr0), temp34)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp33)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp35 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp34, attr35, attr0), temp35)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp34)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp36 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp35, attr36, attr0), temp36)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp35)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp37 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp36, attr37, attr0), temp37)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp36)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp38 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp37, attr38, attr0), temp38)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp37)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp39 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp38, attr39, attr0), temp39)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp38)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp40 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp39, attr40, attr0), temp40)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp39)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp41 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp40, attr41, attr0), temp41)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp40)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp42 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp41, attr42, attr0), temp42)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp41)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp43 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp42, attr43, attr0), temp43)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp42)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp44 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp43, attr44, attr0), temp44)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp43)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp45 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp44, attr45, attr0), temp45)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp44)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp46 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp45, attr46, attr0), temp46)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp45)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp47 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp46, attr47, attr0), temp47)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp46)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp48 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp47, attr48, attr0), temp48)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp47)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp49 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp48, attr49, attr0), temp49)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp48)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp50 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp49, attr50, attr0), temp50)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp49)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp51 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp50, attr51, attr0), temp51)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp50)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp52 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp51, attr52, attr0), temp52)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp51)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp53 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp52, attr53, attr0), temp53)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp52)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp54 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp53, attr54, attr0), temp54)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp53)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp55 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp54, attr55, attr0), temp55)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp54)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp56 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp55, attr56, attr0), temp56)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp55)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp57 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp56, attr57, attr0), temp57)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp56)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp58 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp57, attr58, attr0), temp58)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp57)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp59 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp58, attr59, attr0), temp59)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp58)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp60 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp59, attr60, attr0), temp60)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp59)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp61 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp60, attr61, attr0), temp61)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp60)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp62 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp61, attr62, attr0), temp62)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp61)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp63 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp62, attr63, attr0), temp63)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp62)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp64 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp63, attr64, attr0), temp64)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp63)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp65 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp64, attr65, attr0), temp65)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp64)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp66 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp65, attr66, attr0), temp66)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp65)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp67 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp66, attr67, attr0), temp67)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp66)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp68 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp67, attr68, attr0), temp68)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp67)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp69 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp68, attr69, attr0), temp69)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp68)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp70 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp69, attr70, attr0), temp70)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp69)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp71 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp70, attr71, attr0), temp71)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp70)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp72 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp71, attr72, attr0), temp72)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp71)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp73 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp72, attr73, attr0), temp73)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp72)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp74 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp73, attr74, attr0), temp74)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp73)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp75 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp74, attr75, attr0), temp75)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp74)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp76 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp75, attr76, attr0), temp76)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp75)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp77 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp76, attr77, attr0), temp77)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp76)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp78 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp77, attr78, attr0), temp78)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp77)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp79 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp78, attr79, attr0), temp79)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp78)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp80 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp79, attr80, attr0), temp80)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp79)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp81 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp80, attr81, attr0), temp81)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp80)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp82 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp81, attr82, attr0), temp82)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp81)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp83 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp82, attr83, attr0), temp83)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp82)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp84 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp83, attr84, attr0), temp84)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp83)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp85 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp84, attr85, attr0), temp85)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp84)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp86 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp85, attr86, attr0), temp86)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp85)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp87 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp86, attr87, attr0), temp87)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp86)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp88 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp87, attr88, attr0), temp88)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp87)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp89 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp88, attr89, attr0), temp89)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp88)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp90 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp89, attr90, attr0), temp90)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp89)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp91 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp90, attr91, attr0), temp91)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp90)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp92 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp91, attr92, attr0), temp92)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp91)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp93 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp92, attr93, attr0), temp93)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp92)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp94 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp93, attr94, attr0), temp94)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp93)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp95 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp94, attr95, attr0), temp95)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp94)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp96 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double,attr96: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp95, attr96, attr0), temp96)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp95)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp97 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double,attr96: double,attr97: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp96, attr97, attr0), temp97)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp96)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp98 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double,attr96: double,attr97: double,attr98: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp97, attr98, attr0), temp98)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp97)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp99 <attr0: double,attr1: double,attr2: double,attr3: double,attr4: double,attr5: double,attr6: double,attr7: double,attr8: double,attr9: double,attr10: double,attr11: double,attr12: double,attr13: double,attr14: double,attr15: double,attr16: double,attr17: double,attr18: double,attr19: double,attr20: double,attr21: double,attr22: double,attr23: double,attr24: double,attr25: double,attr26: double,attr27: double,attr28: double,attr29: double,attr30: double,attr31: double,attr32: double,attr33: double,attr34: double,attr35: double,attr36: double,attr37: double,attr38: double,attr39: double,attr40: double,attr41: double,attr42: double,attr43: double,attr44: double,attr45: double,attr46: double,attr47: double,attr48: double,attr49: double,attr50: double,attr51: double,attr52: double,attr53: double,attr54: double,attr55: double,attr56: double,attr57: double,attr58: double,attr59: double,attr60: double,attr61: double,attr62: double,attr63: double,attr64: double,attr65: double,attr66: double,attr67: double,attr68: double,attr69: double,attr70: double,attr71: double,attr72: double,attr73: double,attr74: double,attr75: double,attr76: double,attr77: double,attr78: double,attr79: double,attr80: double,attr81: double,attr82: double,attr83: double,attr84: double,attr85: double,attr86: double,attr87: double,attr88: double,attr89: double,attr90: double,attr91: double,attr92: double,attr93: double,attr94: double,attr95: double,attr96: double,attr97: double,attr98: double,attr99: double> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp98, attr99, attr0), temp99)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp98)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <save(temp99, '/tmp/array1.hdf5:attr0:attr1:attr2:attr3:attr4:attr5:attr6:attr7:attr8:attr9:attr10:attr11:attr12:attr13:attr14:attr15:attr16:attr17:attr18:attr19:attr20:attr21:attr22:attr23:attr24:attr25:attr26:attr27:attr28:attr29:attr30:attr31:attr32:attr33:attr34:attr35:attr36:attr37:attr38:attr39:attr40:attr41:attr42:attr43:attr44:attr45:attr46:attr47:attr48:attr49:attr50:attr51:attr52:attr53:attr54:attr55:attr56:attr57:attr58:attr59:attr60:attr61:attr62:attr63:attr64:attr65:attr66:attr67:attr68:attr69:attr70:attr71:attr72:attr73:attr74:attr75:attr76:attr77:attr78:attr79:attr80:attr81:attr82:attr83:attr84:attr85:attr86:attr87:attr88:attr89:attr90:attr91:attr92:attr93:attr94:attr95:attr96:attr97:attr98:attr99',-2,'hdf5')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp99)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <scan_hdf5(array1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr0))>
+{i} attr0_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr1))>
+{i} attr1_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr2))>
+{i} attr2_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr3))>
+{i} attr3_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr4))>
+{i} attr4_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr5))>
+{i} attr5_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr6))>
+{i} attr6_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr7))>
+{i} attr7_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr8))>
+{i} attr8_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr9))>
+{i} attr9_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr10))>
+{i} attr10_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr11))>
+{i} attr11_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr12))>
+{i} attr12_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr13))>
+{i} attr13_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr14))>
+{i} attr14_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr15))>
+{i} attr15_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr16))>
+{i} attr16_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr17))>
+{i} attr17_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr18))>
+{i} attr18_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr19))>
+{i} attr19_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr20))>
+{i} attr20_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr21))>
+{i} attr21_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr22))>
+{i} attr22_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr23))>
+{i} attr23_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr24))>
+{i} attr24_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr25))>
+{i} attr25_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr26))>
+{i} attr26_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr27))>
+{i} attr27_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr28))>
+{i} attr28_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr29))>
+{i} attr29_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr30))>
+{i} attr30_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr31))>
+{i} attr31_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr32))>
+{i} attr32_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr33))>
+{i} attr33_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr34))>
+{i} attr34_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr35))>
+{i} attr35_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr36))>
+{i} attr36_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr37))>
+{i} attr37_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr38))>
+{i} attr38_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr39))>
+{i} attr39_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr40))>
+{i} attr40_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr41))>
+{i} attr41_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr42))>
+{i} attr42_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr43))>
+{i} attr43_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr44))>
+{i} attr44_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr45))>
+{i} attr45_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr46))>
+{i} attr46_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr47))>
+{i} attr47_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr48))>
+{i} attr48_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr49))>
+{i} attr49_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr50))>
+{i} attr50_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr51))>
+{i} attr51_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr52))>
+{i} attr52_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr53))>
+{i} attr53_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr54))>
+{i} attr54_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr55))>
+{i} attr55_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr56))>
+{i} attr56_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr57))>
+{i} attr57_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr58))>
+{i} attr58_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr59))>
+{i} attr59_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr60))>
+{i} attr60_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr61))>
+{i} attr61_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr62))>
+{i} attr62_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr63))>
+{i} attr63_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr64))>
+{i} attr64_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr65))>
+{i} attr65_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr66))>
+{i} attr66_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr67))>
+{i} attr67_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr68))>
+{i} attr68_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr69))>
+{i} attr69_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr70))>
+{i} attr70_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr71))>
+{i} attr71_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr72))>
+{i} attr72_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr73))>
+{i} attr73_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr74))>
+{i} attr74_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr75))>
+{i} attr75_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr76))>
+{i} attr76_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr77))>
+{i} attr77_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr78))>
+{i} attr78_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr79))>
+{i} attr79_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr80))>
+{i} attr80_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr81))>
+{i} attr81_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr82))>
+{i} attr82_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr83))>
+{i} attr83_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr84))>
+{i} attr84_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr85))>
+{i} attr85_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr86))>
+{i} attr86_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr87))>
+{i} attr87_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr88))>
+{i} attr88_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr89))>
+{i} attr89_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr90))>
+{i} attr90_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr91))>
+{i} attr91_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr92))>
+{i} attr92_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr93))>
+{i} attr93_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr94))>
+{i} attr94_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr95))>
+{i} attr95_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr96))>
+{i} attr96_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr97))>
+{i} attr97_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr98))>
+{i} attr98_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr99))>
+{i} attr99_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr0))>
+{i} attr0_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr1))>
+{i} attr1_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr2))>
+{i} attr2_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr3))>
+{i} attr3_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr4))>
+{i} attr4_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr5))>
+{i} attr5_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr6))>
+{i} attr6_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr7))>
+{i} attr7_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr8))>
+{i} attr8_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr9))>
+{i} attr9_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr10))>
+{i} attr10_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr11))>
+{i} attr11_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr12))>
+{i} attr12_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr13))>
+{i} attr13_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr14))>
+{i} attr14_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr15))>
+{i} attr15_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr16))>
+{i} attr16_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr17))>
+{i} attr17_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr18))>
+{i} attr18_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr19))>
+{i} attr19_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr20))>
+{i} attr20_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr21))>
+{i} attr21_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr22))>
+{i} attr22_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr23))>
+{i} attr23_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr24))>
+{i} attr24_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr25))>
+{i} attr25_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr26))>
+{i} attr26_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr27))>
+{i} attr27_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr28))>
+{i} attr28_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr29))>
+{i} attr29_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr30))>
+{i} attr30_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr31))>
+{i} attr31_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr32))>
+{i} attr32_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr33))>
+{i} attr33_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr34))>
+{i} attr34_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr35))>
+{i} attr35_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr36))>
+{i} attr36_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr37))>
+{i} attr37_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr38))>
+{i} attr38_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr39))>
+{i} attr39_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr40))>
+{i} attr40_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr41))>
+{i} attr41_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr42))>
+{i} attr42_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr43))>
+{i} attr43_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr44))>
+{i} attr44_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr45))>
+{i} attr45_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr46))>
+{i} attr46_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr47))>
+{i} attr47_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr48))>
+{i} attr48_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr49))>
+{i} attr49_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr50))>
+{i} attr50_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr51))>
+{i} attr51_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr52))>
+{i} attr52_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr53))>
+{i} attr53_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr54))>
+{i} attr54_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr55))>
+{i} attr55_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr56))>
+{i} attr56_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr57))>
+{i} attr57_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr58))>
+{i} attr58_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr59))>
+{i} attr59_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr60))>
+{i} attr60_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr61))>
+{i} attr61_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr62))>
+{i} attr62_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr63))>
+{i} attr63_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr64))>
+{i} attr64_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr65))>
+{i} attr65_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr66))>
+{i} attr66_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr67))>
+{i} attr67_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr68))>
+{i} attr68_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr69))>
+{i} attr69_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr70))>
+{i} attr70_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr71))>
+{i} attr71_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr72))>
+{i} attr72_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr73))>
+{i} attr73_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr74))>
+{i} attr74_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr75))>
+{i} attr75_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr76))>
+{i} attr76_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr77))>
+{i} attr77_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr78))>
+{i} attr78_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr79))>
+{i} attr79_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr80))>
+{i} attr80_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr81))>
+{i} attr81_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr82))>
+{i} attr82_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr83))>
+{i} attr83_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr84))>
+{i} attr84_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr85))>
+{i} attr85_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr86))>
+{i} attr86_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr87))>
+{i} attr87_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr88))>
+{i} attr88_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr89))>
+{i} attr89_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr90))>
+{i} attr90_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr91))>
+{i} attr91_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr92))>
+{i} attr92_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr93))>
+{i} attr93_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr94))>
+{i} attr94_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr95))>
+{i} attr95_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr96))>
+{i} attr96_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr97))>
+{i} attr97_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr98))>
+{i} attr98_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr99))>
+{i} attr99_avg
+{0} 499.5
+
+SCIDB QUERY : <remove(array1)>
+Query was executed successfully
+

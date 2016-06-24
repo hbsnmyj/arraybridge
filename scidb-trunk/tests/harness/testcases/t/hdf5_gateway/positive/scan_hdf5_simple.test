@@ -1,0 +1,18 @@
+--setup
+--shell --command "echo /tmp/test.hdf5 > $HOME/scidb_hdf5.config"
+--start-query-logging
+
+# Dimensions similar to variant_warehouse variant arrays.
+create_array(array1, <val:double>[i=0:100,1,0], false)
+
+--test
+--shell --command "iquery -naq "save(build(array1, i), '$TMP/test.hdf5:val', -2, 'hdf5')""
+
+# Opaque save and load with logical chunk size > 2**32 (SDB-5220)
+scan_hdf5(array1)
+
+--cleanup
+--shell --command "rm -f $TMP/test.hdf5"
+remove(array1)
+
+--stop-query-logging

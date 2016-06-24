@@ -1,0 +1,68 @@
+
+--setup
+--shell --command "echo /tmp/array1.hdf5 > $HOME/scidb_hdf5.config"
+
+--start-query-logging
+create array array1 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64,attr6: uint64,attr7: uint64,attr8: uint64,attr9: uint64> [dim0=0:999,10,0]
+
+--test
+--start-igdata
+create array temp0 <attr0: uint64> [dim0=0:999,10,0]
+store(build(temp0, dim0), temp0)
+create array temp1 <attr0: uint64,attr1: uint64> [dim0=0:999,10,0]
+store(apply(temp0, attr1, attr0), temp1)
+remove(temp0)
+create array temp2 <attr0: uint64,attr1: uint64,attr2: uint64> [dim0=0:999,10,0]
+store(apply(temp1, attr2, attr0), temp2)
+remove(temp1)
+create array temp3 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64> [dim0=0:999,10,0]
+store(apply(temp2, attr3, attr0), temp3)
+remove(temp2)
+create array temp4 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64> [dim0=0:999,10,0]
+store(apply(temp3, attr4, attr0), temp4)
+remove(temp3)
+create array temp5 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64> [dim0=0:999,10,0]
+store(apply(temp4, attr5, attr0), temp5)
+remove(temp4)
+create array temp6 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64,attr6: uint64> [dim0=0:999,10,0]
+store(apply(temp5, attr6, attr0), temp6)
+remove(temp5)
+create array temp7 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64,attr6: uint64,attr7: uint64> [dim0=0:999,10,0]
+store(apply(temp6, attr7, attr0), temp7)
+remove(temp6)
+create array temp8 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64,attr6: uint64,attr7: uint64,attr8: uint64> [dim0=0:999,10,0]
+store(apply(temp7, attr8, attr0), temp8)
+remove(temp7)
+create array temp9 <attr0: uint64,attr1: uint64,attr2: uint64,attr3: uint64,attr4: uint64,attr5: uint64,attr6: uint64,attr7: uint64,attr8: uint64,attr9: uint64> [dim0=0:999,10,0]
+store(apply(temp8, attr9, attr0), temp9)
+remove(temp8)
+save(temp9, '/tmp/array1.hdf5:attr0:attr1:attr2:attr3:attr4:attr5:attr6:attr7:attr8:attr9',-2,'hdf5')
+remove(temp9)
+
+scan_hdf5(array1)
+--stop-igdata
+aggregate(scan_hdf5(array1), count(attr0))
+aggregate(scan_hdf5(array1), count(attr1))
+aggregate(scan_hdf5(array1), count(attr2))
+aggregate(scan_hdf5(array1), count(attr3))
+aggregate(scan_hdf5(array1), count(attr4))
+aggregate(scan_hdf5(array1), count(attr5))
+aggregate(scan_hdf5(array1), count(attr6))
+aggregate(scan_hdf5(array1), count(attr7))
+aggregate(scan_hdf5(array1), count(attr8))
+aggregate(scan_hdf5(array1), count(attr9))
+aggregate(scan_hdf5(array1), avg(attr0))
+aggregate(scan_hdf5(array1), avg(attr1))
+aggregate(scan_hdf5(array1), avg(attr2))
+aggregate(scan_hdf5(array1), avg(attr3))
+aggregate(scan_hdf5(array1), avg(attr4))
+aggregate(scan_hdf5(array1), avg(attr5))
+aggregate(scan_hdf5(array1), avg(attr6))
+aggregate(scan_hdf5(array1), avg(attr7))
+aggregate(scan_hdf5(array1), avg(attr8))
+aggregate(scan_hdf5(array1), avg(attr9))
+
+--cleanup
+--shell --command "rm -f /tmp/array1.hdf5"
+remove(array1)
+--stop-query-logging

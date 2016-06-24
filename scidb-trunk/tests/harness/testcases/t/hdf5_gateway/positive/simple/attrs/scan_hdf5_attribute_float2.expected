@@ -1,0 +1,46 @@
+SCIDB QUERY : <create array array1 <attr0: float,attr1: float> [dim0=0:999,10,0]>
+Query was executed successfully
+
+SCIDB QUERY : <create array temp0 <attr0: float> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(build(temp0, dim0), temp0)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <create array temp1 <attr0: float,attr1: float> [dim0=0:999,10,0]>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <store(apply(temp0, attr1, attr0), temp1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp0)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <save(temp1, '/tmp/array1.hdf5:attr0:attr1',-2,'hdf5')>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <remove(temp1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <scan_hdf5(array1)>
+[Query was executed successfully, ignoring data output by this query.]
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr0))>
+{i} attr0_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), count(attr1))>
+{i} attr1_count
+{0} 1000
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr0))>
+{i} attr0_avg
+{0} 499.5
+
+SCIDB QUERY : <aggregate(scan_hdf5(array1), avg(attr1))>
+{i} attr1_avg
+{0} 499.5
+
+SCIDB QUERY : <remove(array1)>
+Query was executed successfully
+

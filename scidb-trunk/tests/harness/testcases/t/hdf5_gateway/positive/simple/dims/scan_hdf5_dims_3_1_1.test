@@ -1,0 +1,23 @@
+
+--setup
+--shell --command "echo /tmp/array1.hdf5 > $HOME/scidb_hdf5.config"
+
+--start-query-logging
+create array array1 <attr0: double> [dim0=0:0,1,0,dim1=0:0,1,0,dim2=0:0,1,0]
+
+--test
+--start-igdata
+create array temp0 <attr0: double> [dim0=0:0,1,0,dim1=0:0,1,0,dim2=0:0,1,0]
+store(build(temp0, dim0), temp0)
+save(temp0, '/tmp/array1.hdf5:attr0',-2,'hdf5')
+remove(temp0)
+
+scan_hdf5(array1)
+--stop-igdata
+aggregate(scan_hdf5(array1), count(attr0))
+aggregate(scan_hdf5(array1), avg(attr0))
+
+--cleanup
+--shell --command "rm -f /tmp/array1.hdf5"
+remove(array1)
+--stop-query-logging
