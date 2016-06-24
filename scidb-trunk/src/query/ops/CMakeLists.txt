@@ -178,6 +178,10 @@ set(ops_lib_src
     uniq/PhysicalUniq.cpp
     index_lookup/LogicalIndexLookup.cpp
     index_lookup/PhysicalIndexLookup.cpp
+    hdf5/LogicalScanHDF5.cpp
+    hdf5/PhysicalScanHDF5.cpp
+    hdf5/HDF5Array.cpp
+    hdf5/HDF5ArrayDesc.cpp
 )
 
 find_package(Libcsv REQUIRED)

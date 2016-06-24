@@ -1308,8 +1308,6 @@ namespace scidb
         H5Coordinates chunk_dims;
 
         for(auto& dimension: desc.getDimensions()) {
-            /* TODO: Deal with the corner cases,
-             * such as AUTO_CHUNKING, dimension starts with numbers other than 0, etc */
             dims.push_back((unsigned long)dimension.getLength());
             chunk_dims.push_back((unsigned long)dimension.getChunkInterval());
         }
@@ -1328,19 +1326,24 @@ namespace scidb
             }
         }
 
-        uint64_t n;
+        uint64_t n = 0;
+
         for (n = 0; !arrayIterators[0]->end(); n++) {
             for (size_t i = 0; i < nAttrs; i++) {
                 ConstChunk const* chunk = &arrayIterators[i]->getChunk();
                 auto& first = chunk->getFirstPosition(false);
                 H5Coordinates target_pos(first.begin(), first.end());
+
                 datasets[i]->writeChunk(*chunk, target_pos);
                 ++(*arrayIterators[i]);
             }
         }
+
         return n;
     }
+
 #endif
+
 
     uint64_t ArrayWriter::save(Array const& array, string const& file,
                                const std::shared_ptr<Query>& query,
@@ -1349,7 +1352,7 @@ namespace scidb
         ArrayDesc const& desc = array.getArrayDesc();
         uint64_t n = 0;
 
-        FILE* f;
+        FILE* f = nullptr;
         bool isBinary = compareStringsIgnoreCase(format, "opaque") == 0 || format[0] == '(';
         bool isHDF5 = (format == "hdf5");
         if (isHDF5 == false) {

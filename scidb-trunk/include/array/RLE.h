@@ -729,6 +729,13 @@ public:
         return sizeof(Header) + (_nSegs+1)*sizeof(Segment) + _dataSize;
     }
 
+    static size_t perdictPackedize(size_t numSeg, size_t datasize) {
+        return sizeof(Header) + (numSeg + 1) * sizeof(Segment) + datasize;
+    }
+
+    static char* initDensePackedChunk(char* dst, size_t dataSize, size_t varOffs,
+                               size_t elemSize, size_t nElems, bool isBoolean);
+
     /**
      * Constructor for initializing payload with raw chunk data
      */

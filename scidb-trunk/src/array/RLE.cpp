@@ -2021,4 +2021,26 @@ namespace scidb
         }
         memcpy(&varPart[offs], value.data(), len);
     }
+
+char* ConstRLEPayload::initDensePackedChunk(char *dst, size_t dataSize, size_t varOffs,
+                                           size_t elemSize, size_t nElems, bool isBoolean)
+{
+    auto hdr = (Header*)dst;
+    hdr->_magic = RLE_PAYLOAD_MAGIC;
+    hdr->_dataSize = dataSize;
+    hdr->_varOffs = varOffs;
+    hdr->_elemSize = elemSize;
+    hdr->_nSegs = 1;
+    hdr->_isBoolean = (uint8_t)isBoolean;
+    auto segm0 = (Segment*)(dst + sizeof(Header));
+    new (segm0) Segment(0,0,false,false);
+    auto segm1 = (Segment*)(dst + sizeof(Header) + sizeof(Segment));
+    new (segm1) Segment(0,0,false,false);
+    segm1->setPPosition(nElems);
+
+    char* chunkData = dst + sizeof(Header) + 2 * sizeof(Segment);
+    return chunkData;
+}
+
+
 }
