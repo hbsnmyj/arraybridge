@@ -176,6 +176,7 @@ bool HDF5ArrayIterator::setPosition(Coordinates const& pos)
     LOG4CXX_TRACE(logger, "HDF5ArrayIterator: setting pos " << to_string(*_coordinateIter)
                           << " attrId=" << _attrId << "\n");
     auto chunkPosIter = findChunk(pos);
+    if(chunkPosIter == _coordinateSet->end()) return false;
     if (isCoordinatesInChunk(*chunkPosIter, pos)) {
         _coordinateIter = chunkPosIter;
         _needRead = true;
