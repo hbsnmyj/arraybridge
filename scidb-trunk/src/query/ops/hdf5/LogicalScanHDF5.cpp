@@ -46,9 +46,29 @@ public:
             LogicalOperator(logicalName, alias)
     {
         ADD_PARAM_IN_ARRAY_NAME2(PLACEHOLDER_ARRAY_NAME_VERSION | PLACEHOLDER_ARRAY_NAME_INDEX_NAME);
+        _properties.tile = true; // greatly improve aggregation performance.
+        ADD_PARAM_VARIES();
     }
 
-    std::string inferPermissions(std::shared_ptr<Query>& query)
+
+
+    std::vector<std::shared_ptr<OperatorParamPlaceholder> >
+        nextVaryParamPlaceholder(const std::vector< ArrayDesc> &schemas)
+    {
+        std::vector<std::shared_ptr<OperatorParamPlaceholder> > res;
+        res.push_back(END_OF_VARIES_PARAMS());
+        switch (_parameters.size()) {
+          case 0:
+            assert(false);
+            break;
+          case 1:
+            res.push_back(PARAM_CONSTANT("string"));
+            break;
+        }
+        return res;
+    }
+
+std::string inferPermissions(std::shared_ptr<Query>& query)
     {
         std::string permissions;
         permissions.push_back(scidb::permissions::namespaces::ReadArray);
@@ -73,7 +93,7 @@ public:
     ArrayDesc inferSchema(std::vector<ArrayDesc> inputSchemas, std::shared_ptr<Query> query)
     {
         assert(inputSchemas.size() == 0);
-        assert(_parameters.size() == 1);
+        assert(_parameters.size() <= 2);
         assert(_parameters[0]->getParamType() == PARAM_ARRAY_REF);
 
         std::shared_ptr<OperatorParamArrayReference>& arrayRef = (std::shared_ptr<OperatorParamArrayReference>&)_parameters[0];

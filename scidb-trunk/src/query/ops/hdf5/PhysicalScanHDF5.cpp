@@ -72,16 +72,34 @@ public:
         using hdf5gateway::HDF5ArrayDesc;
         using hdf5gateway::HDF5Type;
         HDF5ArrayDesc h5desc;
-        /* Right now we read the filename using $HOME/scidb_hdf5.config */
-        char* home = getenv("HOME");
-        std::string config_file = std::string(home) + "/scidb_hdf5.config";
+
+	std::string config_file;
+        if(_parameters.size() >= 2) {
+            config_file = ((std::shared_ptr<OperatorParamPhysicalExpression>&)
+                    _parameters[1])->getExpression()->evaluate().getString();
+        } else {
+            char *home = getenv("HOME");
+            config_file = std::string(home) + "/scidb_hdf5.config";
+        }
+
         std::ifstream infile(config_file);
         std::string hdf5_file;
         infile >> hdf5_file;
 
+        std::string dataset_name, attribute_name;
+        std::map<std::string, std::string> dataset_names;
+        while(infile >> attribute_name >> dataset_name) {
+            dataset_names[attribute_name] = dataset_name;
+        }
+
         auto attributes = _schema.getAttributes(true);
         for(auto& attribute: attributes) {
-            h5desc.addAttribute(hdf5_file, attribute.getName(), HDF5Type(attribute.getType()));
+            if(dataset_names.find(attribute.getName()) != dataset_names.end()) {
+                h5desc.addAttribute(hdf5_file, dataset_names[attribute.getName()],
+                                    HDF5Type(attribute.getType()));
+            } else {
+                h5desc.addAttribute(hdf5_file, attribute.getName(), HDF5Type(attribute.getType()));
+            }
         }
 
         return std::make_shared<HDF5Array>(_schema, h5desc, query, _arena);
