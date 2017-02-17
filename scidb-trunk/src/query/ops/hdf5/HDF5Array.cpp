@@ -177,12 +177,10 @@ bool HDF5ArrayIterator::setPosition(Coordinates const& pos)
                           << " attrId=" << _attrId << "\n");
     auto chunkPosIter = findChunk(pos);
     if(chunkPosIter == _coordinateSet->end()) return false;
-    if (isCoordinatesInChunk(*chunkPosIter, pos)) {
+    else {
         _coordinateIter = chunkPosIter;
         _needRead = true;
         return true;
-    } else {
-        return false;
     }
 }
 
@@ -195,7 +193,10 @@ void HDF5ArrayIterator::reset()
 std::set<std::vector<long>, scidb::CoordinatesLess>::iterator HDF5ArrayIterator::findChunk(
         Coordinates pos)
 {
-    return _coordinateSet->lower_bound(pos);
+    auto arrayPtr = _array.lock();
+    auto desc = arrayPtr->getArrayDesc();
+    desc.getChunkPositionFor(pos);
+    return _coordinateSet->find(pos);
 }
 
 bool HDF5ArrayIterator::isCoordinatesInChunk(const Coordinates &chunkStart, const Coordinates &pos)
